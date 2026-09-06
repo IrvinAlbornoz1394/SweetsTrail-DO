@@ -1,0 +1,4094 @@
+[
+{
+"slug": "15-de-mayo-97229",
+"name": "15 de Mayo",
+"tipo": "Fraccionamiento",
+"postalCode": "97229"
+},
+{
+"slug": "5-colonias-97280",
+"name": "5 Colonias",
+"tipo": "Colonia",
+"postalCode": "97280"
+},
+{
+"slug": "alcala-martin-97050",
+"name": "Alcalá Martín",
+"tipo": "Colonia",
+"postalCode": "97050"
+},
+{
+"slug": "algarrobos-desarrollo-residencial-97305",
+"name": "Algarrobos Desarrollo Residencial",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "almendros-97203",
+"name": "Almendros",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "altabrisa-97130",
+"name": "Altabrisa",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "altavista-97305",
+"name": "Altavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "alura-97305",
+"name": "Alura",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "amalia-solorzano-97175",
+"name": "Amalia Solorzano",
+"tipo": "Colonia",
+"postalCode": "97175"
+},
+{
+"slug": "amapola-97219",
+"name": "Amapola",
+"tipo": "Colonia",
+"postalCode": "97219"
+},
+{
+"slug": "ampliacion-ciudad-industrial-97288",
+"name": "Ampliación Ciudad Industrial",
+"tipo": "Colonia",
+"postalCode": "97288"
+},
+{
+"slug": "ampliacion-cordemex-97115",
+"name": "Ampliación Cordemex",
+"tipo": "Fraccionamiento",
+"postalCode": "97115"
+},
+{
+"slug": "ampliacion-francisco-de-montejo-97203",
+"name": "Ampliación Francisco de Montejo",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "ampliacion-granjas-97198",
+"name": "Ampliación Granjas",
+"tipo": "Colonia",
+"postalCode": "97198"
+},
+{
+"slug": "ampliacion-juan-pablo-ii-97246",
+"name": "Ampliación Juan Pablo II",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "ampliacion-lindavista-elefante-chico-97219",
+"name": "Ampliación Lindavista (Elefante Chico)",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "ampliacion-pedregales-de-lindavista-97219",
+"name": "Ampliación Pedregales de Lindavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "ampliacion-plan-de-ayala-villas-del-sol-97118",
+"name": "Ampliación Plan de Ayala (Villas del Sol)",
+"tipo": "Ampliación",
+"postalCode": "97118"
+},
+{
+"slug": "ampliacion-revolucion-97115",
+"name": "Ampliación Revolución",
+"tipo": "Colonia",
+"postalCode": "97115"
+},
+{
+"slug": "ampliacion-roma-luis-echeverria-97229",
+"name": "Ampliación Roma (Luis Echeverría)",
+"tipo": "Colonia",
+"postalCode": "97229"
+},
+{
+"slug": "ampliacion-salvador-alvarado-sur-97196",
+"name": "Ampliación Salvador Alvarado Sur",
+"tipo": "Colonia",
+"postalCode": "97196"
+},
+{
+"slug": "ampliacion-tixcacal-opichen-97249",
+"name": "Ampliación Tixcacal Opichen",
+"tipo": "Ampliación",
+"postalCode": "97249"
+},
+{
+"slug": "ampliacion-del-norte-1a-ampliacion-97120",
+"name": "Ampliación del Norte (1a. Ampliación)",
+"tipo": "Fraccionamiento",
+"postalCode": "97120"
+},
+{
+"slug": "ampliacion-las-brisas-97144",
+"name": "Ampliación las Brisas",
+"tipo": "Fraccionamiento",
+"postalCode": "97144"
+},
+{
+"slug": "anexo-juan-pablo-ii-97246",
+"name": "Anexo Juan Pablo II",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "angeles-ii-97246",
+"name": "Angeles II",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "antonia-jimenez-trava-97142",
+"name": "Antonia Jimenez Trava",
+"tipo": "Fraccionamiento",
+"postalCode": "97142"
+},
+{
+"slug": "antonia-jimenez-trava-ii-97142",
+"name": "Antonia Jimenez Trava II",
+"tipo": "Fraccionamiento",
+"postalCode": "97142"
+},
+{
+"slug": "aquaparque-97176",
+"name": "Aquaparque",
+"tipo": "Fraccionamiento",
+"postalCode": "97176"
+},
+{
+"slug": "arboleda-97314",
+"name": "Arboleda",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "arboledas-chuburna-97203",
+"name": "Arboledas Chuburna",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "arcos-del-sol-97203",
+"name": "Arcos del Sol",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "arekas-97203",
+"name": "Arekas",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "armando-avila-gurrutia-97230",
+"name": "Armando Avila Gurrutia",
+"tipo": "Fraccionamiento",
+"postalCode": "97230"
+},
+{
+"slug": "atlante-97220",
+"name": "Atlante",
+"tipo": "Fraccionamiento",
+"postalCode": "97220"
+},
+{
+"slug": "atlantida-97220",
+"name": "Atlántida",
+"tipo": "Fraccionamiento",
+"postalCode": "97220"
+},
+{
+"slug": "aurea-residencial-97203",
+"name": "Aurea Residencial",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "azcorra-97177",
+"name": "Azcorra",
+"tipo": "Colonia",
+"postalCode": "97177"
+},
+{
+"slug": "balcones-ii-97314",
+"name": "Balcones II",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "bellavista-97285",
+"name": "Bellavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "benito-juarez-nte-97119",
+"name": "Benito Juárez Nte",
+"tipo": "Colonia",
+"postalCode": "97119"
+},
+{
+"slug": "benito-juarez-ote-97178",
+"name": "Benito Juárez Ote",
+"tipo": "Fraccionamiento",
+"postalCode": "97178"
+},
+{
+"slug": "bicentenario-97255",
+"name": "Bicentenario",
+"tipo": "Fraccionamiento",
+"postalCode": "97255"
+},
+{
+"slug": "bogdan-97305",
+"name": "Bogdan",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "bojorquez-97230",
+"name": "Bojorquez",
+"tipo": "Colonia",
+"postalCode": "97230"
+},
+{
+"slug": "bosques-del-pedregal-97278",
+"name": "Bosques Del Pedregal",
+"tipo": "Fraccionamiento",
+"postalCode": "97278"
+},
+{
+"slug": "bosques-del-poniente-97246",
+"name": "Bosques Del Poniente",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "bosques-de-mulsay-97246",
+"name": "Bosques de Mulsay",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "bosques-de-oriente-97167",
+"name": "Bosques de Oriente",
+"tipo": "Fraccionamiento",
+"postalCode": "97167"
+},
+{
+"slug": "bosques-de-yucalpeten-97246",
+"name": "Bosques de Yucalpeten",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "boulevares-97314",
+"name": "Boulevares",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "boulevares-de-chuburna-97205",
+"name": "Boulevares de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "boulevares-de-oriente-97143",
+"name": "Boulevares de Oriente",
+"tipo": "Fraccionamiento",
+"postalCode": "97143"
+},
+{
+"slug": "brisas-del-bosque-97143",
+"name": "Brisas Del Bosque",
+"tipo": "Colonia",
+"postalCode": "97143"
+},
+{
+"slug": "brisas-de-chuburna-97203",
+"name": "Brisas de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "brisas-de-san-jose-97298",
+"name": "Brisas de San José",
+"tipo": "Fraccionamiento",
+"postalCode": "97298"
+},
+{
+"slug": "brisas-del-poniente-yucalpeten-97238",
+"name": "Brisas del Poniente (Yucalpeten)",
+"tipo": "Fraccionamiento",
+"postalCode": "97238"
+},
+{
+"slug": "buenavista-97127",
+"name": "Buenavista",
+"tipo": "Colonia",
+"postalCode": "97127"
+},
+{
+"slug": "bugambilias-97205",
+"name": "Bugambilias",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "callejones-de-chuburna-97207",
+"name": "Callejones de Chuburna",
+"tipo": "Colonia",
+"postalCode": "97207"
+},
+{
+"slug": "camara-de-la-construccion-97203",
+"name": "Camara de La Construcción",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "campestre-97120",
+"name": "Campestre",
+"tipo": "Fraccionamiento",
+"postalCode": "97120"
+},
+{
+"slug": "canto-97189",
+"name": "Canto",
+"tipo": "Colonia",
+"postalCode": "97189"
+},
+{
+"slug": "carrillo-ancona-97060",
+"name": "Carrillo Ancona",
+"tipo": "Colonia",
+"postalCode": "97060"
+},
+{
+"slug": "castilla-camara-97278",
+"name": "Castilla Camara",
+"tipo": "Colonia",
+"postalCode": "97278"
+},
+{
+"slug": "caucel-97314",
+"name": "Caucel",
+"tipo": "Pueblo",
+"postalCode": "97314"
+},
+{
+"slug": "caucel-ii-97314",
+"name": "Caucel II",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "centenario-camara-de-comercio-caucel-97314",
+"name": "Centenario Cámara de Comercio Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "central-de-abasto-97237",
+"name": "Central de Abasto",
+"tipo": "Zona comercial",
+"postalCode": "97237"
+},
+{
+"slug": "centro-sct-yucatan-97121",
+"name": "Centro Sct Yucatán",
+"tipo": "Gran usuario",
+"postalCode": "97121"
+},
+{
+"slug": "cerillera-97168",
+"name": "Cerillera",
+"tipo": "Fraccionamiento",
+"postalCode": "97168"
+},
+{
+"slug": "cerradas-de-la-herradura-97314",
+"name": "Cerradas de la Herradura",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "chablekal-97302",
+"name": "Chablekal",
+"tipo": "Pueblo",
+"postalCode": "97302"
+},
+{
+"slug": "chalmuch-97312",
+"name": "Chalmuch",
+"tipo": "Pueblo",
+"postalCode": "97312"
+},
+{
+"slug": "cheuman-97303",
+"name": "Cheumán",
+"tipo": "Pueblo",
+"postalCode": "97303"
+},
+{
+"slug": "chichen-itza-97170",
+"name": "Chichen-itza",
+"tipo": "Colonia",
+"postalCode": "97170"
+},
+{
+"slug": "chichi-diaz-97306",
+"name": "Chichi Díaz",
+"tipo": "Fraccionamiento",
+"postalCode": "97306"
+},
+{
+"slug": "chichi-suarez-97306",
+"name": "Chichi Suárez",
+"tipo": "Pueblo",
+"postalCode": "97306"
+},
+{
+"slug": "cholul-97305",
+"name": "Cholul",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "chuburna-inn-97205",
+"name": "Chuburna Inn",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "chuburna-de-hidalgo-97205",
+"name": "Chuburna de Hidalgo",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "chuburna-de-hidalgo-97208",
+"name": "Chuburna de Hidalgo",
+"tipo": "Fraccionamiento",
+"postalCode": "97208"
+},
+{
+"slug": "chuburna-de-hidalgo-iii-97203",
+"name": "Chuburna de Hidalgo III",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "chuburna-de-hidalgo-iv-97203",
+"name": "Chuburna de Hidalgo IV",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "chuburna-de-hidalgo-v-97203",
+"name": "Chuburna de Hidalgo V",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "chuminopolis-97158",
+"name": "Chuminopolis",
+"tipo": "Colonia",
+"postalCode": "97158"
+},
+{
+"slug": "cinturon-verde-97249",
+"name": "Cinturón Verde",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "circuito-colonias-97260",
+"name": "Circuito Colonias",
+"tipo": "Conjunto habitacional",
+"postalCode": "97260"
+},
+{
+"slug": "ciricotes-de-caucel-97314",
+"name": "Ciricotes de Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "ciudad-caucel-97314",
+"name": "Ciudad Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "ciudad-industrial-97288",
+"name": "Ciudad Industrial",
+"tipo": "Zona industrial",
+"postalCode": "97288"
+},
+{
+"slug": "club-de-golf-la-ceiba-97302",
+"name": "Club de Golf La Ceiba",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "cocoteros-97203",
+"name": "Cocoteros",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "cocoyoles-97305",
+"name": "Cocoyoles",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "colonial-buenavista-97215",
+"name": "Colonial Buenavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97215"
+},
+{
+"slug": "colonial-chuburna-97215",
+"name": "Colonial Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97215"
+},
+{
+"slug": "confederacion-de-trabajadores-del-estado-de-yucatan-97143",
+"name": "Confederación de Trabajadores Del Estado de Yucatán",
+"tipo": "Colonia",
+"postalCode": "97143"
+},
+{
+"slug": "conjunto-residencial-del-norte-97050",
+"name": "Conjunto Residencial Del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97050"
+},
+{
+"slug": "conjunto-los-naranjos-97218",
+"name": "Conjunto los Naranjos",
+"tipo": "Fraccionamiento",
+"postalCode": "97218"
+},
+{
+"slug": "cordeleros-de-chuburna-97203",
+"name": "Cordeleros de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "cordemex-97309",
+"name": "Cordemex",
+"tipo": "Zona industrial",
+"postalCode": "97309"
+},
+{
+"slug": "cortes-sarmiento-97168",
+"name": "Cortes Sarmiento",
+"tipo": "Colonia",
+"postalCode": "97168"
+},
+{
+"slug": "cosgaya-97303",
+"name": "Cosgaya",
+"tipo": "Hacienda",
+"postalCode": "97303"
+},
+{
+"slug": "cupules-97089",
+"name": "Cupules",
+"tipo": "Colonia",
+"postalCode": "97089"
+},
+{
+"slug": "del-bosque-97203",
+"name": "Del Bosque",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "del-carmen-97168",
+"name": "Del Carmen",
+"tipo": "Colonia",
+"postalCode": "97168"
+},
+{
+"slug": "del-norte-97120",
+"name": "Del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97120"
+},
+{
+"slug": "del-parque-97160",
+"name": "Del Parque",
+"tipo": "Fraccionamiento",
+"postalCode": "97160"
+},
+{
+"slug": "del-sur-97287",
+"name": "Del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97287"
+},
+{
+"slug": "delio-moreno-canton-97268",
+"name": "Delio Moreno Canton",
+"tipo": "Colonia",
+"postalCode": "97268"
+},
+{
+"slug": "diamante-paseos-de-opichen-97249",
+"name": "Diamante Paseos de Opichen",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "diaz-ordaz-97130",
+"name": "Diaz Ordaz",
+"tipo": "Colonia",
+"postalCode": "97130"
+},
+{
+"slug": "dolores-otero-97270",
+"name": "Dolores Otero",
+"tipo": "Colonia",
+"postalCode": "97270"
+},
+{
+"slug": "dolores-patron-97070",
+"name": "Dolores Patron",
+"tipo": "Colonia",
+"postalCode": "97070"
+},
+{
+"slug": "dzibilchaltun-97305",
+"name": "Dzibilchaltún",
+"tipo": "Pueblo",
+"postalCode": "97305"
+},
+{
+"slug": "dzidzilche-97302",
+"name": "Dzidzilché",
+"tipo": "Hacienda",
+"postalCode": "97302"
+},
+{
+"slug": "dzitya-97302",
+"name": "Dzityá",
+"tipo": "Pueblo",
+"postalCode": "97302"
+},
+{
+"slug": "dzoyaxche-97316",
+"name": "Dzoyaxché",
+"tipo": "Pueblo",
+"postalCode": "97316"
+},
+{
+"slug": "dzununcan-97315",
+"name": "Dzununcan",
+"tipo": "Fraccionamiento",
+"postalCode": "97315"
+},
+{
+"slug": "ejido-de-chuburna-97300",
+"name": "Ejido de Chuburna",
+"tipo": "Ejido",
+"postalCode": "97300"
+},
+{
+"slug": "el-arco-97138",
+"name": "El Arco",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "el-campanario-97205",
+"name": "El Campanario",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "el-cedral-97208",
+"name": "El Cedral",
+"tipo": "Fraccionamiento",
+"postalCode": "97208"
+},
+{
+"slug": "el-conquistador-97203",
+"name": "El Conquistador",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "el-cortijo-i-97205",
+"name": "El Cortijo I",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "el-cortijo-ii-97205",
+"name": "El Cortijo II",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "el-pedregal-97070",
+"name": "El Pedregal",
+"tipo": "Fraccionamiento",
+"postalCode": "97070"
+},
+{
+"slug": "el-porvenir-97226",
+"name": "El Porvenir",
+"tipo": "Colonia",
+"postalCode": "97226"
+},
+{
+"slug": "el-prado-97203",
+"name": "El Prado",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "el-roble-97255",
+"name": "El Roble",
+"tipo": "Colonia",
+"postalCode": "97255"
+},
+{
+"slug": "el-roble-agricola-97295",
+"name": "El Roble Agrícola",
+"tipo": "Colonia",
+"postalCode": "97295"
+},
+{
+"slug": "el-rosario-97206",
+"name": "El Rosario",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "el-vergel-97176",
+"name": "El Vergel",
+"tipo": "Fraccionamiento",
+"postalCode": "97176"
+},
+{
+"slug": "emiliano-zapata-nte-97129",
+"name": "Emiliano Zapata Nte",
+"tipo": "Colonia",
+"postalCode": "97129"
+},
+{
+"slug": "emiliano-zapata-ote-97144",
+"name": "Emiliano Zapata Ote",
+"tipo": "Colonia",
+"postalCode": "97144"
+},
+{
+"slug": "emiliano-zapata-sur-97297",
+"name": "Emiliano Zapata Sur",
+"tipo": "Colonia",
+"postalCode": "97297"
+},
+{
+"slug": "emiliano-zapata-sur-ii-97297",
+"name": "Emiliano Zapata Sur II",
+"tipo": "Colonia",
+"postalCode": "97297"
+},
+{
+"slug": "emiliano-zapata-sur-iii-97297",
+"name": "Emiliano Zapata Sur III",
+"tipo": "Colonia",
+"postalCode": "97297"
+},
+{
+"slug": "emilio-portes-gil-97167",
+"name": "Emilio Portes Gil",
+"tipo": "Fraccionamiento",
+"postalCode": "97167"
+},
+{
+"slug": "esperanza-97169",
+"name": "Esperanza",
+"tipo": "Colonia",
+"postalCode": "97169"
+},
+{
+"slug": "felipe-carrillo-puerto-97208",
+"name": "Felipe Carrillo Puerto",
+"tipo": "Colonia",
+"postalCode": "97208"
+},
+{
+"slug": "felipe-carrillo-puerto-nte-97136",
+"name": "Felipe Carrillo Puerto Nte",
+"tipo": "Colonia",
+"postalCode": "97136"
+},
+{
+"slug": "fenix-97155",
+"name": "Fenix",
+"tipo": "Colonia",
+"postalCode": "97155"
+},
+{
+"slug": "ferrocarrileros-97109",
+"name": "Ferrocarrileros",
+"tipo": "Colonia",
+"postalCode": "97109"
+},
+{
+"slug": "fidel-velazquez-97166",
+"name": "Fidel Velázquez",
+"tipo": "Fraccionamiento",
+"postalCode": "97166"
+},
+{
+"slug": "fidel-velazquez-2a-etapa-97166",
+"name": "Fidel Velázquez 2a Etapa",
+"tipo": "Fraccionamiento",
+"postalCode": "97166"
+},
+{
+"slug": "floresta-97205",
+"name": "Floresta",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "fovissste-97217",
+"name": "Fovissste",
+"tipo": "Unidad habitacional",
+"postalCode": "97217"
+},
+{
+"slug": "francisco-el-porvenir-97217",
+"name": "Francisco El Porvenir",
+"tipo": "Colonia",
+"postalCode": "97217"
+},
+{
+"slug": "francisco-i-madero-97240",
+"name": "Francisco I Madero",
+"tipo": "Colonia",
+"postalCode": "97240"
+},
+{
+"slug": "francisco-villa-97219",
+"name": "Francisco Villa",
+"tipo": "Colonia",
+"postalCode": "97219"
+},
+{
+"slug": "francisco-de-montejo-97203",
+"name": "Francisco de Montejo",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "francisco-de-montejo-ii-97203",
+"name": "Francisco de Montejo II",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "francisco-de-montejo-iii-97203",
+"name": "Francisco de Montejo III",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "francisco-de-montejo-iv-97203",
+"name": "Francisco de Montejo IV",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "francisco-de-montejo-v-97203",
+"name": "Francisco de Montejo V",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "garcia-gineres-97070",
+"name": "Garcia Gineres",
+"tipo": "Colonia",
+"postalCode": "97070"
+},
+{
+"slug": "girasoles-de-opichen-97249",
+"name": "Girasoles de Opichen",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "gonzalo-guerrero-97115",
+"name": "Gonzalo Guerrero",
+"tipo": "Fraccionamiento",
+"postalCode": "97115"
+},
+{
+"slug": "gonzalo-guerrero-97119",
+"name": "Gonzalo Guerrero",
+"tipo": "Fraccionamiento",
+"postalCode": "97119"
+},
+{
+"slug": "graciano-ricalde-97256",
+"name": "Graciano Ricalde",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "gran-herradura-97314",
+"name": "Gran Herradura",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "gran-roble-97295",
+"name": "Gran Roble",
+"tipo": "Fraccionamiento",
+"postalCode": "97295"
+},
+{
+"slug": "gran-royal-altabrisa-97113",
+"name": "Gran Royal Altabrisa",
+"tipo": "Fraccionamiento",
+"postalCode": "97113"
+},
+{
+"slug": "gran-san-pedro-cholul-97305",
+"name": "Gran San Pedro Cholul",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "gran-santa-fe-97314",
+"name": "Gran Santa Fe",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "granja-fruticola-susula-97246",
+"name": "Granja Fruticola Susula",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "granjas-97197",
+"name": "Granjas",
+"tipo": "Fraccionamiento",
+"postalCode": "97197"
+},
+{
+"slug": "granjas-cholul-97305",
+"name": "Granjas Cholul",
+"tipo": "Colonia",
+"postalCode": "97305"
+},
+{
+"slug": "hacienda-caucel-97314",
+"name": "Hacienda Caucel",
+"tipo": "Hacienda",
+"postalCode": "97314"
+},
+{
+"slug": "hacienda-dzodzil-97115",
+"name": "Hacienda Dzodzil",
+"tipo": "Colonia",
+"postalCode": "97115"
+},
+{
+"slug": "hacienda-inn-97229",
+"name": "Hacienda Inn",
+"tipo": "Fraccionamiento",
+"postalCode": "97229"
+},
+{
+"slug": "hacienda-mulsay-97246",
+"name": "Hacienda Mulsay",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "hacienda-opichen-97249",
+"name": "Hacienda Opichen",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "hacienda-san-antonio-97229",
+"name": "Hacienda San Antonio",
+"tipo": "Fraccionamiento",
+"postalCode": "97229"
+},
+{
+"slug": "hidraulica-97219",
+"name": "Hidráulica",
+"tipo": "Colonia",
+"postalCode": "97219"
+},
+{
+"slug": "hogares-caucel-97314",
+"name": "Hogares Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "horizontes-de-caucel-97314",
+"name": "Horizontes de Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "hunxectaman-97315",
+"name": "Hunxectamán",
+"tipo": "Pueblo",
+"postalCode": "97315"
+},
+{
+"slug": "inalambrica-97069",
+"name": "Inalámbrica",
+"tipo": "Colonia",
+"postalCode": "97069"
+},
+{
+"slug": "industrial-97150",
+"name": "Industrial",
+"tipo": "Colonia",
+"postalCode": "97150"
+},
+{
+"slug": "industrial-bridec-97256",
+"name": "Industrial Bridec",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "industrias-no-contaminantes-97203",
+"name": "Industrias No Contaminantes",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "itzaes-97068",
+"name": "Itzaes",
+"tipo": "Fraccionamiento",
+"postalCode": "97068"
+},
+{
+"slug": "itzaez-97259",
+"name": "Itzaez",
+"tipo": "Fraccionamiento",
+"postalCode": "97259"
+},
+{
+"slug": "itzimna-97100",
+"name": "Itzimna",
+"tipo": "Fraccionamiento",
+"postalCode": "97100"
+},
+{
+"slug": "itzimna-108-97143",
+"name": "Itzimna 108",
+"tipo": "Fraccionamiento",
+"postalCode": "97143"
+},
+{
+"slug": "itzimna-2-97100",
+"name": "Itzimna 2",
+"tipo": "Fraccionamiento",
+"postalCode": "97100"
+},
+{
+"slug": "jacinto-canek-97227",
+"name": "Jacinto Canek",
+"tipo": "Fraccionamiento",
+"postalCode": "97227"
+},
+{
+"slug": "jalapa-97305",
+"name": "Jalapa",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "jardines-del-norte-97138",
+"name": "Jardines Del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "jardines-del-norte-97139",
+"name": "Jardines Del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97139"
+},
+{
+"slug": "jardines-de-caucel-97314",
+"name": "Jardines de Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "jardines-de-chuburna-97209",
+"name": "Jardines de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97209"
+},
+{
+"slug": "jardines-de-lindavista-97219",
+"name": "Jardines de Lindavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "jardines-de-miraflores-97168",
+"name": "Jardines de Miraflores",
+"tipo": "Colonia",
+"postalCode": "97168"
+},
+{
+"slug": "jardines-de-merida-97135",
+"name": "Jardines de Mérida",
+"tipo": "Fraccionamiento",
+"postalCode": "97135"
+},
+{
+"slug": "jardines-de-nueva-mulsay-97246",
+"name": "Jardines de Nueva Mulsay",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "jardines-de-nueva-mulsay-ii-97249",
+"name": "Jardines de Nueva Mulsay II",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "jardines-de-nueva-mulsay-iii-97249",
+"name": "Jardines de Nueva Mulsay III",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "jardines-de-pensiones-97219",
+"name": "Jardines de Pensiones",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "jardines-de-poniente-97314",
+"name": "Jardines de Poniente",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "jardines-de-rejoyada-97307",
+"name": "Jardines de Rejoyada",
+"tipo": "Fraccionamiento",
+"postalCode": "97307"
+},
+{
+"slug": "jardines-de-san-antonio-kaua-97195",
+"name": "Jardines de San Antonio Kaua",
+"tipo": "Fraccionamiento",
+"postalCode": "97195"
+},
+{
+"slug": "jardines-de-san-sebastian-97000",
+"name": "Jardines de San Sebastian",
+"tipo": "Fraccionamiento",
+"postalCode": "97000"
+},
+{
+"slug": "jardines-de-vista-alegre-97138",
+"name": "Jardines de Vista Alegre",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "jardines-de-vista-alegre-ii-97138",
+"name": "Jardines de Vista Alegre II",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "jardines-de-yucalpeten-97238",
+"name": "Jardines de Yucalpeten",
+"tipo": "Fraccionamiento",
+"postalCode": "97238"
+},
+{
+"slug": "jardines-del-caucel-ii-97314",
+"name": "Jardines del Caucel II",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "jardines-del-noreste-97138",
+"name": "Jardines del Noreste",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "jardines-del-sur-97285",
+"name": "Jardines del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "jesus-carranza-97109",
+"name": "Jesús Carranza",
+"tipo": "Colonia",
+"postalCode": "97109"
+},
+{
+"slug": "joaquin-ceballos-mimenza-97210",
+"name": "Joaquín Ceballos Mimenza",
+"tipo": "Fraccionamiento",
+"postalCode": "97210"
+},
+{
+"slug": "jose-maria-iturralde-97134",
+"name": "Jose Maria Iturralde",
+"tipo": "Fraccionamiento",
+"postalCode": "97134"
+},
+{
+"slug": "juan-b-sosa-97205",
+"name": "Juan B Sosa",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "juan-pablo-ii-97246",
+"name": "Juan Pablo II",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "juan-pablo-ii-cardenales-97246",
+"name": "Juan Pablo II Cardenales",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "juan-pablo-ii-secc-merida-2000-97246",
+"name": "Juan Pablo II Secc. Mérida 2000",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "kikteil-97303",
+"name": "Kikteil",
+"tipo": "Pueblo",
+"postalCode": "97303"
+},
+{
+"slug": "komchen-97302",
+"name": "Komchén",
+"tipo": "Pueblo",
+"postalCode": "97302"
+},
+{
+"slug": "kukulcan-97198",
+"name": "Kukulcan",
+"tipo": "Fraccionamiento",
+"postalCode": "97198"
+},
+{
+"slug": "la-castellana-97203",
+"name": "La Castellana",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "la-ceiba-97314",
+"name": "La Ceiba",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "la-florida-97138",
+"name": "La Florida",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "la-guadalupana-97290",
+"name": "La Guadalupana",
+"tipo": "Colonia",
+"postalCode": "97290"
+},
+{
+"slug": "la-guadalupana-97315",
+"name": "La Guadalupana",
+"tipo": "Fraccionamiento",
+"postalCode": "97315"
+},
+{
+"slug": "la-hacienda-97289",
+"name": "La Hacienda",
+"tipo": "Fraccionamiento",
+"postalCode": "97289"
+},
+{
+"slug": "la-herradura-97314",
+"name": "La Herradura",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "la-herradura-ii-97314",
+"name": "La Herradura II",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "la-herradura-iii-97314",
+"name": "La Herradura III",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "la-herradura-iv-97314",
+"name": "La Herradura IV",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "la-huerta-97080",
+"name": "La Huerta",
+"tipo": "Fraccionamiento",
+"postalCode": "97080"
+},
+{
+"slug": "la-isla-97143",
+"name": "La Isla",
+"tipo": "Fraccionamiento",
+"postalCode": "97143"
+},
+{
+"slug": "la-perla-ciudad-caucel-97314",
+"name": "La Perla Ciudad Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "la-quinta-97000",
+"name": "La Quinta",
+"tipo": "Fraccionamiento",
+"postalCode": "97000"
+},
+{
+"slug": "la-reja-97246",
+"name": "La Reja",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "la-rejoyada-97307",
+"name": "La Rejoyada",
+"tipo": "Condominio",
+"postalCode": "97307"
+},
+{
+"slug": "la-vaca-feliz-97220",
+"name": "La Vaca Feliz",
+"tipo": "Fraccionamiento",
+"postalCode": "97220"
+},
+{
+"slug": "las-americas-97302",
+"name": "Las Américas",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "las-americas-ii-97302",
+"name": "Las Américas II",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "las-arboledas-97108",
+"name": "Las Arboledas",
+"tipo": "Fraccionamiento",
+"postalCode": "97108"
+},
+{
+"slug": "las-brisas-97144",
+"name": "Las Brisas",
+"tipo": "Fraccionamiento",
+"postalCode": "97144"
+},
+{
+"slug": "las-brisas-del-norte-97144",
+"name": "Las Brisas Del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97144"
+},
+{
+"slug": "las-brisas-del-sur-97286",
+"name": "Las Brisas Del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97286"
+},
+{
+"slug": "las-dalias-97206",
+"name": "Las Dalias",
+"tipo": "Colonia",
+"postalCode": "97206"
+},
+{
+"slug": "las-dalias-ii-y-iii-97206",
+"name": "Las Dalias II y III",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "las-fincas-97302",
+"name": "Las Fincas",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "las-flores-97146",
+"name": "Las Flores",
+"tipo": "Fraccionamiento",
+"postalCode": "97146"
+},
+{
+"slug": "las-haciendas-iii-97203",
+"name": "Las Haciendas III",
+"tipo": "Residencial",
+"postalCode": "97203"
+},
+{
+"slug": "las-hadas-97205",
+"name": "Las Hadas",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "las-margaritas-de-cholul-97305",
+"name": "Las Margaritas de Cholul",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "las-nubes-97285",
+"name": "Las Nubes",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "las-palmas-97145",
+"name": "Las Palmas",
+"tipo": "Fraccionamiento",
+"postalCode": "97145"
+},
+{
+"slug": "las-palmeras-ii-97269",
+"name": "Las Palmeras II",
+"tipo": "Fraccionamiento",
+"postalCode": "97269"
+},
+{
+"slug": "las-torres-97314",
+"name": "Las Torres",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "las-torres-i-97314",
+"name": "Las Torres I",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "las-torres-ii-97314",
+"name": "Las Torres II",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "las-torres-iii-97314",
+"name": "Las Torres III",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "las-vigas-97227",
+"name": "Las Vigas",
+"tipo": "Fraccionamiento",
+"postalCode": "97227"
+},
+{
+"slug": "leandro-valle-97143",
+"name": "Leandro Valle",
+"tipo": "Colonia",
+"postalCode": "97143"
+},
+{
+"slug": "libertad-ii-97256",
+"name": "Libertad II",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "libertad-iii-97256",
+"name": "Libertad III",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "limones-97219",
+"name": "Limones",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "lindavista-97219",
+"name": "Lindavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "lindavista-97284",
+"name": "Lindavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97284"
+},
+{
+"slug": "lindavista-ii-97219",
+"name": "Lindavista II",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "lol-be-97256",
+"name": "Lol-Be",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "loma-bonita-97205",
+"name": "Loma Bonita",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "loma-bonita-xcumpich-97205",
+"name": "Loma Bonita Xcumpich",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "lomas-del-sur-97284",
+"name": "Lomas Del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97284"
+},
+{
+"slug": "lopez-mateos-97140",
+"name": "Lopez Mateos",
+"tipo": "Colonia",
+"postalCode": "97140"
+},
+{
+"slug": "lopez-portillo-97245",
+"name": "Lopez Portillo",
+"tipo": "Colonia",
+"postalCode": "97245"
+},
+{
+"slug": "los-almendros-97314",
+"name": "Los Almendros",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "los-balcones-97314",
+"name": "Los Balcones",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "los-cocos-97000",
+"name": "Los Cocos",
+"tipo": "Fraccionamiento",
+"postalCode": "97000"
+},
+{
+"slug": "los-cocos-de-caucel-97314",
+"name": "Los Cocos de Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "los-faisanes-de-tixcacal-97312",
+"name": "Los Faisanes de Tixcacal",
+"tipo": "Fraccionamiento",
+"postalCode": "97312"
+},
+{
+"slug": "los-heroes-97306",
+"name": "Los Héroes",
+"tipo": "Fraccionamiento",
+"postalCode": "97306"
+},
+{
+"slug": "los-palmares-de-altabrisa-97133",
+"name": "Los Palmares de Altabrisa",
+"tipo": "Fraccionamiento",
+"postalCode": "97133"
+},
+{
+"slug": "los-pinos-97138",
+"name": "Los Pinos",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "los-reyes-97003",
+"name": "Los Reyes",
+"tipo": "Fraccionamiento",
+"postalCode": "97003"
+},
+{
+"slug": "los-reyes-97156",
+"name": "Los Reyes",
+"tipo": "Fraccionamiento",
+"postalCode": "97156"
+},
+{
+"slug": "los-tamarindos-97302",
+"name": "Los Tamarindos",
+"tipo": "Colonia",
+"postalCode": "97302"
+},
+{
+"slug": "los-alamos-97138",
+"name": "Los Álamos",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "los-alamos-aleman-97145",
+"name": "Los Álamos Alemán",
+"tipo": "Fraccionamiento",
+"postalCode": "97145"
+},
+{
+"slug": "los-angeles-97246",
+"name": "Los Ángeles",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "lotificacion-chuburna-de-hidalgo-i-97203",
+"name": "Lotificacion Chuburna de Hidalgo I",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "lotificacion-chuburna-de-hidalgo-ii-97203",
+"name": "Lotificacion Chuburna de Hidalgo II",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "lotificacion-san-damiancito-i-97219",
+"name": "Lotificacion San Damiancito I",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "lotificacion-san-damiancito-ii-97219",
+"name": "Lotificacion San Damiancito II",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "lotificacion-san-damian-97218",
+"name": "Lotificacion San Damián",
+"tipo": "Colonia",
+"postalCode": "97218"
+},
+{
+"slug": "lotificacion-san-vicente-chuburna-97206",
+"name": "Lotificacion San Vicente Chuburna",
+"tipo": "Colonia",
+"postalCode": "97206"
+},
+{
+"slug": "lotificacion-serapio-rendon-1-97285",
+"name": "Lotificacion Serapio Rendón 1",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "lotificacion-las-brisas-97159",
+"name": "Lotificacion las Brisas",
+"tipo": "Fraccionamiento",
+"postalCode": "97159"
+},
+{
+"slug": "lourdes-97098",
+"name": "Lourdes",
+"tipo": "Colonia",
+"postalCode": "97098"
+},
+{
+"slug": "lourdes-industrial-97155",
+"name": "Lourdes Industrial",
+"tipo": "Colonia",
+"postalCode": "97155"
+},
+{
+"slug": "luis-donaldo-colosio-97143",
+"name": "Luis Donaldo Colosio",
+"tipo": "Colonia",
+"postalCode": "97143"
+},
+{
+"slug": "luis-echeverria-alvarez-97229",
+"name": "Luis Echeverría Alvarez",
+"tipo": "Colonia",
+"postalCode": "97229"
+},
+{
+"slug": "lazaro-cardenas-97219",
+"name": "Lázaro Cárdenas",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "lazaro-cardenas-ote-97157",
+"name": "Lázaro Cárdenas Ote",
+"tipo": "Colonia",
+"postalCode": "97157"
+},
+{
+"slug": "madrid-97168",
+"name": "Madrid",
+"tipo": "Fraccionamiento",
+"postalCode": "97168"
+},
+{
+"slug": "magnolias-97203",
+"name": "Magnolias",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "mail-express-97139",
+"name": "Mail Express",
+"tipo": "Gran usuario",
+"postalCode": "97139"
+},
+{
+"slug": "malaga-97208",
+"name": "Malaga",
+"tipo": "Colonia",
+"postalCode": "97208"
+},
+{
+"slug": "manola-97107",
+"name": "Manola",
+"tipo": "Fraccionamiento",
+"postalCode": "97107"
+},
+{
+"slug": "manuel-avila-camacho-97159",
+"name": "Manuel Avila Camacho",
+"tipo": "Colonia",
+"postalCode": "97159"
+},
+{
+"slug": "manuel-avila-camacho-97160",
+"name": "Manuel Avila Camacho",
+"tipo": "Fraccionamiento",
+"postalCode": "97160"
+},
+{
+"slug": "manuel-crescencio-rejon-97255",
+"name": "Manuel Crescencio Rejon",
+"tipo": "Colonia",
+"postalCode": "97255"
+},
+{
+"slug": "manzana-115-97267",
+"name": "Manzana 115",
+"tipo": "Fraccionamiento",
+"postalCode": "97267"
+},
+{
+"slug": "maria-luisa-97199",
+"name": "Maria Luisa",
+"tipo": "Colonia",
+"postalCode": "97199"
+},
+{
+"slug": "maya-97134",
+"name": "Maya",
+"tipo": "Colonia",
+"postalCode": "97134"
+},
+{
+"slug": "mayapan-97159",
+"name": "Mayapan",
+"tipo": "Colonia",
+"postalCode": "97159"
+},
+{
+"slug": "melchor-ocampo-97165",
+"name": "Melchor Ocampo",
+"tipo": "Colonia",
+"postalCode": "97165"
+},
+{
+"slug": "melchor-ocampo-ii-97165",
+"name": "Melchor Ocampo II",
+"tipo": "Colonia",
+"postalCode": "97165"
+},
+{
+"slug": "meliton-salazar-97269",
+"name": "Meliton Salazar",
+"tipo": "Colonia",
+"postalCode": "97269"
+},
+{
+"slug": "mercedes-barrera-97277",
+"name": "Mercedes Barrera",
+"tipo": "Colonia",
+"postalCode": "97277"
+},
+{
+"slug": "metropolitana-97297",
+"name": "Metropolitana",
+"tipo": "Colonia",
+"postalCode": "97297"
+},
+{
+"slug": "miguel-aleman-97148",
+"name": "Miguel Alemán",
+"tipo": "Colonia",
+"postalCode": "97148"
+},
+{
+"slug": "miguel-hidalgo-97220",
+"name": "Miguel Hidalgo",
+"tipo": "Colonia",
+"postalCode": "97220"
+},
+{
+"slug": "militar-97196",
+"name": "Militar",
+"tipo": "Unidad habitacional",
+"postalCode": "97196"
+},
+{
+"slug": "miraflores-97179",
+"name": "Miraflores",
+"tipo": "Colonia",
+"postalCode": "97179"
+},
+{
+"slug": "miraflores-ii-97195",
+"name": "Miraflores II",
+"tipo": "Colonia",
+"postalCode": "97195"
+},
+{
+"slug": "misne-iii-97173",
+"name": "Misne III",
+"tipo": "Fraccionamiento",
+"postalCode": "97173"
+},
+{
+"slug": "misne-ii-97176",
+"name": "Misné II",
+"tipo": "Fraccionamiento",
+"postalCode": "97176"
+},
+{
+"slug": "misnebalam-97308",
+"name": "Misnébalam",
+"tipo": "Rancho",
+"postalCode": "97308"
+},
+{
+"slug": "missan-ii-97130",
+"name": "Missan II",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "molas-97315",
+"name": "Molas",
+"tipo": "Pueblo",
+"postalCode": "97315"
+},
+{
+"slug": "monte-alban-97114",
+"name": "Monte Alban",
+"tipo": "Fraccionamiento",
+"postalCode": "97114"
+},
+{
+"slug": "montebello-97113",
+"name": "Montebello",
+"tipo": "Fraccionamiento",
+"postalCode": "97113"
+},
+{
+"slug": "montebello-ii-97113",
+"name": "Montebello II",
+"tipo": "Fraccionamiento",
+"postalCode": "97113"
+},
+{
+"slug": "montecarlo-97130",
+"name": "Montecarlo",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "montecristo-97133",
+"name": "Montecristo",
+"tipo": "Fraccionamiento",
+"postalCode": "97133"
+},
+{
+"slug": "montejo-97127",
+"name": "Montejo",
+"tipo": "Fraccionamiento",
+"postalCode": "97127"
+},
+{
+"slug": "monterreal-97133",
+"name": "Monterreal",
+"tipo": "Fraccionamiento",
+"postalCode": "97133"
+},
+{
+"slug": "montes-de-ame-97115",
+"name": "Montes de Ame",
+"tipo": "Colonia",
+"postalCode": "97115"
+},
+{
+"slug": "montevideo-97133",
+"name": "Montevideo",
+"tipo": "Colonia",
+"postalCode": "97133"
+},
+{
+"slug": "morelos-97190",
+"name": "Morelos",
+"tipo": "Fraccionamiento",
+"postalCode": "97190"
+},
+{
+"slug": "morelos-issste-fovissste-97190",
+"name": "Morelos Issste Fovissste",
+"tipo": "Fraccionamiento",
+"postalCode": "97190"
+},
+{
+"slug": "morelos-oriente-97174",
+"name": "Morelos Oriente",
+"tipo": "Colonia",
+"postalCode": "97174"
+},
+{
+"slug": "mulsay-97246",
+"name": "Mulsay",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "mulsay-97249",
+"name": "Mulsay",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "mulsay-poligono-97246",
+"name": "Mulsay Polígono",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "mulsay-solidaridad-97246",
+"name": "Mulsay Solidaridad",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "mulsay-de-la-magdalena-97246",
+"name": "Mulsay de La Magdalena",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "maximo-ancona-97159",
+"name": "Máximo Ancona",
+"tipo": "Colonia",
+"postalCode": "97159"
+},
+{
+"slug": "merida-97203",
+"name": "Mérida",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "merida-elefante-grande-97206",
+"name": "Mérida (Elefante Grande)",
+"tipo": "Colonia",
+"postalCode": "97206"
+},
+{
+"slug": "merida-lic-manuel-crescencio-rejon-97295",
+"name": "Mérida (Lic. Manuel Crescencio Rejón)",
+"tipo": "Aeropuerto",
+"postalCode": "97295"
+},
+{
+"slug": "merida-centro-97000",
+"name": "Mérida Centro",
+"tipo": "Colonia",
+"postalCode": "97000"
+},
+{
+"slug": "mexico-97125",
+"name": "México",
+"tipo": "Colonia",
+"postalCode": "97125"
+},
+{
+"slug": "mexico-norte-97128",
+"name": "México Norte",
+"tipo": "Colonia",
+"postalCode": "97128"
+},
+{
+"slug": "mexico-oriente-97137",
+"name": "México Oriente",
+"tipo": "Colonia",
+"postalCode": "97137"
+},
+{
+"slug": "mexico-poniente-97246",
+"name": "México Poniente",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "noc-ac-97303",
+"name": "Noc Ac",
+"tipo": "Pueblo",
+"postalCode": "97303"
+},
+{
+"slug": "nora-quintana-97238",
+"name": "Nora Quintana",
+"tipo": "Fraccionamiento",
+"postalCode": "97238"
+},
+{
+"slug": "noria-ii-97145",
+"name": "Noria II",
+"tipo": "Fraccionamiento",
+"postalCode": "97145"
+},
+{
+"slug": "norte-merida-97302",
+"name": "Norte Mérida",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "nueva-aleman-97146",
+"name": "Nueva Alemán",
+"tipo": "Colonia",
+"postalCode": "97146"
+},
+{
+"slug": "nueva-chichen-itza-97170",
+"name": "Nueva Chichen-itza",
+"tipo": "Colonia",
+"postalCode": "97170"
+},
+{
+"slug": "nueva-hidalgo-97220",
+"name": "Nueva Hidalgo",
+"tipo": "Fraccionamiento",
+"postalCode": "97220"
+},
+{
+"slug": "nueva-kukulkan-97195",
+"name": "Nueva Kukulkan",
+"tipo": "Colonia",
+"postalCode": "97195"
+},
+{
+"slug": "nueva-mayapan-97157",
+"name": "Nueva Mayapan",
+"tipo": "Colonia",
+"postalCode": "97157"
+},
+{
+"slug": "nueva-mayapan-97159",
+"name": "Nueva Mayapan",
+"tipo": "Colonia",
+"postalCode": "97159"
+},
+{
+"slug": "nueva-mulsay-97249",
+"name": "Nueva Mulsay",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "nueva-mulsay-i-97249",
+"name": "Nueva Mulsay I",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "nueva-obrera-97260",
+"name": "Nueva Obrera",
+"tipo": "Fraccionamiento",
+"postalCode": "97260"
+},
+{
+"slug": "nueva-pacabtun-97159",
+"name": "Nueva Pacabtun",
+"tipo": "Colonia",
+"postalCode": "97159"
+},
+{
+"slug": "nueva-reforma-agraria-97249",
+"name": "Nueva Reforma Agraria",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "nueva-sambula-97250",
+"name": "Nueva Sambula",
+"tipo": "Colonia",
+"postalCode": "97250"
+},
+{
+"slug": "nueva-san-jose-chuburna-97203",
+"name": "Nueva San Jose Chuburna",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "nueva-san-jose-tecoh-97290",
+"name": "Nueva San Jose Tecoh",
+"tipo": "Colonia",
+"postalCode": "97290"
+},
+{
+"slug": "nuevo-san-jose-97203",
+"name": "Nuevo San José",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "nuevo-san-jose-tecoh-97315",
+"name": "Nuevo San José Tecoh",
+"tipo": "Fraccionamiento",
+"postalCode": "97315"
+},
+{
+"slug": "nuevo-san-jose-tecoh-iii-97315",
+"name": "Nuevo San José Tecoh III",
+"tipo": "Fraccionamiento",
+"postalCode": "97315"
+},
+{
+"slug": "nuevo-yucatan-97147",
+"name": "Nuevo Yucatán",
+"tipo": "Fraccionamiento",
+"postalCode": "97147"
+},
+{
+"slug": "nucleo-mulsay-97249",
+"name": "Núcleo Mulsay",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "nucleo-sodzil-97302",
+"name": "Núcleo Sodzil",
+"tipo": "Colonia",
+"postalCode": "97302"
+},
+{
+"slug": "obrera-97260",
+"name": "Obrera",
+"tipo": "Colonia",
+"postalCode": "97260"
+},
+{
+"slug": "oncan-97310",
+"name": "Oncán",
+"tipo": "Hacienda",
+"postalCode": "97310"
+},
+{
+"slug": "pacabtun-97160",
+"name": "Pacabtun",
+"tipo": "Colonia",
+"postalCode": "97160"
+},
+{
+"slug": "palmas-del-sur-97285",
+"name": "Palmas del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "palmequen-97302",
+"name": "Palmequén",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "paraiso-97206",
+"name": "Paraíso",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "paraiso-maya-97134",
+"name": "Paraíso Maya",
+"tipo": "Fraccionamiento",
+"postalCode": "97134"
+},
+{
+"slug": "paraiso-las-margaritas-97305",
+"name": "Paraíso las Margaritas",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "parque-central-97305",
+"name": "Parque Central",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "paseo-de-montejo-97205",
+"name": "Paseo de Montejo",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "paseo-de-las-fuentes-97225",
+"name": "Paseo de las Fuentes",
+"tipo": "Fraccionamiento",
+"postalCode": "97225"
+},
+{
+"slug": "paseos-de-chenku-97219",
+"name": "Paseos de Chenku",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "paseos-de-opichen-97246",
+"name": "Paseos de Opichen",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "paseos-de-opichen-la-joya-97314",
+"name": "Paseos de Opichen la Joya",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "paseos-de-pensiones-97219",
+"name": "Paseos de Pensiones",
+"tipo": "Colonia",
+"postalCode": "97219"
+},
+{
+"slug": "pedregal-lindavista-97219",
+"name": "Pedregal Lindavista",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "pedregales-de-ciudad-caucel-97314",
+"name": "Pedregales de Ciudad Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "pedregales-de-nueva-mulsay-etapa-97249",
+"name": "Pedregales de Nueva Mulsay Etapa",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "pedregales-de-tanlum-97210",
+"name": "Pedregales de Tanlum",
+"tipo": "Fraccionamiento",
+"postalCode": "97210"
+},
+{
+"slug": "pensiones-97219",
+"name": "Pensiones",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "pensiones-norte-97217",
+"name": "Pensiones Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "pet-kanche-97145",
+"name": "Pet-kanche",
+"tipo": "Colonia",
+"postalCode": "97145"
+},
+{
+"slug": "petac-97315",
+"name": "Petac",
+"tipo": "Pueblo",
+"postalCode": "97315"
+},
+{
+"slug": "piedra-antigua-97302",
+"name": "Piedra Antigua",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "pino-suarez-97256",
+"name": "Pino Suárez",
+"tipo": "Colonia",
+"postalCode": "97256"
+},
+{
+"slug": "pinos-norte-ii-97138",
+"name": "Pinos Norte II",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "pinzon-97205",
+"name": "Pinzon",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "plan-de-ayala-97118",
+"name": "Plan de Ayala",
+"tipo": "Fraccionamiento",
+"postalCode": "97118"
+},
+{
+"slug": "plan-de-ayala-sur-97285",
+"name": "Plan de Ayala Sur",
+"tipo": "Colonia",
+"postalCode": "97285"
+},
+{
+"slug": "plan-de-ayala-sur-iii-97285",
+"name": "Plan de Ayala Sur III",
+"tipo": "Colonia",
+"postalCode": "97285"
+},
+{
+"slug": "plantel-mexico-97249",
+"name": "Plantel México",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "platino-97203",
+"name": "Platino",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "poligono-108-97143",
+"name": "Polígono 108",
+"tipo": "Fraccionamiento",
+"postalCode": "97143"
+},
+{
+"slug": "prado-norte-97139",
+"name": "Prado Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97139"
+},
+{
+"slug": "privada-arboledas-97205",
+"name": "Privada Arboledas",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "privada-campestre-chuburna-97205",
+"name": "Privada Campestre Chuburna",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "privada-chuburna-plus-97203",
+"name": "Privada Chuburna Plus",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "privada-chuburna-de-hidalgo-97208",
+"name": "Privada Chuburna de Hidalgo",
+"tipo": "Fraccionamiento",
+"postalCode": "97208"
+},
+{
+"slug": "privada-chuburna-de-hidalgo-ii-97203",
+"name": "Privada Chuburna de Hidalgo (II)",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "privada-chuburna-de-hidalgo-i-97205",
+"name": "Privada Chuburna de Hidalgo I",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "privada-cipreses-97206",
+"name": "Privada Cipreses",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "privada-cortijo-97205",
+"name": "Privada Cortijo",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "privada-del-autotransporte-ctm-97160",
+"name": "Privada Del Autotransporte CTM",
+"tipo": "Colonia",
+"postalCode": "97160"
+},
+{
+"slug": "privada-del-maestro-97000",
+"name": "Privada Del Maestro",
+"tipo": "Fraccionamiento",
+"postalCode": "97000"
+},
+{
+"slug": "privada-emilio-portes-gil-97167",
+"name": "Privada Emilio Portes Gil",
+"tipo": "Fraccionamiento",
+"postalCode": "97167"
+},
+{
+"slug": "privada-garcia-gineres-c-29-97000",
+"name": "Privada Garcia Gineres C - 29",
+"tipo": "Colonia",
+"postalCode": "97000"
+},
+{
+"slug": "privada-la-hacienda-97206",
+"name": "Privada La Hacienda",
+"tipo": "Colonia",
+"postalCode": "97206"
+},
+{
+"slug": "privada-maya-97130",
+"name": "Privada Maya",
+"tipo": "Colonia",
+"postalCode": "97130"
+},
+{
+"slug": "privada-mediterraneo-97128",
+"name": "Privada Mediterráneo",
+"tipo": "Colonia",
+"postalCode": "97128"
+},
+{
+"slug": "privada-miraflores-97179",
+"name": "Privada Miraflores",
+"tipo": "Colonia",
+"postalCode": "97179"
+},
+{
+"slug": "privada-monterreal-plus-97114",
+"name": "Privada Monterreal Plus",
+"tipo": "Colonia",
+"postalCode": "97114"
+},
+{
+"slug": "privada-nuevo-mexico-97125",
+"name": "Privada Nuevo México",
+"tipo": "Colonia",
+"postalCode": "97125"
+},
+{
+"slug": "privada-palma-corozal-97203",
+"name": "Privada Palma Corozal",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "privada-pedregal-ii-97205",
+"name": "Privada Pedregal II",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "privada-pensiones-97219",
+"name": "Privada Pensiones",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "privada-real-mexico-97128",
+"name": "Privada Real México",
+"tipo": "Fraccionamiento",
+"postalCode": "97128"
+},
+{
+"slug": "privada-san-antonio-cucul-97116",
+"name": "Privada San Antonio Cucul",
+"tipo": "Colonia",
+"postalCode": "97116"
+},
+{
+"slug": "privada-san-damian-97218",
+"name": "Privada San Damián",
+"tipo": "Colonia",
+"postalCode": "97218"
+},
+{
+"slug": "privada-san-jorge-chuburna-97209",
+"name": "Privada San Jorge (Chuburna)",
+"tipo": "Colonia",
+"postalCode": "97209"
+},
+{
+"slug": "privada-san-jose-97206",
+"name": "Privada San Jose",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "privada-san-pedro-97225",
+"name": "Privada San Pedro",
+"tipo": "Fraccionamiento",
+"postalCode": "97225"
+},
+{
+"slug": "privada-san-angel-chuburna-97206",
+"name": "Privada San Ángel Chuburna",
+"tipo": "Colonia",
+"postalCode": "97206"
+},
+{
+"slug": "privada-turquesa-97205",
+"name": "Privada Turquesa",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "privada-villa-cholul-97134",
+"name": "Privada Villa Cholul",
+"tipo": "Fraccionamiento",
+"postalCode": "97134"
+},
+{
+"slug": "privada-villa-palma-real-97203",
+"name": "Privada Villa Palma Real",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "privada-zuzil-ha-97298",
+"name": "Privada Zuzil - Ha",
+"tipo": "Colonia",
+"postalCode": "97298"
+},
+{
+"slug": "privada-las-flores-97205",
+"name": "Privada las Flores",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "privada-las-palmas-97203",
+"name": "Privada las Palmas",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "puesta-del-sol-97203",
+"name": "Puesta del Sol",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "quinta-santa-rosa-97279",
+"name": "Quinta Santa Rosa",
+"tipo": "Fraccionamiento",
+"postalCode": "97279"
+},
+{
+"slug": "quinta-valencia-97268",
+"name": "Quinta Valencia",
+"tipo": "Fraccionamiento",
+"postalCode": "97268"
+},
+{
+"slug": "quinta-versalles-97219",
+"name": "Quinta Versalles",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "real-montejo-97302",
+"name": "Real Montejo",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "real-san-jose-97173",
+"name": "Real San José",
+"tipo": "Fraccionamiento",
+"postalCode": "97173"
+},
+{
+"slug": "renacimiento-i-97256",
+"name": "Renacimiento I",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "reparto-granjas-97198",
+"name": "Reparto Granjas",
+"tipo": "Fraccionamiento",
+"postalCode": "97198"
+},
+{
+"slug": "resid-las-quintas-chuburna-97208",
+"name": "Resid. Las Quintas (Chuburna)",
+"tipo": "Colonia",
+"postalCode": "97208"
+},
+{
+"slug": "residencial-anturio-97305",
+"name": "Residencial Anturio",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "residencial-atlantis-97208",
+"name": "Residencial Atlantis",
+"tipo": "Fraccionamiento",
+"postalCode": "97208"
+},
+{
+"slug": "residencial-bancarios-97138",
+"name": "Residencial Bancarios",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "residencial-camara-de-comercio-norte-97133",
+"name": "Residencial Camara de Comercio Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97133"
+},
+{
+"slug": "residencial-campestre-viladiu-97305",
+"name": "Residencial Campestre Viladiu",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "residencial-casa-blanca-97238",
+"name": "Residencial Casa Blanca",
+"tipo": "Residencial",
+"postalCode": "97238"
+},
+{
+"slug": "residencial-colonia-mexico-97128",
+"name": "Residencial Colonia México",
+"tipo": "Fraccionamiento",
+"postalCode": "97128"
+},
+{
+"slug": "residencial-del-arco-97138",
+"name": "Residencial Del Arco",
+"tipo": "Fraccionamiento",
+"postalCode": "97138"
+},
+{
+"slug": "residencial-del-bosque-chenku-97219",
+"name": "Residencial Del Bosque Chenku",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "residencial-del-norte-97219",
+"name": "Residencial Del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "residencial-galerias-97204",
+"name": "Residencial Galerias",
+"tipo": "Fraccionamiento",
+"postalCode": "97204"
+},
+{
+"slug": "residencial-hacienda-real-97205",
+"name": "Residencial Hacienda Real",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "residencial-la-alborada-97302",
+"name": "Residencial La Alborada",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "residencial-la-noria-97206",
+"name": "Residencial La Noria",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "residencial-montejo-norte-97115",
+"name": "Residencial Montejo Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97115"
+},
+{
+"slug": "residencial-nicte-97256",
+"name": "Residencial Nicte",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "residencial-palmerales-de-altabrisa-97130",
+"name": "Residencial Palmerales de Altabrisa",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "residencial-pensiones-i-y-ii-97217",
+"name": "Residencial Pensiones I y II",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "residencial-pensiones-iii-97217",
+"name": "Residencial Pensiones III",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "residencial-pensiones-iii-1-97217",
+"name": "Residencial Pensiones III (1)",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "residencial-pensiones-iii-ii-97217",
+"name": "Residencial Pensiones III (II)",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "residencial-pensiones-iv-97217",
+"name": "Residencial Pensiones IV",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "residencial-pensiones-v-97217",
+"name": "Residencial Pensiones V",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "residencial-pensiones-vi-97217",
+"name": "Residencial Pensiones VI",
+"tipo": "Fraccionamiento",
+"postalCode": "97217"
+},
+{
+"slug": "residencial-pensiones-vii-97219",
+"name": "Residencial Pensiones VII",
+"tipo": "Colonia",
+"postalCode": "97219"
+},
+{
+"slug": "residencial-piedrasul-97204",
+"name": "Residencial Piedrasul",
+"tipo": "Fraccionamiento",
+"postalCode": "97204"
+},
+{
+"slug": "residencial-roma-97218",
+"name": "Residencial Roma",
+"tipo": "Fraccionamiento",
+"postalCode": "97218"
+},
+{
+"slug": "residencial-san-angelo-97115",
+"name": "Residencial San Angelo",
+"tipo": "Fraccionamiento",
+"postalCode": "97115"
+},
+{
+"slug": "residencial-sol-campestre-97114",
+"name": "Residencial Sol Campestre",
+"tipo": "Fraccionamiento",
+"postalCode": "97114"
+},
+{
+"slug": "residencial-turquesa-97206",
+"name": "Residencial Turquesa",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "residencial-valparaiso-97249",
+"name": "Residencial Valparaiso",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "residencial-xcanatun-97302",
+"name": "Residencial Xcanatún",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "residencial-del-mayab-97302",
+"name": "Residencial del Mayab",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "revolucion-97115",
+"name": "Revolución",
+"tipo": "Ampliación",
+"postalCode": "97115"
+},
+{
+"slug": "revolucion-97204",
+"name": "Revolución",
+"tipo": "Colonia",
+"postalCode": "97204"
+},
+{
+"slug": "rinconada-itzmina-97100",
+"name": "Rinconada Itzmina",
+"tipo": "Fraccionamiento",
+"postalCode": "97100"
+},
+{
+"slug": "rinconada-de-caucel-97314",
+"name": "Rinconada de Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "rinconada-de-chuburna-97208",
+"name": "Rinconada de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97208"
+},
+{
+"slug": "rincon-colonial-97203",
+"name": "Rincón Colonial",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "roble-agricola-iii-97255",
+"name": "Roble Agrícola III",
+"tipo": "Fraccionamiento",
+"postalCode": "97255"
+},
+{
+"slug": "roble-ii-97255",
+"name": "Roble II",
+"tipo": "Colonia",
+"postalCode": "97255"
+},
+{
+"slug": "roma-97218",
+"name": "Roma",
+"tipo": "Colonia",
+"postalCode": "97218"
+},
+{
+"slug": "royal-del-norte-97115",
+"name": "Royal del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97115"
+},
+{
+"slug": "royal-del-parque-97302",
+"name": "Royal del Parque",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "sac-nicte-97302",
+"name": "Sac-Nicté",
+"tipo": "Pueblo",
+"postalCode": "97302"
+},
+{
+"slug": "salvador-alvarado-97258",
+"name": "Salvador Alvarado",
+"tipo": "Fraccionamiento",
+"postalCode": "97258"
+},
+{
+"slug": "salvador-alvarado-oriente-97166",
+"name": "Salvador Alvarado Oriente",
+"tipo": "Colonia",
+"postalCode": "97166"
+},
+{
+"slug": "salvador-alvarado-sur-97196",
+"name": "Salvador Alvarado Sur",
+"tipo": "Colonia",
+"postalCode": "97196"
+},
+{
+"slug": "salvador-alvarado-sur-ii-97196",
+"name": "Salvador Alvarado Sur II",
+"tipo": "Colonia",
+"postalCode": "97196"
+},
+{
+"slug": "sambula-97250",
+"name": "Sambula",
+"tipo": "Colonia",
+"postalCode": "97250"
+},
+{
+"slug": "san-antonio-97113",
+"name": "San Antonio",
+"tipo": "Residencial",
+"postalCode": "97113"
+},
+{
+"slug": "san-antonio-cinta-97139",
+"name": "San Antonio Cinta",
+"tipo": "Fraccionamiento",
+"postalCode": "97139"
+},
+{
+"slug": "san-antonio-cinta-iii-97139",
+"name": "San Antonio Cinta III",
+"tipo": "Fraccionamiento",
+"postalCode": "97139"
+},
+{
+"slug": "san-antonio-cucul-97116",
+"name": "San Antonio Cucul",
+"tipo": "Fraccionamiento",
+"postalCode": "97116"
+},
+{
+"slug": "san-antonio-del-sur-97196",
+"name": "San Antonio Del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97196"
+},
+{
+"slug": "san-antonio-kaua-97176",
+"name": "San Antonio Kaua",
+"tipo": "Fraccionamiento",
+"postalCode": "97176"
+},
+{
+"slug": "san-antonio-kaua-97195",
+"name": "San Antonio Kaua",
+"tipo": "Colonia",
+"postalCode": "97195"
+},
+{
+"slug": "san-antonio-kaua-i-97195",
+"name": "San Antonio Kaua I",
+"tipo": "Fraccionamiento",
+"postalCode": "97195"
+},
+{
+"slug": "san-antonio-kaua-ii-97195",
+"name": "San Antonio Kaua II",
+"tipo": "Fraccionamiento",
+"postalCode": "97195"
+},
+{
+"slug": "san-antonio-residencial-97302",
+"name": "San Antonio Residencial",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "san-antonio-tecoh-97299",
+"name": "San Antonio Tecoh",
+"tipo": "Colonia",
+"postalCode": "97299"
+},
+{
+"slug": "san-antonio-tzacala-97315",
+"name": "San Antonio Tzacalá",
+"tipo": "Hacienda",
+"postalCode": "97315"
+},
+{
+"slug": "san-antonio-xluch-97290",
+"name": "San Antonio Xluch",
+"tipo": "Colonia",
+"postalCode": "97290"
+},
+{
+"slug": "san-antonio-xluch-ii-97290",
+"name": "San Antonio Xluch II",
+"tipo": "Colonia",
+"postalCode": "97290"
+},
+{
+"slug": "san-antonio-xluch-iii-97297",
+"name": "San Antonio Xluch III",
+"tipo": "Colonia",
+"postalCode": "97297"
+},
+{
+"slug": "san-carlos-97130",
+"name": "San Carlos",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "san-carlos-del-sur-97285",
+"name": "San Carlos del Sur",
+"tipo": "Colonia",
+"postalCode": "97285"
+},
+{
+"slug": "san-cayetano-97247",
+"name": "San Cayetano",
+"tipo": "Colonia",
+"postalCode": "97247"
+},
+{
+"slug": "san-damiancito-97219",
+"name": "San Damiancito",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "san-damian-97218",
+"name": "San Damián",
+"tipo": "Colonia",
+"postalCode": "97218"
+},
+{
+"slug": "san-esteban-97149",
+"name": "San Esteban",
+"tipo": "Colonia",
+"postalCode": "97149"
+},
+{
+"slug": "san-francisco-chuburna-97206",
+"name": "San Francisco Chuburna",
+"tipo": "Colonia",
+"postalCode": "97206"
+},
+{
+"slug": "san-francisco-chuburna-ii-97203",
+"name": "San Francisco Chuburna II",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "san-francisco-i-97206",
+"name": "San Francisco I",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "san-ignacio-tesip-97316",
+"name": "San Ignacio Tesip",
+"tipo": "Pueblo",
+"postalCode": "97316"
+},
+{
+"slug": "san-isidro-97218",
+"name": "San Isidro",
+"tipo": "Colonia",
+"postalCode": "97218"
+},
+{
+"slug": "san-jose-97189",
+"name": "San Jose",
+"tipo": "Colonia",
+"postalCode": "97189"
+},
+{
+"slug": "san-jose-i-97206",
+"name": "San Jose I",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "san-jose-ii-97206",
+"name": "San Jose II",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "san-jose-tecoh-97299",
+"name": "San Jose Tecoh",
+"tipo": "Colonia",
+"postalCode": "97299"
+},
+{
+"slug": "san-jose-tecoh-sur-97298",
+"name": "San Jose Tecoh Sur",
+"tipo": "Colonia",
+"postalCode": "97298"
+},
+{
+"slug": "san-jose-vergel-97173",
+"name": "San Jose Vergel",
+"tipo": "Colonia",
+"postalCode": "97173"
+},
+{
+"slug": "san-jose-xoclan-97246",
+"name": "San Jose Xoclan",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "san-jose-tzal-97285",
+"name": "San José Tzal",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "san-jose-tzal-97315",
+"name": "San José Tzal",
+"tipo": "Pueblo",
+"postalCode": "97315"
+},
+{
+"slug": "san-juan-grande-97145",
+"name": "San Juan Grande",
+"tipo": "Colonia",
+"postalCode": "97145"
+},
+{
+"slug": "san-lorenzo-97247",
+"name": "San Lorenzo",
+"tipo": "Fraccionamiento",
+"postalCode": "97247"
+},
+{
+"slug": "san-luis-97140",
+"name": "San Luis",
+"tipo": "Fraccionamiento",
+"postalCode": "97140"
+},
+{
+"slug": "san-luis-cholul-97305",
+"name": "San Luis Cholul",
+"tipo": "Colonia",
+"postalCode": "97305"
+},
+{
+"slug": "san-luis-chuburna-97205",
+"name": "San Luis Chuburna",
+"tipo": "Colonia",
+"postalCode": "97205"
+},
+{
+"slug": "san-luis-sur-97290",
+"name": "San Luis Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97290"
+},
+{
+"slug": "san-luis-sur-97297",
+"name": "San Luis Sur",
+"tipo": "Colonia",
+"postalCode": "97297"
+},
+{
+"slug": "san-marcos-97295",
+"name": "San Marcos",
+"tipo": "Fraccionamiento",
+"postalCode": "97295"
+},
+{
+"slug": "san-marcos-nocoh-97296",
+"name": "San Marcos Nocoh",
+"tipo": "Colonia",
+"postalCode": "97296"
+},
+{
+"slug": "san-marcos-nocoh-ii-97296",
+"name": "San Marcos Nocoh II",
+"tipo": "Colonia",
+"postalCode": "97296"
+},
+{
+"slug": "san-miguel-97140",
+"name": "San Miguel",
+"tipo": "Fraccionamiento",
+"postalCode": "97140"
+},
+{
+"slug": "san-nicolas-97147",
+"name": "San Nicolás",
+"tipo": "Colonia",
+"postalCode": "97147"
+},
+{
+"slug": "san-nicolas-del-norte-97147",
+"name": "San Nicolás Del Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97147"
+},
+{
+"slug": "san-nicolas-del-sur-97289",
+"name": "San Nicolás Del Sur",
+"tipo": "Colonia",
+"postalCode": "97289"
+},
+{
+"slug": "san-pablo-97203",
+"name": "San Pablo",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "san-pablo-oriente-97176",
+"name": "San Pablo Oriente",
+"tipo": "Colonia",
+"postalCode": "97176"
+},
+{
+"slug": "san-pedro-chimay-97315",
+"name": "San Pedro Chimay",
+"tipo": "Pueblo",
+"postalCode": "97315"
+},
+{
+"slug": "san-pedro-cholul-97138",
+"name": "San Pedro Cholul",
+"tipo": "Colonia",
+"postalCode": "97138"
+},
+{
+"slug": "san-pedro-uxmal-97203",
+"name": "San Pedro Uxmal",
+"tipo": "Colonia",
+"postalCode": "97203"
+},
+{
+"slug": "san-ramon-norte-97117",
+"name": "San Ramon Norte",
+"tipo": "Colonia",
+"postalCode": "97117"
+},
+{
+"slug": "san-ramon-norte-i-97117",
+"name": "San Ramon Norte I",
+"tipo": "Colonia",
+"postalCode": "97117"
+},
+{
+"slug": "san-ramon-sur-97117",
+"name": "San Ramon Sur",
+"tipo": "Colonia",
+"postalCode": "97117"
+},
+{
+"slug": "san-remo-97130",
+"name": "San Remo",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "san-vicente-chuburna-97206",
+"name": "San Vicente Chuburna",
+"tipo": "Colonia",
+"postalCode": "97206"
+},
+{
+"slug": "san-vicente-oriente-97142",
+"name": "San Vicente Oriente",
+"tipo": "Fraccionamiento",
+"postalCode": "97142"
+},
+{
+"slug": "san-angel-97205",
+"name": "San Ángel",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "santa-barbara-97255",
+"name": "Santa Bárbara",
+"tipo": "Colonia",
+"postalCode": "97255"
+},
+{
+"slug": "santa-cecilia-97088",
+"name": "Santa Cecilia",
+"tipo": "Fraccionamiento",
+"postalCode": "97088"
+},
+{
+"slug": "santa-cruz-97295",
+"name": "Santa Cruz",
+"tipo": "Fraccionamiento",
+"postalCode": "97295"
+},
+{
+"slug": "santa-cruz-palomeque-97315",
+"name": "Santa Cruz Palomeque",
+"tipo": "Pueblo",
+"postalCode": "97315"
+},
+{
+"slug": "santa-gertrudis-copo-97305",
+"name": "Santa Gertrudis Copo",
+"tipo": "Ranchería",
+"postalCode": "97305"
+},
+{
+"slug": "santa-maria-97138",
+"name": "Santa Maria",
+"tipo": "Colonia",
+"postalCode": "97138"
+},
+{
+"slug": "santa-maria-de-guadalupe-97269",
+"name": "Santa Maria de Guadalupe",
+"tipo": "Fraccionamiento",
+"postalCode": "97269"
+},
+{
+"slug": "santa-maria-chi-97306",
+"name": "Santa María Chí",
+"tipo": "Pueblo",
+"postalCode": "97306"
+},
+{
+"slug": "santa-maria-yaxche-97308",
+"name": "Santa María Yaxché",
+"tipo": "Rancho",
+"postalCode": "97308"
+},
+{
+"slug": "santa-rita-97280",
+"name": "Santa Rita",
+"tipo": "Fraccionamiento",
+"postalCode": "97280"
+},
+{
+"slug": "santa-rita-cholul-97130",
+"name": "Santa Rita Cholul",
+"tipo": "Colonia",
+"postalCode": "97130"
+},
+{
+"slug": "santa-rosa-97279",
+"name": "Santa Rosa",
+"tipo": "Colonia",
+"postalCode": "97279"
+},
+{
+"slug": "sasula-97314",
+"name": "Sasula",
+"tipo": "Pueblo",
+"postalCode": "97314"
+},
+{
+"slug": "serapio-rendon-97285",
+"name": "Serapio Rendón",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "serapio-rendon-ii-97285",
+"name": "Serapio Rendón II",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "serapio-rendon-iii-97285",
+"name": "Serapio Rendón III",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "senorial-97059",
+"name": "Señorial",
+"tipo": "Fraccionamiento",
+"postalCode": "97059"
+},
+{
+"slug": "sian-kaan-97305",
+"name": "Sian Kaan",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "sierra-papacal-97302",
+"name": "Sierra Papacal",
+"tipo": "Pueblo",
+"postalCode": "97302"
+},
+{
+"slug": "sitpach-97306",
+"name": "Sitpach",
+"tipo": "Pueblo",
+"postalCode": "97306"
+},
+{
+"slug": "sol-caucel-97314",
+"name": "Sol Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "sol-caucel-iii-97314",
+"name": "Sol Caucel III",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "susula-97314",
+"name": "Susulá",
+"tipo": "Pueblo",
+"postalCode": "97314"
+},
+{
+"slug": "tabachines-97205",
+"name": "Tabachines",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "tahdzibichen-97315",
+"name": "Tahdzibichén",
+"tipo": "Hacienda",
+"postalCode": "97315"
+},
+{
+"slug": "tamanche-97304",
+"name": "Tamanché",
+"tipo": "Pueblo",
+"postalCode": "97304"
+},
+{
+"slug": "tanlum-97210",
+"name": "Tanlum",
+"tipo": "Colonia",
+"postalCode": "97210"
+},
+{
+"slug": "tecnologico-97120",
+"name": "Tecnológico",
+"tipo": "Fraccionamiento",
+"postalCode": "97120"
+},
+{
+"slug": "temozon-norte-97302",
+"name": "Temozon Norte",
+"tipo": "Colonia",
+"postalCode": "97302"
+},
+{
+"slug": "terranova-97203",
+"name": "Terranova",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "terranova-caucel-97314",
+"name": "Terranova Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "texan-camara-97315",
+"name": "Texán Cámara",
+"tipo": "Pueblo",
+"postalCode": "97315"
+},
+{
+"slug": "tixcacal-97312",
+"name": "Tixcacal",
+"tipo": "Pueblo",
+"postalCode": "97312"
+},
+{
+"slug": "tixcacal-opichen-97249",
+"name": "Tixcacal Opichen",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "tixcuytun-97305",
+"name": "Tixcuytún",
+"tipo": "Pueblo",
+"postalCode": "97305"
+},
+{
+"slug": "torremolinos-97130",
+"name": "Torremolinos",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "trava-quintero-97150",
+"name": "Trava Quintero",
+"tipo": "Colonia",
+"postalCode": "97150"
+},
+{
+"slug": "tulias-de-chuburna-97203",
+"name": "Tulias de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "tulipanes-opichen-97249",
+"name": "Tulipanes Opichen",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "unidad-habitacional-ctm-97142",
+"name": "Unidad Habitacional CTM",
+"tipo": "Fraccionamiento",
+"postalCode": "97142"
+},
+{
+"slug": "unidad-habitacional-merida-issste-97219",
+"name": "Unidad Habitacional Mérida Issste",
+"tipo": "Fraccionamiento",
+"postalCode": "97219"
+},
+{
+"slug": "unidad-habitacional-revolucion-i-cordemex-97110",
+"name": "Unidad Habitacional Revolución I (Cordemex)",
+"tipo": "Fraccionamiento",
+"postalCode": "97110"
+},
+{
+"slug": "unidad-habitacional-ricardo-flores-magon-97176",
+"name": "Unidad Habitacional Ricardo Flores Magón",
+"tipo": "Fraccionamiento",
+"postalCode": "97176"
+},
+{
+"slug": "unidad-revolucion-97110",
+"name": "Unidad Revolución",
+"tipo": "Fraccionamiento",
+"postalCode": "97110"
+},
+{
+"slug": "vergel-65-97176",
+"name": "Vergel 65",
+"tipo": "Fraccionamiento",
+"postalCode": "97176"
+},
+{
+"slug": "vergel-i-97173",
+"name": "Vergel I",
+"tipo": "Fraccionamiento",
+"postalCode": "97173"
+},
+{
+"slug": "vergel-ii-97173",
+"name": "Vergel II",
+"tipo": "Fraccionamiento",
+"postalCode": "97173"
+},
+{
+"slug": "vergel-iii-97173",
+"name": "Vergel III",
+"tipo": "Fraccionamiento",
+"postalCode": "97173"
+},
+{
+"slug": "vergel-iv-97173",
+"name": "Vergel IV",
+"tipo": "Fraccionamiento",
+"postalCode": "97173"
+},
+{
+"slug": "vicente-guerrero-97143",
+"name": "Vicente Guerrero",
+"tipo": "Colonia",
+"postalCode": "97143"
+},
+{
+"slug": "vicente-solis-97180",
+"name": "Vicente Solis",
+"tipo": "Colonia",
+"postalCode": "97180"
+},
+{
+"slug": "villa-bonita-97285",
+"name": "Villa Bonita",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "villa-carmencita-97205",
+"name": "Villa Carmencita",
+"tipo": "Fraccionamiento",
+"postalCode": "97205"
+},
+{
+"slug": "villa-fontana-97155",
+"name": "Villa Fontana",
+"tipo": "Fraccionamiento",
+"postalCode": "97155"
+},
+{
+"slug": "villa-jardin-97314",
+"name": "Villa Jardín",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "villa-magna-97249",
+"name": "Villa Magna",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "villa-magna-ii-97249",
+"name": "Villa Magna II",
+"tipo": "Fraccionamiento",
+"postalCode": "97249"
+},
+{
+"slug": "villa-magna-del-sur-97285",
+"name": "Villa Magna del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "villa-moderna-97260",
+"name": "Villa Moderna",
+"tipo": "Fraccionamiento",
+"postalCode": "97260"
+},
+{
+"slug": "villa-zona-dorada-97229",
+"name": "Villa Zona Dorada",
+"tipo": "Fraccionamiento",
+"postalCode": "97229"
+},
+{
+"slug": "villa-de-la-obrera-ii-97260",
+"name": "Villa de la Obrera II",
+"tipo": "Fraccionamiento",
+"postalCode": "97260"
+},
+{
+"slug": "villareal-97117",
+"name": "Villareal",
+"tipo": "Fraccionamiento",
+"postalCode": "97117"
+},
+{
+"slug": "villas-cholul-97305",
+"name": "Villas Cholul",
+"tipo": "Fraccionamiento",
+"postalCode": "97305"
+},
+{
+"slug": "villas-chuburna-iv-97206",
+"name": "Villas Chuburna IV",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "villas-del-prado-97203",
+"name": "Villas Del Prado",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "villas-del-sol-97118",
+"name": "Villas Del Sol",
+"tipo": "Fraccionamiento",
+"postalCode": "97118"
+},
+{
+"slug": "villas-del-sur-97285",
+"name": "Villas Del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "villas-la-hacienda-97119",
+"name": "Villas La Hacienda",
+"tipo": "Fraccionamiento",
+"postalCode": "97119"
+},
+{
+"slug": "villas-la-macarena-97174",
+"name": "Villas La Macarena",
+"tipo": "Fraccionamiento",
+"postalCode": "97174"
+},
+{
+"slug": "villas-merida-97256",
+"name": "Villas Mérida",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+},
+{
+"slug": "villas-quetzal-97297",
+"name": "Villas Quetzal",
+"tipo": "Fraccionamiento",
+"postalCode": "97297"
+},
+{
+"slug": "villas-de-caucel-97314",
+"name": "Villas de Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "villas-de-chuburna-97207",
+"name": "Villas de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97207"
+},
+{
+"slug": "villas-de-oriente-97306",
+"name": "Villas de Oriente",
+"tipo": "Fraccionamiento",
+"postalCode": "97306"
+},
+{
+"slug": "villas-de-tixcacal-97246",
+"name": "Villas de Tixcacal",
+"tipo": "Fraccionamiento",
+"postalCode": "97246"
+},
+{
+"slug": "villas-de-yacalpeten-97238",
+"name": "Villas de Yacalpeten",
+"tipo": "Fraccionamiento",
+"postalCode": "97238"
+},
+{
+"slug": "villas-del-mayab-97260",
+"name": "Villas del Mayab",
+"tipo": "Fraccionamiento",
+"postalCode": "97260"
+},
+{
+"slug": "villas-del-rey-97119",
+"name": "Villas del Rey",
+"tipo": "Fraccionamiento",
+"postalCode": "97119"
+},
+{
+"slug": "villas-las-palmas-97203",
+"name": "Villas las Palmas",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "vista-alegre-97130",
+"name": "Vista Alegre",
+"tipo": "Colonia",
+"postalCode": "97130"
+},
+{
+"slug": "vista-alegre-lotificacion-97138",
+"name": "Vista Alegre Lotificacion",
+"tipo": "Colonia",
+"postalCode": "97138"
+},
+{
+"slug": "vista-alegre-norte-97130",
+"name": "Vista Alegre Norte",
+"tipo": "Fraccionamiento",
+"postalCode": "97130"
+},
+{
+"slug": "vista-alegre-de-chuburna-97203",
+"name": "Vista Alegre de Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97203"
+},
+{
+"slug": "viva-caucel-97314",
+"name": "Viva Caucel",
+"tipo": "Fraccionamiento",
+"postalCode": "97314"
+},
+{
+"slug": "via-montejo-97204",
+"name": "Vía Montejo",
+"tipo": "Fraccionamiento",
+"postalCode": "97204"
+},
+{
+"slug": "wallis-97169",
+"name": "Wallis",
+"tipo": "Fraccionamiento",
+"postalCode": "97169"
+},
+{
+"slug": "waspa-97099",
+"name": "Waspa",
+"tipo": "Fraccionamiento",
+"postalCode": "97099"
+},
+{
+"slug": "xaman-kab-97117",
+"name": "Xaman-Kab",
+"tipo": "Fraccionamiento",
+"postalCode": "97117"
+},
+{
+"slug": "xaman-tan-97113",
+"name": "Xaman-Tan",
+"tipo": "Fraccionamiento",
+"postalCode": "97113"
+},
+{
+"slug": "xcanatun-97302",
+"name": "Xcanatún",
+"tipo": "Hacienda",
+"postalCode": "97302"
+},
+{
+"slug": "xcom-97229",
+"name": "Xcom",
+"tipo": "Colonia",
+"postalCode": "97229"
+},
+{
+"slug": "xcumpich-97204",
+"name": "Xcumpich",
+"tipo": "Colonia",
+"postalCode": "97204"
+},
+{
+"slug": "xcunya-97304",
+"name": "Xcunyá",
+"tipo": "Hacienda",
+"postalCode": "97304"
+},
+{
+"slug": "xmatkuil-97315",
+"name": "Xmatkuil",
+"tipo": "Colonia",
+"postalCode": "97315"
+},
+{
+"slug": "xoclan-97246",
+"name": "Xoclan",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "xoclan-canto-97245",
+"name": "Xoclan Canto",
+"tipo": "Colonia",
+"postalCode": "97245"
+},
+{
+"slug": "xoclan-carmelitas-97246",
+"name": "Xoclan Carmelitas",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "xoclan-rejas-97246",
+"name": "Xoclan Rejas",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "xoclan-santos-97245",
+"name": "Xoclan Santos",
+"tipo": "Colonia",
+"postalCode": "97245"
+},
+{
+"slug": "xoclan-susula-97249",
+"name": "Xoclan Susula",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "xoclan-susula-el-convento-97249",
+"name": "Xoclan Susula (El Convento)",
+"tipo": "Colonia",
+"postalCode": "97249"
+},
+{
+"slug": "xoclan-xbech-97246",
+"name": "Xoclan Xbech",
+"tipo": "Colonia",
+"postalCode": "97246"
+},
+{
+"slug": "xotik-97302",
+"name": "Xotik",
+"tipo": "Fraccionamiento",
+"postalCode": "97302"
+},
+{
+"slug": "yaxche-97206",
+"name": "Yaxche",
+"tipo": "Fraccionamiento",
+"postalCode": "97206"
+},
+{
+"slug": "yaxche-casares-97309",
+"name": "Yaxché Casares",
+"tipo": "Ranchería",
+"postalCode": "97309"
+},
+{
+"slug": "yaxnic-97316",
+"name": "Yaxnic",
+"tipo": "Pueblo",
+"postalCode": "97316"
+},
+{
+"slug": "yucalpeten-97238",
+"name": "Yucalpeten",
+"tipo": "Fraccionamiento",
+"postalCode": "97238"
+},
+{
+"slug": "yucalpeten-secc-florida-97239",
+"name": "Yucalpeten Secc Florida",
+"tipo": "Fraccionamiento",
+"postalCode": "97239"
+},
+{
+"slug": "yucatan-97050",
+"name": "Yucatan",
+"tipo": "Colonia",
+"postalCode": "97050"
+},
+{
+"slug": "yucatan-country-club-97308",
+"name": "Yucatán Country Club",
+"tipo": "Fraccionamiento",
+"postalCode": "97308"
+},
+{
+"slug": "zacilha-97298",
+"name": "Zacilha",
+"tipo": "Fraccionamiento",
+"postalCode": "97298"
+},
+{
+"slug": "zazil-ha-ii-97298",
+"name": "Zazil - Ha II",
+"tipo": "Fraccionamiento",
+"postalCode": "97298"
+},
+{
+"slug": "zona-dorada-97220",
+"name": "Zona Dorada",
+"tipo": "Fraccionamiento",
+"postalCode": "97220"
+},
+{
+"slug": "zona-dorada-ii-97229",
+"name": "Zona Dorada II",
+"tipo": "Fraccionamiento",
+"postalCode": "97229"
+},
+{
+"slug": "aguilas-chuburna-97215",
+"name": "Águilas Chuburna",
+"tipo": "Fraccionamiento",
+"postalCode": "97215"
+},
+{
+"slug": "alamos-del-sur-97285",
+"name": "Álamos del Sur",
+"tipo": "Fraccionamiento",
+"postalCode": "97285"
+},
+{
+"slug": "alvaro-torres-97256",
+"name": "Álvaro Torres",
+"tipo": "Fraccionamiento",
+"postalCode": "97256"
+}
+]

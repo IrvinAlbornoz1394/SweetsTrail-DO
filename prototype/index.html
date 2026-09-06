@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SweetsTrail · Ruta de los Dulces</title>
+  <meta name="description" content="Gestión de la planeación de la ruta de los dulces: registro de niños participantes y estaciones de dulce." />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <button class="brand" type="button" data-go="home" title="Ir al inicio">
+      <span class="brand__icon">🍬</span>
+      <span class="brand__text">
+        <strong>SweetsTrail</strong>
+        <small>Ruta de los Dulces 2026</small>
+      </span>
+    </button>
+    <button class="btn btn--ghost btn--back" type="button" data-go="home" hidden id="backBtn">
+      ← Volver al inicio
+    </button>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ============ VISTA: INICIO ============ -->
+    <section class="view is-active" id="view-home">
+      <div class="hero">
+        <h1>¿Qué quieres hacer?</h1>
+        <p>Elige una opción para comenzar con el registro de la ruta de este año.</p>
+      </div>
+
+      <div class="choices">
+        <button class="choice" type="button" data-go="kids">
+          <span class="choice__icon">👻</span>
+          <span class="choice__title">Registrar niños participantes</span>
+          <span class="choice__desc">Da de alta al tutor responsable y a todos los niños que lo acompañarán en la ruta.</span>
+          <span class="choice__cta">Comenzar registro →</span>
+        </button>
+
+        <button class="choice choice--alt" type="button" data-go="station">
+          <span class="choice__icon">🏠</span>
+          <span class="choice__title">Registrar estación de dulce</span>
+          <span class="choice__desc">Registra la casa participante con su nombre, dirección y ubicación en el mapa.</span>
+          <span class="choice__cta">Comenzar registro →</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ VISTA: NIÑOS ============ -->
+    <section class="view" id="view-kids">
+      <div class="page-head">
+        <span class="page-head__icon">👻</span>
+        <div>
+          <h2>Registro de niños participantes</h2>
+          <p>Los campos de niño que queden vacíos se omitirán automáticamente.</p>
+        </div>
+      </div>
+
+      <form class="card form" id="kidsForm" novalidate>
+        <fieldset class="fieldset">
+          <legend>Datos del responsable</legend>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="tutorName">Responsable o tutor <span class="req">*</span></label>
+              <input type="text" id="tutorName" name="tutorName" placeholder="Ej. María González Pérez" autocomplete="name" />
+              <p class="error" data-error-for="tutorName"></p>
+            </div>
+
+            <div class="field">
+              <label for="tutorPhone">Número de teléfono <span class="req">*</span></label>
+              <input type="tel" id="tutorPhone" name="tutorPhone" placeholder="10 dígitos" inputmode="numeric" maxlength="14" autocomplete="tel" />
+              <p class="error" data-error-for="tutorPhone"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend>
+            Niños participantes
+            <span class="counter" id="kidsCounter">0 registrados</span>
+          </legend>
+
+          <div id="kidsList" class="rows"></div>
+
+          <button type="button" class="btn btn--dashed" id="addKidBtn">
+            ＋ Agregar otro niño
+          </button>
+          <p class="error error--block" data-error-for="kids"></p>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn--ghost" id="resetKidsBtn">Limpiar formulario</button>
+          <button type="submit" class="btn btn--primary">Registrar niños</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ VISTA: ESTACIÓN ============ -->
+    <section class="view" id="view-station">
+      <div class="page-head">
+        <span class="page-head__icon">🏠</span>
+        <div>
+          <h2>Registro de estación de dulce</h2>
+          <p>Coloca el marcador sobre la casa que va a participar en la ruta.</p>
+        </div>
+      </div>
+
+      <form class="card form" id="stationForm" novalidate>
+        <fieldset class="fieldset">
+          <legend>Datos de la estación</legend>
+
+          <div class="field">
+            <label for="stationName">Nombre de la estación <span class="req">*</span></label>
+            <input type="text" id="stationName" name="stationName" placeholder="Ej. Casa de los Sustos / Familia Ramírez" />
+            <p class="error" data-error-for="stationName"></p>
+          </div>
+
+          <div class="field">
+            <label for="stationAddress">Dirección <span class="req">*</span></label>
+            <div class="input-group">
+              <input type="text" id="stationAddress" name="stationAddress" placeholder="Calle, número, colonia, ciudad" />
+              <button type="button" class="btn btn--ghost" id="geocodeBtn" title="Buscar la dirección en el mapa">🔎 Buscar</button>
+            </div>
+            <p class="hint" id="geocodeHint"></p>
+            <p class="error" data-error-for="stationAddress"></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend>
+            Ubicación en el mapa
+            <span class="counter counter--muted">Da clic o arrastra el marcador</span>
+          </legend>
+
+          <div class="map-tools">
+            <button type="button" class="btn btn--ghost btn--sm" id="locateBtn">📍 Usar mi ubicación</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="clearPinBtn">✕ Quitar marcador</button>
+            <span class="coords" id="coordsLabel">Sin ubicación seleccionada</span>
+          </div>
+
+          <div id="map" class="map"></div>
+          <p class="error error--block" data-error-for="location"></p>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn--ghost" id="resetStationBtn">Limpiar formulario</button>
+          <button type="submit" class="btn btn--primary">Registrar estación</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- ============ MODAL DE CONFIRMACIÓN ============ -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal__backdrop" data-close-modal></div>
+    <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal__head">
+        <h3 id="modalTitle">Confirmar registro</h3>
+        <button type="button" class="modal__x" data-close-modal aria-label="Cerrar">✕</button>
+      </header>
+      <div class="modal__body" id="modalBody"></div>
+      <footer class="modal__foot">
+        <button type="button" class="btn btn--ghost" data-close-modal>Cancelar</button>
+        <button type="button" class="btn btn--primary" id="modalConfirmBtn">Confirmar</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
