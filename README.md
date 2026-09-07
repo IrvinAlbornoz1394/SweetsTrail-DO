@@ -14,7 +14,7 @@ colonia, y de ahí en adelante todo lo que registras queda ligado a ella.
 | Base de datos | Postgres — Supabase en la nube, PGlite en local |
 | Validación | Zod (mismo esquema en cliente y servidor) |
 | Mapa | Leaflet + OpenStreetMap (sin API key) |
-| Geocodificación | Nominatim (sin API key) |
+| Geocodificación | Nominatim, solo para centrar el mapa en la colonia (sin API key) |
 | Hosting | Vercel |
 
 ## Correr en local
@@ -105,6 +105,19 @@ prototype/                          Prototipo estático original (HTML/CSS/JS)
 colonias ──┬── tutors ── children
            └── stations
 ```
+
+Las estaciones **no guardan dirección**: la ubicación se marca en el mapa, que
+es más preciso para trazar la ruta. `colonias.lat/lng` guarda el centro
+aproximado para abrir el mapa ya sobre la colonia; se llena la primera vez que
+alguien la usa (`lib/geocode.ts`) y de ahí en adelante sale de la base.
+
+### Cambios de esquema
+
+`schema.sql` usa `create table if not exists`, que no altera tablas
+existentes. Por eso los cambios posteriores viven en la sección
+**Migraciones** al final del archivo, con sentencias idempotentes
+(`add column if not exists`, `drop column if exists`). Corre
+`npm run db:migrate` antes de desplegar código que dependa de ellas.
 
 ## Catálogo de colonias
 

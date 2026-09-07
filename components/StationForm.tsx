@@ -13,13 +13,17 @@ const MapPicker = dynamic(() => import('./MapPicker'), {
   loading: () => <div className="map map--loading">Cargando mapa…</div>,
 });
 
-type Errors = Partial<Record<'name' | 'address' | 'location', string>>;
-type Props = { coloniaId: string; coloniaName: string };
+type Errors = Partial<Record<'name' | 'location', string>>;
+type Props = {
+  coloniaId: string;
+  coloniaName: string;
+  /** Centro con el que abre el mapa: el de la colonia seleccionada. */
+  initialCenter: LatLng;
+};
 
-export default function StationForm({ coloniaId, coloniaName }: Props) {
+export default function StationForm({ coloniaId, coloniaName, initialCenter }: Props) {
   const router = useRouter();
   const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
   // El centro del mapa siempre tiene coordenadas; `picked` distingue si la
   // persona ya eligió a propósito o solo estamos en el centro inicial.
   const [center, setCenter] = useState<LatLng | null>(null);
@@ -66,7 +70,6 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
     const next: Errors = {};
 
     if (!name.trim()) next.name = 'Escribe el nombre de la estación.';
-    if (!address.trim()) next.address = 'Escribe la dirección de la casa participante.';
     if (!picked || !center) {
       next.location = 'Coloca el pin sobre la casa: arrastra el mapa o usa tu ubicación.';
     }
@@ -89,7 +92,6 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
         body: JSON.stringify({
           coloniaId,
           name: name.trim(),
-          address: address.trim(),
           lat: center.lat,
           lng: center.lng,
         }),
@@ -105,7 +107,6 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
       // Vuelve a pedir el server component para que el contador suba al instante.
       router.refresh();
       setName('');
-      setAddress('');
       setPicked(false);
       setErrors({});
     } catch {
@@ -136,21 +137,6 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
             />
             <p className="error">{errors.name ?? ''}</p>
           </div>
-
-          <div className="field">
-            <label htmlFor="stationAddress">
-              Dirección <span className="req">*</span>
-            </label>
-            <input
-              id="stationAddress"
-              type="text"
-              placeholder="Calle 20 #123 x 15 y 17"
-              className={errors.address ? 'is-invalid' : ''}
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-            <p className="error">{errors.address ?? ''}</p>
-          </div>
         </fieldset>
 
         <fieldset className="fieldset">
@@ -159,7 +145,8 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
           </legend>
 
           <p className="guide">
-            <strong>Arrastra el mapa</strong> hasta que el pin quede sobre la casa, o toca{' '}
+            El mapa abre sobre <strong>{coloniaName}</strong>.{' '}
+            <strong>Arrástralo</strong> hasta que el pin quede sobre la casa, o toca{' '}
             <strong>Usar mi ubicación</strong> si estás ahí en este momento.
           </p>
 
@@ -174,6 +161,7 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
           </button>
 
           <MapPicker
+            initialCenter={initialCenter}
             picked={picked}
             onCenterChange={handleCenterChange}
             onUserDrag={handleUserDrag}
@@ -194,7 +182,6 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
             className="btn btn--ghost"
             onClick={() => {
               setName('');
-              setAddress('');
               setPicked(false);
               setErrors({});
               showToast('Formulario limpiado.');
@@ -225,10 +212,6 @@ export default function StationForm({ coloniaId, coloniaName }: Props) {
           <div className="summary__item">
             <span>Estación</span>
             <strong>{name}</strong>
-          </div>
-          <div className="summary__item">
-            <span>Dirección</span>
-            <strong>{address}</strong>
           </div>
           <div className="summary__item">
             <span>Coordenadas</span>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getColoniaBySlug, listStationsByColonia } from '@/lib/db';
+import { getColoniaCenter } from '@/lib/geocode';
 import ColoniaBanner from '@/components/ColoniaBanner';
 import StationForm from '@/components/StationForm';
 
@@ -12,7 +13,10 @@ export default async function StationsPage({ params }: { params: Promise<{ slug:
   const colonia = await getColoniaBySlug(slug);
   if (!colonia) notFound();
 
-  const total = (await listStationsByColonia(colonia.id)).length;
+  const [total, center] = await Promise.all([
+    listStationsByColonia(colonia.id).then((s) => s.length),
+    getColoniaCenter(colonia),
+  ]);
 
   return (
     <>
@@ -42,7 +46,11 @@ export default async function StationsPage({ params }: { params: Promise<{ slug:
         </Link>
       </div>
 
-      <StationForm coloniaId={colonia.id} coloniaName={colonia.name} />
+      <StationForm
+        coloniaId={colonia.id}
+        coloniaName={colonia.name}
+        initialCenter={center}
+      />
     </>
   );
 }

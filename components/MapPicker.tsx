@@ -2,11 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import { COLONIA_ZOOM, type LatLng } from '@/lib/map';
 
-export type LatLng = { lat: number; lng: number };
-
-/** Centro de Mérida, Yucatán, por defecto. */
-export const DEFAULT_CENTER: LatLng = { lat: 20.9674, lng: -89.5926 };
+export type { LatLng };
 
 /**
  * Reporta el centro del mapa cada vez que deja de moverse, y avisa aparte
@@ -50,20 +48,28 @@ function Recenter({ target }: { target: (LatLng & { zoom?: number }) | null }) {
 }
 
 type Props = {
+  /** Centro con el que abre el mapa: el de la colonia seleccionada. */
+  initialCenter: LatLng;
   picked: boolean;
   onCenterChange: (p: LatLng) => void;
   onUserDrag: () => void;
   flyTo: (LatLng & { zoom?: number }) | null;
 };
 
-export default function MapPicker({ picked, onCenterChange, onUserDrag, flyTo }: Props) {
+export default function MapPicker({
+  initialCenter,
+  picked,
+  onCenterChange,
+  onUserDrag,
+  flyTo,
+}: Props) {
   const [moving, setMoving] = useState(false);
 
   return (
     <div className="map-shell">
       <MapContainer
-        center={[DEFAULT_CENTER.lat, DEFAULT_CENTER.lng]}
-        zoom={14}
+        center={[initialCenter.lat, initialCenter.lng]}
+        zoom={COLONIA_ZOOM}
         className="map"
         scrollWheelZoom
       >

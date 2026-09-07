@@ -16,6 +16,10 @@ create table if not exists public.colonias (
   name         text        not null,
   tipo         text,
   postal_code  text,
+  -- Centro aproximado, para abrir el mapa ya sobre la colonia. Se llena la
+  -- primera vez que alguien la usa (geocodificación con caché en lib/geocode.ts).
+  lat          double precision,
+  lng          double precision,
   municipio    text        not null default 'Mérida',
   estado       text        not null default 'Yucatán',
   created_at   timestamptz not null default now()
@@ -46,7 +50,6 @@ create table if not exists public.stations (
   id          uuid primary key default gen_random_uuid(),
   colonia_id  uuid        not null references public.colonias(id) on delete restrict,
   name        text        not null,
-  address     text        not null,
   lat         double precision not null,
   lng         double precision not null,
   status      text        not null default 'pendiente',
@@ -102,3 +105,18 @@ begin
   return v_tutor_id;
 end;
 $$;
+
+-- ===========================================================
+-- Migraciones
+--
+-- `create table if not exists` no altera tablas que ya existen, así que los
+-- cambios de esquema posteriores viven aquí. Todo debe ser idempotente.
+-- ===========================================================
+
+-- Centro de la colonia, para precargar el mapa.
+alter table public.colonias add column if not exists lat double precision;
+alter table public.colonias add column if not exists lng double precision;
+
+-- La dirección de la estación se dejó de capturar: la ubicación se marca
+-- en el mapa, que es más preciso para trazar la ruta.
+alter table public.stations drop column if exists address;

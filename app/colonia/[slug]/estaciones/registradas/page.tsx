@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getColoniaBySlug, listStationsByColonia } from '@/lib/db';
+import { getColoniaCenter } from '@/lib/geocode';
 import ColoniaBanner from '@/components/ColoniaBanner';
 import StationsMapClient from '@/components/StationsMapClient';
 
@@ -16,7 +17,10 @@ export default async function RegisteredStationsPage({
   const colonia = await getColoniaBySlug(slug);
   if (!colonia) notFound();
 
-  const stations = await listStationsByColonia(colonia.id);
+  const [stations, center] = await Promise.all([
+    listStationsByColonia(colonia.id),
+    getColoniaCenter(colonia),
+  ]);
   const total = stations.length;
 
   return (
@@ -48,7 +52,7 @@ export default async function RegisteredStationsPage({
         </p>
       ) : (
         <>
-          <StationsMapClient stations={stations} />
+          <StationsMapClient stations={stations} center={center} />
 
           <ol className="roster roster--stations">
             {stations.map((station, i) => (
@@ -56,7 +60,9 @@ export default async function RegisteredStationsPage({
                 <span className="roster__num">{i + 1}</span>
                 <span className="roster__station">
                   <strong>{station.name}</strong>
-                  <small>{station.address}</small>
+                  <small>
+                    {station.lat.toFixed(5)}, {station.lng.toFixed(5)}
+                  </small>
                 </span>
               </li>
             ))}

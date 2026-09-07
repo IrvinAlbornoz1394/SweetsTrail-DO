@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import type { Station } from '@/lib/db';
+import type { LatLng } from '@/lib/map';
 
 /**
  * Envoltorio de cliente para el mapa.
@@ -15,6 +16,12 @@ const StationsMap = dynamic(() => import('./StationsMap'), {
   loading: () => <div className="map map--tall map--loading">Cargando mapa…</div>,
 });
 
-export default function StationsMapClient({ stations }: { stations: Station[] }) {
-  return <StationsMap stations={stations} />;
+export default function StationsMapClient({
+  stations,
+  center,
+}: {
+  stations: Station[];
+  center: LatLng;
+}) {
+  return <StationsMap stations={stations} center={center} />;
 }

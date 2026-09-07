@@ -20,6 +20,9 @@ export type Colonia = {
   postal_code: string | null;
   municipio: string;
   estado: string;
+  /** Centro aproximado; null hasta que se geocodifica por primera vez. */
+  lat: number | null;
+  lng: number | null;
 };
 
 export type Child = {
@@ -31,7 +34,6 @@ export type Child = {
 export type Station = {
   id: string;
   name: string;
-  address: string;
   lat: number;
   lng: number;
   status: string;
@@ -40,7 +42,7 @@ export type Station = {
 
 export const backendName = () => (hasSupabaseConfig() ? 'supabase' : 'pglite-local');
 
-const COLONIA_COLS = 'id, slug, name, tipo, postal_code, municipio, estado';
+const COLONIA_COLS = 'id, slug, name, tipo, postal_code, municipio, estado, lat, lng';
 
 /* ---------------- Colonias ---------------- */
 
@@ -95,6 +97,18 @@ export async function coloniaExists(id: string): Promise<boolean> {
   const db = await getPglite();
   const { rows } = await db.query('select 1 from colonias where id = $1', [id]);
   return rows.length > 0;
+}
+
+/** Guarda el centro geocodificado de una colonia para no volver a pedirlo. */
+export async function setColoniaCenter(id: string, lat: number, lng: number): Promise<void> {
+  if (hasSupabaseConfig()) {
+    const { error } = await getSupabase().from('colonias').update({ lat, lng }).eq('id', id);
+    if (error) throw new Error(error.message);
+    return;
+  }
+
+  const db = await getPglite();
+  await db.query('update colonias set lat = $2, lng = $3 where id = $1', [id, lat, lng]);
 }
 
 /* ---------------- Registros ---------------- */
@@ -158,7 +172,6 @@ export async function createStation(input: StationInput): Promise<string> {
       .insert({
         colonia_id: input.coloniaId,
         name: input.name,
-        address: input.address,
         lat: input.lat,
         lng: input.lng,
       })
@@ -170,9 +183,9 @@ export async function createStation(input: StationInput): Promise<string> {
 
   const db = await getPglite();
   const { rows } = await db.query<{ id: string }>(
-    `insert into stations (colonia_id, name, address, lat, lng)
-     values ($1, $2, $3, $4, $5) returning id`,
-    [input.coloniaId, input.name, input.address, input.lat, input.lng]
+    `insert into stations (colonia_id, name, lat, lng)
+     values ($1, $2, $3, $4) returning id`,
+    [input.coloniaId, input.name, input.lat, input.lng]
   );
   return rows[0].id;
 }
@@ -181,7 +194,7 @@ export async function listStationsByColonia(coloniaId: string): Promise<Station[
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('stations')
-      .select('id, name, address, lat, lng, status, created_at')
+      .select('id, name, lat, lng, status, created_at')
       .eq('colonia_id', coloniaId)
       .order('created_at', { ascending: false });
     if (error) throw new Error(error.message);
@@ -190,7 +203,7 @@ export async function listStationsByColonia(coloniaId: string): Promise<Station[
 
   const db = await getPglite();
   const { rows } = await db.query<Station>(
-    `select id, name, address, lat, lng, status, created_at
+    `select id, name, lat, lng, status, created_at
        from stations where colonia_id = $1 order by created_at desc`,
     [coloniaId]
   );

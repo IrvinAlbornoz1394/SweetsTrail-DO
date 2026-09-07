@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import type { Station } from '@/lib/db';
-import { DEFAULT_CENTER } from './MapPicker';
+import { COLONIA_ZOOM, type LatLng } from '@/lib/map';
 
 /** Mismo criterio que el selector: divIcon para no depender de las imágenes de Leaflet. */
 const houseIcon = L.divIcon({
@@ -35,11 +35,17 @@ function FitToStations({ stations }: { stations: Station[] }) {
   return null;
 }
 
-export default function StationsMap({ stations }: { stations: Station[] }) {
+export default function StationsMap({
+  stations,
+  center,
+}: {
+  stations: Station[];
+  center: LatLng;
+}) {
   return (
     <MapContainer
-      center={[DEFAULT_CENTER.lat, DEFAULT_CENTER.lng]}
-      zoom={13}
+      center={[center.lat, center.lng]}
+      zoom={COLONIA_ZOOM}
       className="map map--tall"
       scrollWheelZoom
     >
@@ -55,7 +61,7 @@ export default function StationsMap({ stations }: { stations: Station[] }) {
           <Popup>
             <strong>{station.name}</strong>
             <br />
-            {station.address}
+            {station.lat.toFixed(5)}, {station.lng.toFixed(5)}
           </Popup>
         </Marker>
       ))}

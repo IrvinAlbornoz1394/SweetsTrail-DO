@@ -35,11 +35,6 @@ export const stationSchema = z.object({
     .trim()
     .min(3, 'Escribe el nombre de la estación.')
     .max(120, 'El nombre es demasiado largo.'),
-  address: z
-    .string()
-    .trim()
-    .min(5, 'Escribe la dirección de la casa participante.')
-    .max(250, 'La dirección es demasiado larga.'),
   lat: z.number({ error: 'Marca la ubicación en el mapa.' }).min(-90, 'Latitud fuera de rango.').max(90, 'Latitud fuera de rango.'),
   lng: z.number({ error: 'Marca la ubicación en el mapa.' }).min(-180, 'Longitud fuera de rango.').max(180, 'Longitud fuera de rango.'),
 });
