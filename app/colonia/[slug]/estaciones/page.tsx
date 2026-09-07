@@ -42,11 +42,7 @@ export default async function StationsPage({ params }: { params: Promise<{ slug:
         </Link>
       </div>
 
-      <StationForm
-        coloniaId={colonia.id}
-        coloniaName={colonia.name}
-        postalCode={colonia.postal_code}
-      />
+      <StationForm coloniaId={colonia.id} coloniaName={colonia.name} />
     </>
   );
 }

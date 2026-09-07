@@ -103,7 +103,7 @@ export default function KidsForm({ coloniaId, coloniaName }: Props) {
 
   return (
     <>
-      <form className="card form" onSubmit={handleSubmit} noValidate>
+      <form className="card" onSubmit={handleSubmit} noValidate>
         <fieldset className="fieldset">
           <legend>Datos del responsable</legend>
 

@@ -14,76 +14,49 @@ const MapPicker = dynamic(() => import('./MapPicker'), {
 });
 
 type Errors = Partial<Record<'name' | 'address' | 'location', string>>;
+type Props = { coloniaId: string; coloniaName: string };
 
-type Props = { coloniaId: string; coloniaName: string; postalCode: string | null };
-
-export default function StationForm({ coloniaId, coloniaName, postalCode }: Props) {
+export default function StationForm({ coloniaId, coloniaName }: Props) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
-  const [position, setPosition] = useState<LatLng | null>(null);
+  // El centro del mapa siempre tiene coordenadas; `picked` distingue si la
+  // persona ya eligió a propósito o solo estamos en el centro inicial.
+  const [center, setCenter] = useState<LatLng | null>(null);
+  const [picked, setPicked] = useState(false);
   const [flyTo, setFlyTo] = useState<(LatLng & { zoom?: number }) | null>(null);
-  const [hint, setHint] = useState('');
+  const [locating, setLocating] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [confirming, setConfirming] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [searching, setSearching] = useState(false);
   const { toast, showToast } = useToast();
 
-  const handlePick = useCallback((p: LatLng) => {
-    setPosition(p);
+  const handleCenterChange = useCallback((p: LatLng) => setCenter(p), []);
+
+  const handleUserDrag = useCallback(() => {
+    setPicked(true);
     setErrors((prev) => ({ ...prev, location: undefined }));
   }, []);
 
-  /** Geocodifica la dirección escrita con Nominatim (OpenStreetMap, sin API key). */
-  async function searchAddress() {
-    const q = address.trim();
-    // Se acota la búsqueda a la colonia y a Mérida: sin esto Nominatim
-    // se va a calles del mismo nombre en otras ciudades.
-    const scoped = `${q}, ${coloniaName}, ${postalCode ?? ''} Mérida, Yucatán, México`;
-    if (!q) {
-      setErrors((prev) => ({ ...prev, address: 'Escribe una dirección para buscarla.' }));
-      return;
-    }
-
-    setSearching(true);
-    setHint('Buscando dirección…');
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=mx&q=${encodeURIComponent(scoped)}`,
-        { headers: { 'Accept-Language': 'es' } }
-      );
-      const data = await res.json();
-
-      if (!Array.isArray(data) || data.length === 0) {
-        setHint('No se encontró la dirección. Coloca el marcador manualmente.');
-        return;
-      }
-
-      const found = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-      handlePick(found);
-      setFlyTo({ ...found, zoom: 17 });
-      setHint(`Aproximado: ${data[0].display_name}. Ajusta el marcador si es necesario.`);
-    } catch {
-      setHint('No se pudo buscar la dirección. Coloca el marcador manualmente.');
-    } finally {
-      setSearching(false);
-    }
-  }
-
   function locateMe() {
     if (!navigator.geolocation) {
-      showToast('Tu navegador no soporta geolocalización.', true);
+      showToast('Tu teléfono no permite compartir la ubicación.', true);
       return;
     }
-    showToast('Buscando tu ubicación…');
+
+    setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        handlePick(p);
-        setFlyTo({ ...p, zoom: 17 });
+        setFlyTo({ lat: pos.coords.latitude, lng: pos.coords.longitude, zoom: 18 });
+        setPicked(true);
+        setErrors((prev) => ({ ...prev, location: undefined }));
+        setLocating(false);
+        showToast('📍 Listo. Ajusta el mapa si el pin no quedó justo en la casa.');
       },
-      () => showToast('No se pudo obtener tu ubicación.', true),
+      () => {
+        setLocating(false);
+        showToast('No se pudo obtener tu ubicación. Arrastra el mapa a mano.', true);
+      },
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }
@@ -94,7 +67,9 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
 
     if (!name.trim()) next.name = 'Escribe el nombre de la estación.';
     if (!address.trim()) next.address = 'Escribe la dirección de la casa participante.';
-    if (!position) next.location = 'Marca la ubicación en el mapa dando clic sobre la casa.';
+    if (!picked || !center) {
+      next.location = 'Coloca el pin sobre la casa: arrastra el mapa o usa tu ubicación.';
+    }
 
     setErrors(next);
     if (Object.keys(next).length > 0) {
@@ -105,7 +80,7 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
   }
 
   async function handleConfirm() {
-    if (!position) return;
+    if (!center) return;
     setSaving(true);
     try {
       const res = await fetch('/api/stations', {
@@ -115,8 +90,8 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
           coloniaId,
           name: name.trim(),
           address: address.trim(),
-          lat: position.lat,
-          lng: position.lng,
+          lat: center.lat,
+          lng: center.lng,
         }),
       });
       const data = await res.json();
@@ -131,8 +106,7 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
       router.refresh();
       setName('');
       setAddress('');
-      setPosition(null);
-      setHint('');
+      setPicked(false);
       setErrors({});
     } catch {
       showToast('Error de conexión. Intenta de nuevo.', true);
@@ -144,7 +118,7 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
 
   return (
     <>
-      <form className="card form" onSubmit={handleSubmit} noValidate>
+      <form className="card" onSubmit={handleSubmit} noValidate>
         <fieldset className="fieldset">
           <legend>Datos de la estación</legend>
 
@@ -155,7 +129,7 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
             <input
               id="stationName"
               type="text"
-              placeholder="Ej. Casa de los Sustos / Familia Ramírez"
+              placeholder="Ej. Casa de los Sustos"
               className={errors.name ? 'is-invalid' : ''}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -167,62 +141,50 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
             <label htmlFor="stationAddress">
               Dirección <span className="req">*</span>
             </label>
-            <div className="input-group">
-              <input
-                id="stationAddress"
-                type="text"
-                placeholder="Calle, número, colonia, ciudad"
-                className={errors.address ? 'is-invalid' : ''}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchAddress();
-                  }
-                }}
-              />
-              <button
-                type="button"
-                className="btn btn--ghost"
-                onClick={searchAddress}
-                disabled={searching}
-                title="Buscar la dirección en el mapa"
-              >
-                {searching ? '…' : '🔎 Buscar'}
-              </button>
-            </div>
-            <p className="hint">{hint}</p>
+            <input
+              id="stationAddress"
+              type="text"
+              placeholder="Calle 20 #123 x 15 y 17"
+              className={errors.address ? 'is-invalid' : ''}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
             <p className="error">{errors.address ?? ''}</p>
           </div>
         </fieldset>
 
         <fieldset className="fieldset">
           <legend>
-            Ubicación en el mapa
-            <span className="counter counter--muted">Da clic o arrastra el marcador</span>
+            Ubicación en el mapa <span className="req">*</span>
           </legend>
 
-          <div className="map-tools">
-            <button type="button" className="btn btn--ghost btn--sm" onClick={locateMe}>
-              📍 Usar mi ubicación
-            </button>
-            <button
-              type="button"
-              className="btn btn--ghost btn--sm"
-              onClick={() => setPosition(null)}
-              disabled={!position}
-            >
-              ✕ Quitar marcador
-            </button>
-            <span className={`coords${position ? ' is-set' : ''}`}>
-              {position
-                ? `${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}`
-                : 'Sin ubicación seleccionada'}
-            </span>
-          </div>
+          <p className="guide">
+            <strong>Arrastra el mapa</strong> hasta que el pin quede sobre la casa, o toca{' '}
+            <strong>Usar mi ubicación</strong> si estás ahí en este momento.
+          </p>
 
-          <MapPicker value={position} onChange={handlePick} flyTo={flyTo} />
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={locateMe}
+            disabled={locating}
+          >
+            {locating ? <span className="spinner spinner--dark" /> : '📍 '}
+            {locating ? 'Buscando tu ubicación…' : 'Usar mi ubicación'}
+          </button>
+
+          <MapPicker
+            picked={picked}
+            onCenterChange={handleCenterChange}
+            onUserDrag={handleUserDrag}
+            flyTo={flyTo}
+          />
+
+          <p className={`coords${picked ? ' is-set' : ''}`}>
+            {picked && center
+              ? `✓ Ubicación marcada · ${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`
+              : 'Todavía sin marcar'}
+          </p>
           <p className="error error--block">{errors.location ?? ''}</p>
         </fieldset>
 
@@ -233,13 +195,12 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
             onClick={() => {
               setName('');
               setAddress('');
-              setPosition(null);
-              setHint('');
+              setPicked(false);
               setErrors({});
               showToast('Formulario limpiado.');
             }}
           >
-            Limpiar formulario
+            Limpiar
           </button>
           <button type="submit" className="btn btn--primary">
             Registrar estación
@@ -250,12 +211,12 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
       <Modal
         open={confirming}
         busy={saving}
-        title="Confirmar estación de dulce"
+        title="Confirmar estación"
         confirmText="Confirmar estación"
         onClose={() => setConfirming(false)}
         onConfirm={handleConfirm}
       >
-        <p className="modal__intro">Revisa la información de la estación antes de confirmar:</p>
+        <p className="modal__intro">Revisa la información antes de confirmar:</p>
         <div className="summary">
           <div className="summary__item summary__item--highlight">
             <span>Colonia</span>
@@ -271,9 +232,7 @@ export default function StationForm({ coloniaId, coloniaName, postalCode }: Prop
           </div>
           <div className="summary__item">
             <span>Coordenadas</span>
-            <strong>
-              {position ? `${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}` : '—'}
-            </strong>
+            <strong>{center ? `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}` : '—'}</strong>
           </div>
         </div>
       </Modal>

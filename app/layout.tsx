@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 // El CSS de Leaflet debe ir antes que globals.css: sin él los tiles pierden su
 // posicionamiento absoluto (se apilan desalineados) y los marcadores no se ubican.
@@ -9,6 +9,19 @@ export const metadata: Metadata = {
   title: 'SweetsTrail · Ruta de los Dulces',
   description:
     'Gestión de la ruta de los dulces por colonia: registro de niños participantes y estaciones de dulce.',
+};
+
+/**
+ * App pensada primero para teléfono: `viewportFit: 'cover'` permite usar toda
+ * la pantalla en equipos con notch, y el CSS respeta las safe areas con
+ * env(safe-area-inset-*). Se deja el zoom habilitado a propósito: bloquearlo
+ * estorba a quien necesita acercar el texto.
+ */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#14101f',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
