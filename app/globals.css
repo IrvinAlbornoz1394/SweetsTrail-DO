@@ -343,17 +343,14 @@ input.is-invalid { border-color: var(--red); }
 .spinner--dark { border-color: rgba(255,161,77,.3); border-top-color: var(--orange-2); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* En móvil, las acciones del formulario se quedan a la mano al hacer scroll. */
+/* Las acciones scrollean con el formulario. Fijarlas al fondo tapaba el
+   final del contenido y hacía ver el formulario cortado. */
 .form-actions {
-  position: sticky;
-  bottom: calc(-1 * var(--safe-b));
   display: flex;
   flex-direction: column-reverse;
   gap: 10px;
-  margin: 0 -16px -16px;
-  padding: 14px 16px calc(14px + var(--safe-b));
+  padding-top: 16px;
   border-top: 1px solid var(--line);
-  background: linear-gradient(to top, var(--surface) 70%, rgba(34,26,58,.92));
 }
 .form-actions .btn { width: 100%; }
 
@@ -780,14 +777,11 @@ input.is-invalid { border-color: var(--red); }
   .picker { padding: 20px; }
   .grid-2 { grid-template-columns: 1fr 1fr; gap: 16px; }
 
-  /* Con espacio de sobra, los botones vuelven a la derecha y dejan de pegarse. */
+  /* Con espacio de sobra, los botones vuelven a la derecha. */
   .form-actions {
-    position: static;
     flex-direction: row;
     justify-content: flex-end;
-    margin: 0;
-    padding: 18px 0 0;
-    background: none;
+    padding-top: 18px;
   }
   .form-actions .btn { width: auto; }
 
