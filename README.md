@@ -76,8 +76,10 @@ No hay que tocar código: `lib/db.ts` elige el backend en tiempo de ejecución.
 2. En **Settings → Environment Variables**, agrega `SUPABASE_URL` y
    `SUPABASE_SERVICE_ROLE_KEY`.
 3. Agrega también `STATION_DELETE_CODE`: el código que pide la app para
-   eliminar una estación desde el mapa. Si falta, el borrado responde 503 y
-   nadie puede quitar estaciones en producción.
+   eliminar una estación desde el mapa. Si falta, el borrado responde 503
+   («El borrado no está configurado en este servidor») y nadie puede quitar
+   estaciones en producción. Al agregarla hay que **volver a desplegar**: las
+   variables se leen en el arranque del servidor.
 4. Deploy.
 
 En producción las dos primeras son obligatorias: PGlite escribe en disco y el
@@ -92,7 +94,7 @@ app/
   colonia/[slug]/ninos/page.tsx     Formulario de niños
   colonia/[slug]/estaciones/page.tsx Formulario de estaciones
   api/registrations/route.ts        POST — tutor + niños (atómico)
-  api/stations/route.ts             GET/POST — estaciones por colonia
+  api/stations/route.ts             GET/POST/DELETE — estaciones por colonia
 components/                         Formularios, mapa, modal, toast
 lib/
   db.ts                             Capa de datos (Supabase | PGlite)
@@ -110,7 +112,22 @@ colonias ──┬── tutors ── children
 ```
 
 Las estaciones **no guardan dirección**: la ubicación se marca en el mapa, que
-es más preciso para trazar la ruta. `colonias.lat/lng` guarda el centro
+es más preciso para trazar la ruta.
+
+Eliminar una estación desde el mapa **no borra la fila**: marca
+`stations.is_deleted = true` (arranca en `false`). La estación desaparece del
+mapa, de la lista y del conteo, pero el registro se conserva, así que un
+borrado por error se revierte con un `update`:
+
+```sql
+update public.stations set is_deleted = false where id = '<uuid>';
+```
+
+Para ver lo que se ha quitado:
+
+```sql
+select id, name, created_at from public.stations where is_deleted;
+``` `colonias.lat/lng` guarda el centro
 aproximado para abrir el mapa ya sobre la colonia; se llena la primera vez que
 alguien la usa (`lib/geocode.ts`) y de ahí en adelante sale de la base.
 

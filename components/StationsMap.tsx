@@ -77,6 +77,7 @@ export default function StationsMap({
 
   // Al borrar, el servidor manda la lista nueva; mientras tanto se ocultan las
   // que ya se quitaron para que el mapa no muestre un marcador fantasma.
+  // (El borrado es suave: la estación sigue en la base marcada como eliminada.)
   const [removed, setRemoved] = useState<string[]>([]);
   const visible = useMemo(
     () => stations.filter((s) => !removed.includes(s.id)),
@@ -174,7 +175,9 @@ export default function StationsMap({
         <p>
           Se va a quitar <strong>{pending?.name}</strong> del mapa y de la lista de estaciones.
         </p>
-        <p className="hint">Esta acción no se puede deshacer: habría que registrarla de nuevo.</p>
+        <p className="hint">
+          Deja de aparecer para todos, pero el registro se conserva por si hay que recuperarla.
+        </p>
 
         <div className="field">
           <label htmlFor="deleteCode">Código de organizador</label>

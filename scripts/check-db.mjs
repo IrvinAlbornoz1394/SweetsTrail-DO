@@ -60,6 +60,18 @@ try {
   for (const t of ['tutors', 'children', 'stations']) {
     if (!found.has(t)) continue;
     const { rows: [r] } = await client.query(`select count(*)::int as n from ${t}`);
+    // Las estaciones se borran en suave: se distingue lo visible de lo archivado.
+    // La columna puede no existir todavía si falta correr la migración.
+    if (t === 'stations') {
+      const { rows: [d] } = await client
+        .query('select count(*)::int as n from stations where is_deleted')
+        .catch(() => ({ rows: [null] }));
+      if (d) {
+        console.log(`  ${t.padEnd(9)} ${r.n - d.n}${d.n ? `  (+${d.n} eliminadas)` : ''}`);
+        continue;
+      }
+      fail('falta la columna stations.is_deleted — corre: npm run db:migrate');
+    }
     console.log(`  ${t.padEnd(9)} ${r.n}`);
   }
 

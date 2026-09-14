@@ -206,17 +206,21 @@ export async function createStation(input: StationInput): Promise<string> {
 }
 
 /**
- * Borra una estación mal registrada. El `colonia_id` va en el filtro a
- * propósito: aunque alguien mande un id ajeno, solo puede tocar estaciones de
- * la colonia que ya se validó. Devuelve false si no había nada que borrar.
+ * Quita una estación mal registrada. No borra la fila: marca `is_deleted`, así
+ * que un borrado por error se puede revertir desde la base sin perder quién la
+ * registró ni cuándo. El `colonia_id` va en el filtro a propósito: aunque
+ * alguien mande un id ajeno, solo puede tocar estaciones de la colonia que ya
+ * se validó. `is_deleted = false` en el filtro hace que borrar dos veces
+ * devuelva false en lugar de fingir que se quitó algo.
  */
-export async function deleteStation(id: string, coloniaId: string): Promise<boolean> {
+export async function softDeleteStation(id: string, coloniaId: string): Promise<boolean> {
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('stations')
-      .delete()
+      .update({ is_deleted: true })
       .eq('id', id)
       .eq('colonia_id', coloniaId)
+      .eq('is_deleted', false)
       .select('id');
     if (error) throw new Error(error.message);
     return (data ?? []).length > 0;
@@ -224,18 +228,22 @@ export async function deleteStation(id: string, coloniaId: string): Promise<bool
 
   const db = await getPglite();
   const { rows } = await db.query(
-    'delete from stations where id = $1 and colonia_id = $2 returning id',
+    `update stations set is_deleted = true
+      where id = $1 and colonia_id = $2 and not is_deleted
+      returning id`,
     [id, coloniaId]
   );
   return rows.length > 0;
 }
 
+/** Estaciones vivas de una colonia: las marcadas como borradas no salen. */
 export async function listStationsByColonia(coloniaId: string): Promise<Station[]> {
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('stations')
       .select('id, name, lat, lng, status, created_at')
       .eq('colonia_id', coloniaId)
+      .eq('is_deleted', false)
       .order('created_at', { ascending: false });
     if (error) throw new Error(error.message);
     return (data ?? []) as Station[];
@@ -244,7 +252,9 @@ export async function listStationsByColonia(coloniaId: string): Promise<Station[
   const db = await getPglite();
   const { rows } = await db.query<Station>(
     `select id, name, lat, lng, status, created_at
-       from stations where colonia_id = $1 order by created_at desc`,
+       from stations
+      where colonia_id = $1 and not is_deleted
+      order by created_at desc`,
     [coloniaId]
   );
   return rows;

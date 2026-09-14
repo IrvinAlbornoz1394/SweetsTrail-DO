@@ -120,3 +120,14 @@ alter table public.colonias add column if not exists lng double precision;
 -- La dirección de la estación se dejó de capturar: la ubicación se marca
 -- en el mapa, que es más preciso para trazar la ruta.
 alter table public.stations drop column if exists address;
+
+-- Borrado suave de estaciones: eliminar desde el mapa no borra la fila, solo
+-- levanta esta bandera. Así una estación quitada por error se puede recuperar
+-- desde la base sin perder quién la registró ni cuándo.
+alter table public.stations add column if not exists is_deleted boolean not null default false;
+
+-- Las consultas siempre piden las vivas de una colonia; el índice parcial las
+-- resuelve sin recorrer las borradas.
+create index if not exists stations_colonia_activas_idx
+  on public.stations (colonia_id, created_at desc)
+  where not is_deleted;

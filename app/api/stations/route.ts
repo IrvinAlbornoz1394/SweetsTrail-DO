@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { coloniaExists, createStation, deleteStation, listStationsByColonia } from '@/lib/db';
+import { coloniaExists, createStation, listStationsByColonia, softDeleteStation } from '@/lib/db';
 import { stationDeleteSchema, stationSchema } from '@/lib/schemas';
 
 export async function GET(request: Request) {
@@ -52,9 +52,11 @@ export async function POST(request: Request) {
 }
 
 /**
- * Quita una estación registrada por error.
+ * Quita una estación registrada por error. El borrado es suave: la fila se
+ * queda en la base con `is_deleted = true` y deja de aparecer en el mapa y en
+ * la lista, así que un borrado equivocado se puede revertir.
  *
- * Va en el cuerpo y no en la URL a propósito: el código de organizador no debe
+ * El código de organizador va en el cuerpo y no en la URL a propósito: no debe
  * quedar escrito en los logs de acceso ni en el historial del navegador. Y se
  * compara aquí, en el servidor: si solo se revisara en el navegador, bastaría
  * con leer el JS o llamar a la API a mano para saltárselo.
@@ -92,10 +94,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'La colonia indicada no existe.' }, { status: 404 });
     }
 
-    const removed = await deleteStation(parsed.data.id, parsed.data.coloniaId);
+    const removed = await softDeleteStation(parsed.data.id, parsed.data.coloniaId);
     if (!removed) {
       return NextResponse.json(
-        { error: 'La estación ya no existe o pertenece a otra colonia.' },
+        { error: 'La estación ya se había eliminado o pertenece a otra colonia.' },
         { status: 404 }
       );
     }

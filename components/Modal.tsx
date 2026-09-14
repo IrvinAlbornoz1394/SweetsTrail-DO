@@ -27,23 +27,41 @@ export default function Modal({
   onConfirm,
   children,
 }: Props) {
+  const boxRef = useRef<HTMLDivElement>(null);
   const confirmRef = useRef<HTMLButtonElement>(null);
+
+  /**
+   * El foco se coloca UNA vez, al abrir: si este efecto dependiera de `busy` o
+   * de `onClose` (que el padre recrea en cada render), volvería a correr con
+   * cada tecla y le robaría el foco al campo que se está escribiendo.
+   *
+   * Cuando el diálogo pide un dato, el foco va al primer campo; si no, al botón
+   * de confirmar.
+   */
+  useEffect(() => {
+    if (!open) return;
+
+    const field = boxRef.current?.querySelector<HTMLElement>('input, textarea, select');
+    (field ?? confirmRef.current)?.focus();
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
 
-    confirmRef.current?.focus();
     document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !busy) onClose();
     };
     document.addEventListener('keydown', onKey);
-
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-    };
+    return () => document.removeEventListener('keydown', onKey);
   }, [open, busy, onClose]);
 
   if (!open) return null;
@@ -51,7 +69,7 @@ export default function Modal({
   return (
     <div className="modal">
       <div className="modal__backdrop" onClick={() => !busy && onClose()} />
-      <div className="modal__box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div className="modal__box" ref={boxRef} role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <header className="modal__head">
           <h3 id="modalTitle">{title}</h3>
           <button type="button" className="modal__x" onClick={onClose} disabled={busy} aria-label="Cerrar">
