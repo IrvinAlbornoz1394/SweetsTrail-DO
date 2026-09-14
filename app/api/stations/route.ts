@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { coloniaExists, createStation, listStationsByColonia } from '@/lib/db';
-import { stationSchema } from '@/lib/schemas';
+import { coloniaExists, createStation, deleteStation, listStationsByColonia } from '@/lib/db';
+import { stationDeleteSchema, stationSchema } from '@/lib/schemas';
 
 export async function GET(request: Request) {
   const coloniaId = new URL(request.url).searchParams.get('coloniaId');
@@ -48,5 +48,41 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error('[stations:POST]', err);
     return NextResponse.json({ error: 'No se pudo guardar la estación.' }, { status: 500 });
+  }
+}
+
+/** Quita una estación registrada por error: DELETE /api/stations?id=…&coloniaId=… */
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  // Los parámetros ausentes llegan como null; se pasan como '' para que falle
+  // la regla de uuid (mensaje en español) y no el chequeo de tipo de Zod.
+  const parsed = stationDeleteSchema.safeParse({
+    id: searchParams.get('id') ?? '',
+    coloniaId: searchParams.get('coloniaId') ?? '',
+  });
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? 'Datos inválidos.' },
+      { status: 422 }
+    );
+  }
+
+  try {
+    if (!(await coloniaExists(parsed.data.coloniaId))) {
+      return NextResponse.json({ error: 'La colonia indicada no existe.' }, { status: 404 });
+    }
+
+    const removed = await deleteStation(parsed.data.id, parsed.data.coloniaId);
+    if (!removed) {
+      return NextResponse.json(
+        { error: 'La estación ya no existe o pertenece a otra colonia.' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[stations:DELETE]', err);
+    return NextResponse.json({ error: 'No se pudo eliminar la estación.' }, { status: 500 });
   }
 }

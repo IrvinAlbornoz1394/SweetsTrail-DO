@@ -39,5 +39,11 @@ export const stationSchema = z.object({
   lng: z.number({ error: 'Marca la ubicación en el mapa.' }).min(-180, 'Longitud fuera de rango.').max(180, 'Longitud fuera de rango.'),
 });
 
+/** Borrado de una estación: siempre acotado a la colonia que la registró. */
+export const stationDeleteSchema = z.object({
+  coloniaId,
+  id: z.string().uuid('Estación inválida.'),
+});
+
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 export type StationInput = z.infer<typeof stationSchema>;

@@ -49,7 +49,7 @@ export default async function RegisteredStationsPage({
         </p>
       ) : (
         <>
-          <StationsMapClient stations={stations} center={center} />
+          <StationsMapClient stations={stations} center={center} coloniaId={colonia.id} />
 
           <ol className="roster roster--stations">
             {stations.map((station, i) => (

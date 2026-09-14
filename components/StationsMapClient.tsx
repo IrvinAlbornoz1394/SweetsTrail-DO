@@ -19,9 +19,11 @@ const StationsMap = dynamic(() => import('./StationsMap'), {
 export default function StationsMapClient({
   stations,
   center,
+  coloniaId,
 }: {
   stations: Station[];
   center: LatLng;
+  coloniaId: string;
 }) {
-  return <StationsMap stations={stations} center={center} />;
+  return <StationsMap stations={stations} center={center} coloniaId={coloniaId} />;
 }

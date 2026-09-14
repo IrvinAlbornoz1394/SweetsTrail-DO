@@ -340,6 +340,12 @@ input.is-invalid { border-color: var(--red); }
 .btn--ghost { background: var(--surface-2); border-color: var(--line); color: var(--text); }
 .btn--ghost:not(:disabled):hover { border-color: var(--purple); }
 
+/* Acciones que no se deshacen (borrar una estación). El rojo del tema es claro
+   y pensado para texto sobre fondo oscuro; como relleno necesita uno más denso
+   para que el texto blanco encima siga legible. */
+.btn--danger { background: #dc2626; border-color: #dc2626; color: #fff; }
+.btn--danger:not(:disabled):hover { filter: brightness(1.1); }
+
 .btn--dashed {
   width: 100%;
   background: transparent;
@@ -458,6 +464,24 @@ input.is-invalid { border-color: var(--red); }
 .leaflet-popup-content { margin: 11px 14px; font-size: 13.5px; line-height: 1.45; }
 .leaflet-popup-content strong { color: var(--orange-2); }
 .leaflet-container a.leaflet-popup-close-button { color: var(--text-dim); }
+
+/* Quitar una estación mal registrada, desde su propio globo. */
+.popup__remove {
+  display: block;
+  width: 100%;
+  min-height: 34px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: 1px solid rgba(248,113,113,.5);
+  border-radius: 9px;
+  background: rgba(248,113,113,.12);
+  color: var(--red);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.popup__remove:hover { background: rgba(248,113,113,.2); }
 
 /* ===========================================================
    Selector de colonia

@@ -205,6 +205,31 @@ export async function createStation(input: StationInput): Promise<string> {
   return rows[0].id;
 }
 
+/**
+ * Borra una estación mal registrada. El `colonia_id` va en el filtro a
+ * propósito: aunque alguien mande un id ajeno, solo puede tocar estaciones de
+ * la colonia que ya se validó. Devuelve false si no había nada que borrar.
+ */
+export async function deleteStation(id: string, coloniaId: string): Promise<boolean> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('stations')
+      .delete()
+      .eq('id', id)
+      .eq('colonia_id', coloniaId)
+      .select('id');
+    if (error) throw new Error(error.message);
+    return (data ?? []).length > 0;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query(
+    'delete from stations where id = $1 and colonia_id = $2 returning id',
+    [id, coloniaId]
+  );
+  return rows.length > 0;
+}
+
 export async function listStationsByColonia(coloniaId: string): Promise<Station[]> {
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()

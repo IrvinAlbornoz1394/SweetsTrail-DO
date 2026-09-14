@@ -6,6 +6,10 @@ type Props = {
   open: boolean;
   title: string;
   confirmText?: string;
+  /** Texto mientras corre la acción: "Guardando…" no sirve para un borrado. */
+  busyText?: string;
+  /** Pinta de rojo el botón de confirmar, para acciones que no se deshacen. */
+  danger?: boolean;
   busy?: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -16,6 +20,8 @@ export default function Modal({
   open,
   title,
   confirmText = 'Confirmar',
+  busyText = 'Guardando…',
+  danger = false,
   busy = false,
   onClose,
   onConfirm,
@@ -61,13 +67,13 @@ export default function Modal({
           </button>
           <button
             type="button"
-            className="btn btn--primary"
+            className={`btn ${danger ? 'btn--danger' : 'btn--primary'}`}
             ref={confirmRef}
             onClick={onConfirm}
             disabled={busy}
           >
             {busy && <span className="spinner" />}
-            {busy ? 'Guardando…' : confirmText}
+            {busy ? busyText : confirmText}
           </button>
         </footer>
       </div>
