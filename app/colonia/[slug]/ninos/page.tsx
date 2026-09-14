@@ -19,9 +19,6 @@ export default async function KidsPage({ params }: { params: Promise<{ slug: str
           <h2>Registro de niños participantes</h2>
           <p>Los campos de niño que queden vacíos se omitirán automáticamente.</p>
         </div>
-        <Link className="btn btn--ghost btn--back" href={`/colonia/${colonia.slug}`}>
-          ← Volver
-        </Link>
       </div>
 
       <KidsForm coloniaId={colonia.id} coloniaName={colonia.name} />

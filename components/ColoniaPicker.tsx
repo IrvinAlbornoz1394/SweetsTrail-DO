@@ -15,6 +15,9 @@ export default function ColoniaPicker({ colonias }: { colonias: Colonia[] }) {
   const [query, setQuery] = useState('');
   const [going, setGoing] = useState<string | null>(null);
 
+  /** La plataforma opera para una sola colonia: buscar entre una opción sobra. */
+  const single = colonias.length <= 1;
+
   const index = useMemo(
     () => colonias.map((c) => ({ colonia: c, haystack: norm(`${c.name} ${c.postal_code ?? ''} ${c.tipo ?? ''}`) })),
     [colonias]
@@ -40,24 +43,32 @@ export default function ColoniaPicker({ colonias }: { colonias: Colonia[] }) {
 
   return (
     <div className="card picker">
-      <div className="field">
-        <label htmlFor="coloniaSearch">Buscar colonia, fraccionamiento o código postal</label>
-        <input
-          id="coloniaSearch"
-          type="search"
-          placeholder="Ej. Francisco de Montejo, Altabrisa, 97130…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          autoComplete="off"
-          autoFocus
-        />
+      {single ? (
         <p className="hint">
-          {total === 0
-            ? 'Ninguna colonia coincide con tu búsqueda.'
-            : `${total} ${total === 1 ? 'resultado' : 'resultados'} en Mérida, Yucatán` +
-              (total > results.length ? ` · mostrando los primeros ${results.length}` : '')}
+          {colonias.length === 0
+            ? 'La colonia Dolores Otero (CP 97270) aún no está cargada en la base de datos.'
+            : 'Esta edición de la ruta es exclusiva de la colonia Dolores Otero (CP 97270).'}
         </p>
-      </div>
+      ) : (
+        <div className="field">
+          <label htmlFor="coloniaSearch">Buscar colonia, fraccionamiento o código postal</label>
+          <input
+            id="coloniaSearch"
+            type="search"
+            placeholder="Ej. Francisco de Montejo, Altabrisa, 97130…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoComplete="off"
+            autoFocus
+          />
+          <p className="hint">
+            {total === 0
+              ? 'Ninguna colonia coincide con tu búsqueda.'
+              : `${total} ${total === 1 ? 'resultado' : 'resultados'} en Mérida, Yucatán` +
+                (total > results.length ? ` · mostrando los primeros ${results.length}` : '')}
+          </p>
+        </div>
+      )}
 
       {results.length > 0 && (
         <ul className="colonia-list">
@@ -84,7 +95,7 @@ export default function ColoniaPicker({ colonias }: { colonias: Colonia[] }) {
         </ul>
       )}
 
-      {results.length === 0 && query.trim() !== '' && (
+      {!single && results.length === 0 && query.trim() !== '' && (
         <p className="empty">
           No encontramos <strong>“{query.trim()}”</strong> en el catálogo de Mérida. Revisa la
           ortografía o busca por código postal.

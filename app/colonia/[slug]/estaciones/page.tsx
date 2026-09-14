@@ -28,9 +28,6 @@ export default async function StationsPage({ params }: { params: Promise<{ slug:
           <h2>Registro de estación de dulce</h2>
           <p>Coloca el marcador sobre la casa que va a participar en la ruta.</p>
         </div>
-        <Link className="btn btn--ghost btn--back" href={`/colonia/${colonia.slug}`}>
-          ← Volver
-        </Link>
       </div>
 
       <div className="tally tally--compact">

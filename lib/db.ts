@@ -44,6 +44,13 @@ export const backendName = () => (hasSupabaseConfig() ? 'supabase' : 'pglite-loc
 
 const COLONIA_COLS = 'id, slug, name, tipo, postal_code, municipio, estado, lat, lng';
 
+/**
+ * La plataforma opera solo para Dolores Otero (CP 97270). El catálogo completo
+ * sigue en la base, pero aquí se filtra en un solo lugar: así ni el buscador,
+ * ni las URLs `/colonia/<slug>`, ni las APIs pueden alcanzar otra colonia.
+ */
+export const ALLOWED_COLONIA_SLUG = 'dolores-otero-97270';
+
 /* ---------------- Colonias ---------------- */
 
 export async function listColonias(): Promise<Colonia[]> {
@@ -51,6 +58,7 @@ export async function listColonias(): Promise<Colonia[]> {
     const { data, error } = await getSupabase()
       .from('colonias')
       .select(COLONIA_COLS)
+      .eq('slug', ALLOWED_COLONIA_SLUG)
       .order('name');
     if (error) throw new Error(error.message);
     return (data ?? []) as Colonia[];
@@ -58,12 +66,15 @@ export async function listColonias(): Promise<Colonia[]> {
 
   const db = await getPglite();
   const { rows } = await db.query<Colonia>(
-    `select ${COLONIA_COLS} from colonias order by name`
+    `select ${COLONIA_COLS} from colonias where slug = $1 order by name`,
+    [ALLOWED_COLONIA_SLUG]
   );
   return rows;
 }
 
 export async function getColoniaBySlug(slug: string): Promise<Colonia | null> {
+  if (slug !== ALLOWED_COLONIA_SLUG) return null;
+
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('colonias')
@@ -89,13 +100,17 @@ export async function coloniaExists(id: string): Promise<boolean> {
       .from('colonias')
       .select('id')
       .eq('id', id)
+      .eq('slug', ALLOWED_COLONIA_SLUG)
       .maybeSingle();
     if (error) throw new Error(error.message);
     return data !== null;
   }
 
   const db = await getPglite();
-  const { rows } = await db.query('select 1 from colonias where id = $1', [id]);
+  const { rows } = await db.query('select 1 from colonias where id = $1 and slug = $2', [
+    id,
+    ALLOWED_COLONIA_SLUG,
+  ]);
   return rows.length > 0;
 }
 

@@ -54,8 +54,7 @@ h1, h2, h3 { line-height: 1.2; }
 .topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   padding: 12px 16px;
   padding-top: max(12px, env(safe-area-inset-top, 0px));
   border-bottom: 1px solid var(--line);
@@ -66,10 +65,30 @@ h1, h2, h3 { line-height: 1.2; }
   z-index: 500;
 }
 
+/* Volver: icono en la barra superior, siempre en el mismo lugar. */
+.topbar__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+  text-decoration: none;
+}
+.topbar__back:hover { border-color: var(--purple); }
+
+/* El logo empuja al resto de la barra a la derecha si algún día hay más botones. */
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-right: auto;
   min-height: var(--touch);
   background: none;
   border: 0;
@@ -154,17 +173,18 @@ h1, h2, h3 { line-height: 1.2; }
    Cabecera de pantalla
    =========================================================== */
 
+/* Encabezado discreto: el formulario que va debajo es lo importante. */
 .page-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 12px;
-  margin-bottom: 18px;
+  gap: 4px 10px;
+  margin-bottom: 12px;
 }
-.page-head__icon { font-size: 28px; line-height: 1; }
+.page-head__icon { font-size: 18px; line-height: 1; }
 .page-head > div { flex: 1; min-width: 0; }
-.page-head h2 { margin: 0; font-size: 20px; }
-.page-head p { margin: 2px 0 0; color: var(--text-dim); font-size: 13.5px; }
+.page-head h2 { margin: 0; font-size: 16px; }
+.page-head p { margin: 1px 0 0; color: var(--text-dim); font-size: 12.5px; }
 
 /* ===========================================================
    Tarjetas y formularios
@@ -329,7 +349,6 @@ input.is-invalid { border-color: var(--red); }
 .btn--dashed:not(:disabled):hover { border-color: var(--orange); background: rgba(255,122,26,.07); }
 
 .btn--block { width: 100%; }
-.btn--back { min-height: 38px; padding: 8px 13px; font-size: 13.5px; }
 
 .spinner {
   display: inline-block;
@@ -503,60 +522,41 @@ input.is-invalid { border-color: var(--red); }
 
 .colonia-banner {
   display: flex;
+  align-items: center;
+  gap: 6px 10px;
+  margin-bottom: 14px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,122,26,.28);
+  background: rgba(255,122,26,.07);
+}
+.colonia-banner__pin { font-size: 14px; line-height: 1; }
+
+/* Nombre y CP en la misma línea; solo se parten si de plano no caben. */
+.colonia-banner__text {
+  display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 13px 15px;
-  border-radius: var(--radius);
-  border: 1px solid rgba(255,122,26,.45);
-  background: linear-gradient(120deg, rgba(255,122,26,.16), rgba(139,92,246,.14));
+  align-items: baseline;
+  gap: 0 8px;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
 }
-.colonia-banner__pin { font-size: 22px; line-height: 1; }
-.colonia-banner__text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-.colonia-banner__text small {
+.colonia-banner__text strong { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
+.colonia-banner__meta { color: var(--text-dim); font-size: 11.5px; }
+
+.colonia-banner__roster {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border: 1px solid rgba(255,122,26,.4);
+  border-radius: 999px;
+  background: transparent;
   color: var(--orange-2);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: .9px;
-  text-transform: uppercase;
-}
-.colonia-banner__text strong {
-  font-size: 19px;
-  font-weight: 700;
-  overflow-wrap: anywhere;
-}
-.colonia-banner__meta { color: var(--text-dim); font-size: 12px; }
-
-.colonia-banner__actions { display: flex; gap: 8px; width: 100%; }
-.colonia-banner__actions > * { flex: 1; }
-
-.colonia-banner__roster,
-.colonia-banner__change {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  text-align: center;
   text-decoration: none;
   white-space: nowrap;
 }
-.colonia-banner__roster {
-  border: 1px solid rgba(255,122,26,.5);
-  background: rgba(255,122,26,.14);
-  color: var(--orange-2);
-  font-weight: 700;
-}
-.colonia-banner__change {
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--text);
-}
-
 /* ===========================================================
    Contadores y padrones
    =========================================================== */
@@ -770,8 +770,9 @@ input.is-invalid { border-color: var(--red); }
   .choice__title { font-size: 19px; }
   .choice__desc { font-size: 14px; }
 
-  .page-head h2 { font-size: 24px; }
-  .page-head p { font-size: 14px; }
+  .page-head__icon { font-size: 22px; }
+  .page-head h2 { font-size: 19px; }
+  .page-head p { font-size: 13.5px; }
 
   .card { padding: 24px; }
   .picker { padding: 20px; }
@@ -790,12 +791,10 @@ input.is-invalid { border-color: var(--red); }
   .map { height: 380px; max-height: none; }
   .map--tall { height: 460px; max-height: none; }
 
-  .colonia-banner { flex-wrap: nowrap; padding: 14px 18px; }
-  .colonia-banner__pin { font-size: 26px; }
-  .colonia-banner__text strong { font-size: 21px; }
+  .colonia-banner { padding: 9px 14px; }
+  .colonia-banner__pin { font-size: 16px; }
+  .colonia-banner__text strong { font-size: 15px; }
   .colonia-banner__meta { font-size: 12.5px; }
-  .colonia-banner__actions { width: auto; flex: 0 0 auto; }
-  .colonia-banner__actions > * { flex: 0 0 auto; }
 
   .tally { padding: 22px 26px; }
   .tally__action { width: auto; margin-left: auto; }

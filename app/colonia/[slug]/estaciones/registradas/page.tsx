@@ -33,9 +33,6 @@ export default async function RegisteredStationsPage({
           <h2>Estaciones registradas</h2>
           <p>Casas que van a repartir dulces en esta colonia.</p>
         </div>
-        <Link className="btn btn--ghost btn--back" href={`/colonia/${colonia.slug}/estaciones`}>
-          ← Volver
-        </Link>
       </div>
 
       <div className="tally">

@@ -13,8 +13,8 @@ export default async function HomePage() {
         <span className="hero__step">Paso 1 de 2</span>
         <h1>¿En qué colonia participas?</h1>
         <p>
-          Elige tu colonia para ver y gestionar únicamente los registros de tu ruta. Cada colonia
-          organiza su evento por separado.
+          La ruta de este año se organiza únicamente en la colonia Dolores Otero (CP 97270).
+          Confírmala para ver y gestionar los registros de tu ruta.
         </p>
       </div>
 

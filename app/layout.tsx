@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import BackButton from '@/components/BackButton';
 // El CSS de Leaflet debe ir antes que globals.css: sin él los tiles pierden su
 // posicionamiento absoluto (se apilan desalineados) y los marcadores no se ubican.
 import 'leaflet/dist/leaflet.css';
@@ -29,7 +30,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es-MX">
       <body>
         <header className="topbar">
-          <Link className="brand" href="/" title="Cambiar de colonia">
+          <BackButton />
+          <Link className="brand" href="/" title="Inicio">
             <span className="brand__icon">🍬</span>
             <span className="brand__text">
               <strong>SweetsTrail</strong>

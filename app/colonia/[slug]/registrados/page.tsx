@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getColoniaBySlug, listChildrenByColonia } from '@/lib/db';
 import ColoniaBanner from '@/components/ColoniaBanner';
+import RosterSearch from '@/components/RosterSearch';
 
 // El conteo debe estar siempre al día: nada de caché.
 export const dynamic = 'force-dynamic';
@@ -20,17 +21,14 @@ export default async function RegisteredChildrenPage({
 
   return (
     <>
-      <ColoniaBanner colonia={colonia} />
+      <ColoniaBanner colonia={colonia} roster={false} />
 
       <div className="page-head">
         <span className="page-head__icon">🎃</span>
         <div>
           <h2>Niños registrados</h2>
-          <p>Participantes dados de alta en esta colonia.</p>
+          <p>Busca a tu niño para verificar que su registro quedó guardado.</p>
         </div>
-        <Link className="btn btn--ghost btn--back" href={`/colonia/${colonia.slug}`}>
-          ← Volver
-        </Link>
       </div>
 
       <div className="tally">
@@ -46,14 +44,7 @@ export default async function RegisteredChildrenPage({
           <Link href={`/colonia/${colonia.slug}/ninos`}>Registra al primero.</Link>
         </p>
       ) : (
-        <ol className="roster">
-          {children.map((child, i) => (
-            <li className="roster__item" key={child.id}>
-              <span className="roster__num">{i + 1}</span>
-              <span className="roster__name">{child.name}</span>
-            </li>
-          ))}
-        </ol>
+        <RosterSearch items={children} coloniaName={colonia.name} />
       )}
     </>
   );
