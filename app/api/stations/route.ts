@@ -51,20 +51,40 @@ export async function POST(request: Request) {
   }
 }
 
-/** Quita una estación registrada por error: DELETE /api/stations?id=…&coloniaId=… */
+/**
+ * Quita una estación registrada por error.
+ *
+ * Va en el cuerpo y no en la URL a propósito: el código de organizador no debe
+ * quedar escrito en los logs de acceso ni en el historial del navegador. Y se
+ * compara aquí, en el servidor: si solo se revisara en el navegador, bastaría
+ * con leer el JS o llamar a la API a mano para saltárselo.
+ */
 export async function DELETE(request: Request) {
-  const { searchParams } = new URL(request.url);
-  // Los parámetros ausentes llegan como null; se pasan como '' para que falle
-  // la regla de uuid (mensaje en español) y no el chequeo de tipo de Zod.
-  const parsed = stationDeleteSchema.safeParse({
-    id: searchParams.get('id') ?? '',
-    coloniaId: searchParams.get('coloniaId') ?? '',
-  });
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Cuerpo de la petición inválido.' }, { status: 400 });
+  }
+
+  const parsed = stationDeleteSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.issues[0]?.message ?? 'Datos inválidos.' },
       { status: 422 }
     );
+  }
+
+  const expected = process.env.STATION_DELETE_CODE?.trim();
+  if (!expected) {
+    console.error('[stations:DELETE] falta STATION_DELETE_CODE en el entorno');
+    return NextResponse.json(
+      { error: 'El borrado no está configurado en este servidor.' },
+      { status: 503 }
+    );
+  }
+  if (parsed.data.code !== expected) {
+    return NextResponse.json({ error: 'Código incorrecto.' }, { status: 403 });
   }
 
   try {

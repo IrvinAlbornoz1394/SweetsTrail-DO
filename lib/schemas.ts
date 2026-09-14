@@ -39,10 +39,18 @@ export const stationSchema = z.object({
   lng: z.number({ error: 'Marca la ubicación en el mapa.' }).min(-180, 'Longitud fuera de rango.').max(180, 'Longitud fuera de rango.'),
 });
 
-/** Borrado de una estación: siempre acotado a la colonia que la registró. */
+/**
+ * Borrado de una estación: acotado a la colonia que la registró y protegido
+ * con el código de organizador. El código se compara en el servidor contra
+ * STATION_DELETE_CODE; aquí solo se valida que venga algo.
+ */
 export const stationDeleteSchema = z.object({
   coloniaId,
   id: z.string().uuid('Estación inválida.'),
+  code: z
+    .string({ error: 'Escribe el código para eliminar.' })
+    .trim()
+    .min(1, 'Escribe el código para eliminar.'),
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

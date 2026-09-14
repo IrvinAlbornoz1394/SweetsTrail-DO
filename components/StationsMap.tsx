@@ -72,6 +72,7 @@ export default function StationsMap({
   const router = useRouter();
   const { toast, showToast } = useToast();
   const [pending, setPending] = useState<Station | null>(null);
+  const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
 
   // Al borrar, el servidor manda la lista nueva; mientras tanto se ocultan las
@@ -82,25 +83,43 @@ export default function StationsMap({
     [stations, removed]
   );
 
+  function closeModal() {
+    if (busy) return;
+    setPending(null);
+    setCode('');
+  }
+
   async function remove() {
     if (!pending) return;
+
+    if (code.trim() === '') {
+      showToast('Escribe el código para eliminar.', true);
+      return;
+    }
+
     setBusy(true);
 
     try {
-      const res = await fetch(
-        `/api/stations?id=${encodeURIComponent(pending.id)}&coloniaId=${encodeURIComponent(coloniaId)}`,
-        { method: 'DELETE' }
-      );
+      // El código viaja en el cuerpo, no en la URL: así no queda en los logs
+      // del servidor ni en el historial. Quien valida es la API.
+      const res = await fetch('/api/stations', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: pending.id, coloniaId, code: code.trim() }),
+      });
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
+        // Con código incorrecto el diálogo sigue abierto para reintentar.
         showToast(data.error ?? 'No se pudo eliminar la estación.', true);
+        setCode('');
         return;
       }
 
       setRemoved((ids) => [...ids, pending.id]);
       showToast(`Se eliminó “${pending.name}”.`);
       setPending(null);
+      setCode('');
       router.refresh();
     } catch {
       showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
@@ -149,13 +168,31 @@ export default function StationsMap({
         busyText="Eliminando…"
         danger
         busy={busy}
-        onClose={() => !busy && setPending(null)}
+        onClose={closeModal}
         onConfirm={remove}
       >
         <p>
           Se va a quitar <strong>{pending?.name}</strong> del mapa y de la lista de estaciones.
         </p>
         <p className="hint">Esta acción no se puede deshacer: habría que registrarla de nuevo.</p>
+
+        <div className="field">
+          <label htmlFor="deleteCode">Código de organizador</label>
+          <input
+            id="deleteCode"
+            type="password"
+            inputMode="numeric"
+            autoComplete="off"
+            placeholder="••••"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !busy) remove();
+            }}
+            disabled={busy}
+          />
+          <p className="hint">Solo quien organiza la ruta puede eliminar estaciones.</p>
+        </div>
       </Modal>
 
       <Toast toast={toast} />

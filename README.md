@@ -75,9 +75,12 @@ No hay que tocar código: `lib/db.ts` elige el backend en tiempo de ejecución.
 1. Importa el repo en Vercel (detecta Next.js solo).
 2. En **Settings → Environment Variables**, agrega `SUPABASE_URL` y
    `SUPABASE_SERVICE_ROLE_KEY`.
-3. Deploy.
+3. Agrega también `STATION_DELETE_CODE`: el código que pide la app para
+   eliminar una estación desde el mapa. Si falta, el borrado responde 503 y
+   nadie puede quitar estaciones en producción.
+4. Deploy.
 
-En producción las variables son obligatorias: PGlite escribe en disco y el
+En producción las dos primeras son obligatorias: PGlite escribe en disco y el
 filesystem de Vercel es de solo lectura.
 
 ## Estructura
