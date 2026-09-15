@@ -18,6 +18,28 @@ const prettyPhone = (p: string) =>
 const options = (values: string[]) =>
   [...new Set(values.filter((v) => v !== ''))].sort((a, b) => a.localeCompare(b, 'es'));
 
+/** Nombres que se comparan igual: sin acentos, sin mayúsculas y con un solo espacio. */
+const nameKey = (s: string) => norm(s).replace(/\s+/g, ' ').trim();
+
+/** El teléfono se compara sin espacios: “999 234 5678” es el mismo que “9992345678”. */
+const phoneKey = (s: string) => s.replace(/\s+/g, '');
+
+/** Qué se está buscando repetido; '' es la vista normal, sin agrupar. */
+type DupeBy = '' | 'child' | 'tutor' | 'phone';
+
+const dupeKey = (row: ChildWithTutor, by: DupeBy) =>
+  by === 'child' ? nameKey(row.name) : by === 'tutor' ? nameKey(row.tutor_name) : phoneKey(row.tutor_phone);
+
+/** Lo que se lee en el divisor del grupo: el dato tal cual lo escribieron. */
+const dupeLabel = (row: ChildWithTutor, by: DupeBy) =>
+  by === 'child' ? row.name : by === 'tutor' ? row.tutor_name : prettyPhone(phoneKey(row.tutor_phone));
+
+const DUPE_NOUN: Record<Exclude<DupeBy, ''>, string> = {
+  child: 'niños con el mismo nombre',
+  tutor: 'tutores con el mismo nombre',
+  phone: 'teléfonos repetidos',
+};
+
 /**
  * Padrón con buscador: el caso real es un papá que ya registró a su niño y
  * quiere confirmarlo. La numeración que se muestra es la posición en el padrón
@@ -47,6 +69,7 @@ export default function RosterSearch({
   const [busy, setBusy] = useState(false);
   const [tutor, setTutor] = useState('');
   const [phone, setPhone] = useState('');
+  const [dupeBy, setDupeBy] = useState<DupeBy>('');
 
   // Quitar un registro: pide el código de nuevo, no basta con tener abierto el
   // filtro (eso vive en el navegador y ahí no se decide nada).
@@ -127,6 +150,7 @@ export default function RosterSearch({
     setDetailed(null);
     setTutor('');
     setPhone('');
+    setDupeBy('');
   }
 
   // Con el filtro abierto manda la lista del servidor (trae el contacto); si
@@ -141,16 +165,91 @@ export default function RosterSearch({
   const tutors = useMemo(() => options((detailed ?? []).map((c) => c.tutor_name)), [detailed]);
   const phones = useMemo(() => options((detailed ?? []).map((c) => c.tutor_phone)), [detailed]);
 
+  // Qué valores están repetidos. Se cuenta sobre el padrón completo, no sobre
+  // lo que ya filtró el buscador: si no, esconder a un hermano haría que el
+  // otro dejara de verse como duplicado.
+  const repeated = useMemo(() => {
+    if (dupeBy === '' || detailed === null) return null;
+
+    const count = new Map<string, number>();
+    for (const row of detailed) {
+      const key = dupeKey(row, dupeBy);
+      if (key === '') continue; // sin dato no hay nada que comparar
+      count.set(key, (count.get(key) ?? 0) + 1);
+    }
+
+    return new Set([...count].filter(([, n]) => n > 1).map(([key]) => key));
+  }, [detailed, dupeBy]);
+
   const q = norm(query.trim());
   const results = index.filter(({ child, haystack }) => {
     if (q && !haystack.includes(q)) return false;
     const row = child as ChildWithTutor;
     if (tutor && row.tutor_name !== tutor) return false;
     if (phone && row.tutor_phone !== phone) return false;
+    if (repeated && !repeated.has(dupeKey(row, dupeBy))) return false;
     return true;
   });
 
-  const filtering = q !== '' || tutor !== '' || phone !== '';
+  // Buscando duplicados la lista se parte en grupos, en el orden en que
+  // aparece el primero de cada uno: así el divisor dice qué comparten.
+  const groups = (() => {
+    if (!repeated) return null;
+
+    const byKey = new Map<string, { label: string; items: typeof results }>();
+    for (const entry of results) {
+      const row = entry.child as ChildWithTutor;
+      const key = dupeKey(row, dupeBy);
+      const group = byKey.get(key) ?? { label: dupeLabel(row, dupeBy) || '—', items: [] };
+      group.items.push(entry);
+      byKey.set(key, group);
+    }
+
+    return [...byKey.values()];
+  })();
+
+  const filtering = q !== '' || tutor !== '' || phone !== '' || dupeBy !== '';
+
+  function item({ child, position }: (typeof results)[number]) {
+    const row = child as ChildWithTutor;
+    return (
+      <li className="roster__item" key={child.id}>
+        <span className="roster__num">{position}</span>
+        <span className="roster__person">
+          <span className="roster__name">{child.name}</span>
+          {detailed !== null && (
+            <span className="meta">
+              <span className="meta__cell">
+                <small>Tutor</small>
+                <strong>{row.tutor_name || '—'}</strong>
+              </span>
+              <span className="meta__cell">
+                <small>Teléfono</small>
+                <strong>
+                  {row.tutor_phone ? (
+                    <a href={`tel:${row.tutor_phone}`}>{prettyPhone(row.tutor_phone)}</a>
+                  ) : (
+                    '—'
+                  )}
+                </strong>
+              </span>
+            </span>
+          )}
+        </span>
+        {detailed !== null && (
+          <button
+            type="button"
+            className="roster__remove"
+            onClick={() => setPending(row)}
+            aria-label={`Quitar a ${child.name} del padrón`}
+            title="Quitar del padrón"
+          >
+            🗑️
+          </button>
+        )}
+      </li>
+    );
+  }
 
   return (
     <>
@@ -168,9 +267,13 @@ export default function RosterSearch({
           <p className="hint">
             {!filtering
               ? `Escribe su nombre para confirmar que quedó registrado en ${coloniaName}.`
-              : results.length === 0
-                ? 'Ningún registro coincide con la búsqueda.'
-                : `${results.length} ${results.length === 1 ? 'coincidencia' : 'coincidencias'} de ${rows.length} registrados`}
+              : groups
+                ? groups.length === 0
+                  ? `No hay ${DUPE_NOUN[dupeBy as Exclude<DupeBy, ''>]} con estos filtros.`
+                  : `${groups.length} ${groups.length === 1 ? 'grupo repetido' : 'grupos repetidos'} · ${results.length} registros`
+                : results.length === 0
+                  ? 'Ningún registro coincide con la búsqueda.'
+                  : `${results.length} ${results.length === 1 ? 'coincidencia' : 'coincidencias'} de ${rows.length} registrados`}
           </p>
         </div>
 
@@ -180,6 +283,27 @@ export default function RosterSearch({
           </button>
         ) : (
           <div className="advanced">
+            <div className="field">
+              <label htmlFor="filterDupes">Encontrar duplicados</label>
+              <select
+                id="filterDupes"
+                value={dupeBy}
+                onChange={(e) => setDupeBy(e.target.value as DupeBy)}
+              >
+                <option value="">No buscar duplicados</option>
+                <option value="child">Niños con el mismo nombre</option>
+                <option value="tutor">Tutores con el mismo nombre</option>
+                <option value="phone">Teléfonos repetidos</option>
+              </select>
+              {dupeBy !== '' && (
+                <p className="hint">
+                  {dupeBy === 'phone'
+                    ? 'Compara los teléfonos sin espacios. Un mismo tutor con varios niños sale junto: revisa que no sean el mismo niño dos veces.'
+                    : 'Solo se listan los que aparecen más de una vez, agrupados por lo que comparten.'}
+                </p>
+              )}
+            </div>
+
             <div className="grid-2 grid-2--filters">
               <div className="field">
                 <label htmlFor="filterTutor">Filtrar por tutor</label>
@@ -211,7 +335,13 @@ export default function RosterSearch({
 
       {results.length === 0 ? (
         <p className="empty">
-          {q === '' ? (
+          {dupeBy !== '' ? (
+            <>
+              No hay <strong>{DUPE_NOUN[dupeBy as Exclude<DupeBy, ''>]}</strong> en el padrón de{' '}
+              {coloniaName}
+              {q === '' && tutor === '' && phone === '' ? '.' : ' con los filtros puestos.'}
+            </>
+          ) : q === '' ? (
             <>Ningún niño coincide con los filtros seleccionados.</>
           ) : (
             <>
@@ -220,48 +350,21 @@ export default function RosterSearch({
             </>
           )}
         </p>
+      ) : groups ? (
+        <div className="dupes">
+          {groups.map((group) => (
+            <section className="dupe" key={group.label + group.items[0].child.id}>
+              <h3 className="dupe__head">
+                <span className="dupe__label">{group.label}</span>
+                <span className="dupe__count">{group.items.length} registros</span>
+              </h3>
+              <ol className="roster roster--detailed">{group.items.map(item)}</ol>
+            </section>
+          ))}
+        </div>
       ) : (
         <ol className={`roster${detailed !== null ? ' roster--detailed' : ''}`}>
-          {results.map(({ child, position }) => {
-            const row = child as ChildWithTutor;
-            return (
-              <li className="roster__item" key={child.id}>
-                <span className="roster__num">{position}</span>
-                <span className="roster__person">
-                  <span className="roster__name">{child.name}</span>
-                  {detailed !== null && (
-                    <span className="meta">
-                      <span className="meta__cell">
-                        <small>Tutor</small>
-                        <strong>{row.tutor_name || '—'}</strong>
-                      </span>
-                      <span className="meta__cell">
-                        <small>Teléfono</small>
-                        <strong>
-                          {row.tutor_phone ? (
-                            <a href={`tel:${row.tutor_phone}`}>{prettyPhone(row.tutor_phone)}</a>
-                          ) : (
-                            '—'
-                          )}
-                        </strong>
-                      </span>
-                    </span>
-                  )}
-                </span>
-                {detailed !== null && (
-                  <button
-                    type="button"
-                    className="roster__remove"
-                    onClick={() => setPending(row)}
-                    aria-label={`Quitar a ${child.name} del padrón`}
-                    title="Quitar del padrón"
-                  >
-                    🗑️
-                  </button>
-                )}
-              </li>
-            );
-          })}
+          {results.map(item)}
         </ol>
       )}
 
