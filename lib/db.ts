@@ -31,6 +31,12 @@ export type Child = {
   created_at: string;
 };
 
+/** Padrón con los datos de contacto: solo sale detrás del código de organizador. */
+export type ChildWithTutor = Child & {
+  tutor_name: string;
+  tutor_phone: string;
+};
+
 export type Station = {
   id: string;
   name: string;
@@ -152,7 +158,8 @@ export async function createRegistration(input: RegistrationInput): Promise<stri
 }
 
 /**
- * Niños registrados en una colonia, los más nuevos primero.
+ * Niños registrados en una colonia, los más nuevos primero. Los marcados como
+ * eliminados no salen.
  * `children` no guarda la colonia: cuelga del tutor, así que el filtro va por ahí.
  */
 export async function listChildrenByColonia(coloniaId: string): Promise<Child[]> {
@@ -161,6 +168,7 @@ export async function listChildrenByColonia(coloniaId: string): Promise<Child[]>
       .from('children')
       .select('id, name, created_at, tutors!inner(colonia_id)')
       .eq('tutors.colonia_id', coloniaId)
+      .eq('is_deleted', false)
       .order('created_at', { ascending: false });
     if (error) throw new Error(error.message);
     return (data ?? []).map(({ id, name, created_at }) => ({ id, name, created_at }));
@@ -171,11 +179,102 @@ export async function listChildrenByColonia(coloniaId: string): Promise<Child[]>
     `select c.id, c.name, c.created_at
        from children c
        join tutors t on t.id = c.tutor_id
-      where t.colonia_id = $1
+      where t.colonia_id = $1 and not c.is_deleted
       order by c.created_at desc`,
     [coloniaId]
   );
   return rows;
+}
+
+/**
+ * Mismo padrón, pero con el tutor que registró a cada niño. Es información de
+ * contacto de familias, así que esta consulta solo se llama desde la API que
+ * ya validó el código de organizador.
+ */
+export async function listChildrenWithTutorByColonia(coloniaId: string): Promise<ChildWithTutor[]> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('children')
+      .select('id, name, created_at, tutors!inner(colonia_id, name, phone)')
+      .eq('tutors.colonia_id', coloniaId)
+      .eq('is_deleted', false)
+      .order('created_at', { ascending: false });
+    if (error) throw new Error(error.message);
+
+    // El join anidado llega como objeto (o arreglo, según la relación); se
+    // aplana aquí para que el cliente reciba siempre la misma forma.
+    return (data ?? []).map(({ id, name, created_at, tutors }) => {
+      const tutor = (Array.isArray(tutors) ? tutors[0] : tutors) as
+        | { name: string; phone: string }
+        | undefined;
+      return {
+        id,
+        name,
+        created_at,
+        tutor_name: tutor?.name ?? '',
+        tutor_phone: tutor?.phone ?? '',
+      };
+    });
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query<ChildWithTutor>(
+    `select c.id, c.name, c.created_at, t.name as tutor_name, t.phone as tutor_phone
+       from children c
+       join tutors t on t.id = c.tutor_id
+      where t.colonia_id = $1 and not c.is_deleted
+      order by c.created_at desc`,
+    [coloniaId]
+  );
+  return rows;
+}
+
+/**
+ * Quita un niño del padrón sin borrar la fila: marca `is_deleted`, igual que
+ * las estaciones, así que un borrado por error se revierte con un update. El
+ * tutor y sus demás niños se quedan intactos.
+ *
+ * `children` no guarda la colonia, cuelga del tutor, así que la pertenencia se
+ * comprueba por ahí: un id de otra colonia no alcanza nada.
+ */
+export async function softDeleteChild(id: string, coloniaId: string): Promise<boolean> {
+  if (hasSupabaseConfig()) {
+    const supabase = getSupabase();
+
+    // El cliente de Supabase no hace subconsultas en un update, así que la
+    // pertenencia se verifica antes, con el join que sí permite el select.
+    const { data: found, error: findError } = await supabase
+      .from('children')
+      .select('id, tutors!inner(colonia_id)')
+      .eq('id', id)
+      .eq('tutors.colonia_id', coloniaId)
+      .eq('is_deleted', false)
+      .maybeSingle();
+    if (findError) throw new Error(findError.message);
+    if (!found) return false;
+
+    const { data, error } = await supabase
+      .from('children')
+      .update({ is_deleted: true })
+      .eq('id', id)
+      .eq('is_deleted', false)
+      .select('id');
+    if (error) throw new Error(error.message);
+    return (data ?? []).length > 0;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query(
+    `update children c set is_deleted = true
+       from tutors t
+      where c.tutor_id = t.id
+        and c.id = $1
+        and t.colonia_id = $2
+        and not c.is_deleted
+      returning c.id`,
+    [id, coloniaId]
+  );
+  return rows.length > 0;
 }
 
 /* ---------------- Estaciones ---------------- */

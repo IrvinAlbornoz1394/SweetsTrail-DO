@@ -53,5 +53,22 @@ export const stationDeleteSchema = z.object({
     .min(1, 'Escribe el código para eliminar.'),
 });
 
+/**
+ * Desbloqueo del filtro avanzado del padrón: mismo código de organizador que
+ * el borrado de estaciones, comparado también en el servidor.
+ */
+export const rosterUnlockSchema = z.object({
+  coloniaId,
+  code: z
+    .string({ error: 'Escribe el código de organizador.' })
+    .trim()
+    .min(1, 'Escribe el código de organizador.'),
+});
+
+/** Quitar un niño del padrón: mismo código de organizador, validado en el servidor. */
+export const childDeleteSchema = rosterUnlockSchema.extend({
+  id: z.string().uuid('Registro inválido.'),
+});
+
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 export type StationInput = z.infer<typeof stationSchema>;

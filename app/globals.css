@@ -256,6 +256,43 @@ input:focus {
 }
 input.is-invalid { border-color: var(--red); }
 
+select {
+  width: 100%;
+  min-height: var(--touch);
+  padding: 12px 14px;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+}
+select:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255,122,26,.18);
+}
+
+/* Acción discreta: existe para quien la busca, no le compite al buscador. */
+.link-quiet {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12.5px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: .65;
+  cursor: pointer;
+}
+.link-quiet:hover { opacity: 1; color: var(--text); }
+
+.advanced { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.grid-2--filters { grid-template-columns: 1fr; }
+@media (min-width: 560px) { .grid-2--filters { grid-template-columns: 1fr 1fr; } }
+
 .hint { margin: 0; font-size: 12.5px; color: var(--text-dim); }
 .error { margin: 0; font-size: 12.5px; color: var(--red); min-height: 1em; }
 .error--block { margin-top: 8px; }
@@ -641,6 +678,44 @@ input.is-invalid { border-color: var(--red); }
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
 }
 .roster__name { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+
+/* Padrón con filtro avanzado: el niño arriba y su contacto debajo, en dos
+   columnas que se apilan solas cuando no caben. */
+.roster__person { display: flex; flex-direction: column; gap: 7px; min-width: 0; flex: 1; }
+.roster--detailed .roster__item { align-items: flex-start; }
+.meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 4px 12px;
+  padding-top: 7px;
+  border-top: 1px dashed var(--line);
+}
+.meta__cell { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.meta__cell small {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.meta__cell strong { font-size: 13.5px; font-weight: 600; overflow-wrap: anywhere; }
+.meta__cell a { color: var(--orange-2); text-decoration: none; }
+
+.roster__remove {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+.roster__remove:hover { border-color: var(--red); background: rgba(248,113,113,.14); }
 
 .roster--stations .roster__item { align-items: flex-start; }
 .roster__station { display: flex; flex-direction: column; gap: 2px; min-width: 0; }

@@ -75,8 +75,9 @@ No hay que tocar código: `lib/db.ts` elige el backend en tiempo de ejecución.
 1. Importa el repo en Vercel (detecta Next.js solo).
 2. En **Settings → Environment Variables**, agrega `SUPABASE_URL` y
    `SUPABASE_SERVICE_ROLE_KEY`.
-3. Agrega también `STATION_DELETE_CODE`: el código que pide la app para
-   eliminar una estación desde el mapa. Si falta, el borrado responde 503
+3. Agrega también `STATION_DELETE_CODE`: el código de organizador. Lo pide la
+   app para eliminar una estación desde el mapa y para abrir el filtro
+   avanzado del padrón (tutor y teléfono). Si falta, ambos responden 503
    («El borrado no está configurado en este servidor») y nadie puede quitar
    estaciones en producción. Al agregarla hay que **volver a desplegar**: las
    variables se leen en el arranque del servidor.
@@ -95,6 +96,7 @@ app/
   colonia/[slug]/estaciones/page.tsx Formulario de estaciones
   api/registrations/route.ts        POST — tutor + niños (atómico)
   api/stations/route.ts             GET/POST/DELETE — estaciones por colonia
+  api/roster/route.ts               POST/DELETE — padrón con contacto (con código)
 components/                         Formularios, mapa, modal, toast
 lib/
   db.ts                             Capa de datos (Supabase | PGlite)
@@ -127,6 +129,14 @@ Para ver lo que se ha quitado:
 
 ```sql
 select id, name, created_at from public.stations where is_deleted;
+```
+
+Los niños del padrón siguen la misma regla: `children.is_deleted` los saca de
+la lista y del conteo sin borrar la fila, y el tutor conserva sus demás niños.
+Quitar y recuperar funciona igual, cambiando la tabla:
+
+```sql
+update public.children set is_deleted = false where id = '<uuid>';
 ``` `colonias.lat/lng` guarda el centro
 aproximado para abrir el mapa ya sobre la colonia; se llena la primera vez que
 alguien la usa (`lib/geocode.ts`) y de ahí en adelante sale de la base.

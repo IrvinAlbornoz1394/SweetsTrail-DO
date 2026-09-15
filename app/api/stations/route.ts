@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { coloniaExists, createStation, listStationsByColonia, softDeleteStation } from '@/lib/db';
+import { checkOrganizerCode } from '@/lib/organizer';
 import { stationDeleteSchema, stationSchema } from '@/lib/schemas';
 
 export async function GET(request: Request) {
@@ -77,16 +78,9 @@ export async function DELETE(request: Request) {
     );
   }
 
-  const expected = process.env.STATION_DELETE_CODE?.trim();
-  if (!expected) {
-    console.error('[stations:DELETE] falta STATION_DELETE_CODE en el entorno');
-    return NextResponse.json(
-      { error: 'El borrado no está configurado en este servidor.' },
-      { status: 503 }
-    );
-  }
-  if (parsed.data.code !== expected) {
-    return NextResponse.json({ error: 'Código incorrecto.' }, { status: 403 });
+  const auth = checkOrganizerCode(parsed.data.code);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
   try {

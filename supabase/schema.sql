@@ -131,3 +131,11 @@ alter table public.stations add column if not exists is_deleted boolean not null
 create index if not exists stations_colonia_activas_idx
   on public.stations (colonia_id, created_at desc)
   where not is_deleted;
+
+-- Mismo criterio para el padrón: quitar un niño registrado por error no borra
+-- la fila, solo levanta la bandera. El tutor se queda con sus demás niños.
+alter table public.children add column if not exists is_deleted boolean not null default false;
+
+create index if not exists children_tutor_activos_idx
+  on public.children (tutor_id, created_at desc)
+  where not is_deleted;
