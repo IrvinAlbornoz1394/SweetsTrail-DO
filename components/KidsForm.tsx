@@ -1,23 +1,18 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
+import { formatPhone } from '@/lib/phone';
 import Modal from './Modal';
 import { Toast, useToast } from './Toast';
 
 type Kid = { id: number; name: string };
 type Errors = Partial<Record<'tutorName' | 'tutorPhone' | 'kids', string>>;
 
-/** Formatea 10 dígitos como "55 1234 5678". */
-function formatPhone(raw: string) {
-  const digits = raw.replace(/\D/g, '').slice(0, 10);
-  return digits.replace(/^(\d{2})(\d{0,4})(\d{0,4}).*$/, (_, a, b, c) =>
-    [a, b, c].filter(Boolean).join(' ')
-  );
-}
+type Props = { coloniaId: string; coloniaName: string; coloniaSlug: string };
 
-type Props = { coloniaId: string; coloniaName: string };
-
-export default function KidsForm({ coloniaId, coloniaName }: Props) {
+export default function KidsForm({ coloniaId, coloniaName, coloniaSlug }: Props) {
+  const router = useRouter();
   const nextId = useRef(1);
   const [tutorName, setTutorName] = useState('');
   const [tutorPhone, setTutorPhone] = useState('');
@@ -66,7 +61,12 @@ export default function KidsForm({ coloniaId, coloniaName }: Props) {
   }
 
   async function handleConfirm() {
+    // El guardia contra el doble clic: además del botón deshabilitado mientras
+    // `saving` está arriba, si un segundo evento se colara igual no dispararía
+    // un segundo POST.
+    if (saving) return;
     setSaving(true);
+
     try {
       const res = await fetch('/api/registrations', {
         method: 'POST',
@@ -78,24 +78,25 @@ export default function KidsForm({ coloniaId, coloniaName }: Props) {
           children: validKids,
         }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         showToast(data.error ?? 'No se pudo guardar el registro.', true);
+        setSaving(false);
+        setConfirming(false);
         return;
       }
 
-      showToast(
-        `✅ ${validKids.length} ${validKids.length === 1 ? 'niño registrado' : 'niños registrados'}.`
-      );
-      // Registro exitoso: se limpia para capturar al siguiente responsable.
-      setTutorName('');
-      setTutorPhone('');
-      setKids([{ id: nextId.current++, name: '' }]);
-      setErrors({});
+      // Registro exitoso: `saving` se queda arriba a propósito. Apagarlo aquí
+      // reactivaría los botones durante la navegación y dejaría una ventana
+      // para registrar dos veces a los mismos niños.
+      //
+      // `replace` y no `push`: el formulario ya se envió, así que el botón de
+      // atrás del navegador debe llevar al menú, no de vuelta a un formulario
+      // que invita a mandar lo mismo otra vez.
+      router.replace(`/colonia/${coloniaSlug}/ninos/exito?id=${data.tutorId}`);
     } catch {
       showToast('Error de conexión. Intenta de nuevo.', true);
-    } finally {
       setSaving(false);
       setConfirming(false);
     }
@@ -104,7 +105,7 @@ export default function KidsForm({ coloniaId, coloniaName }: Props) {
   return (
     <>
       <form className="card" onSubmit={handleSubmit} noValidate>
-        <fieldset className="fieldset">
+        <fieldset className="fieldset" disabled={saving}>
           <legend>Datos del responsable</legend>
 
           <div className="grid-2">
@@ -143,7 +144,7 @@ export default function KidsForm({ coloniaId, coloniaName }: Props) {
           </div>
         </fieldset>
 
-        <fieldset className="fieldset">
+        <fieldset className="fieldset" disabled={saving}>
           <legend>
             Niños participantes
             <span className="counter">
@@ -193,6 +194,7 @@ export default function KidsForm({ coloniaId, coloniaName }: Props) {
           <button
             type="button"
             className="btn btn--ghost"
+            disabled={saving}
             onClick={() => {
               setTutorName('');
               setTutorPhone('');
@@ -203,8 +205,9 @@ export default function KidsForm({ coloniaId, coloniaName }: Props) {
           >
             Limpiar formulario
           </button>
-          <button type="submit" className="btn btn--primary">
-            Registrar niños
+          <button type="submit" className="btn btn--primary" disabled={saving}>
+            {saving && <span className="spinner" />}
+            {saving ? 'Guardando…' : 'Registrar niños'}
           </button>
         </div>
       </form>

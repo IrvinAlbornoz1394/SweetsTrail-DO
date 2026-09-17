@@ -32,7 +32,8 @@ export default async function ColoniaHome({ params }: { params: Promise<{ slug: 
           <span className="choice__icon">🏠</span>
           <span className="choice__title">Registrar estación de dulce</span>
           <span className="choice__desc">
-            Registra la casa participante con su nombre, dirección y ubicación en el mapa.
+            Da de alta la casa o negocio que va a repartir dulces, con su responsable y su
+            ubicación en el mapa.
           </span>
           <span className="choice__cta">Comenzar registro →</span>
         </Link>

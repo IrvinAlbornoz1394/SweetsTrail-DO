@@ -4,6 +4,13 @@ import { z } from 'zod';
 
 const coloniaId = z.string().uuid('Colonia inválida.');
 
+/**
+ * Guarda para los ids que llegan por la URL. Postgres revienta con un texto que
+ * no es uuid, así que las pantallas que reciben `?id=` lo filtran antes de
+ * consultar y responden 404 igual que con un id inexistente.
+ */
+export const isUuid = (value: string) => z.uuid().safeParse(value).success;
+
 export const registrationSchema = z.object({
   coloniaId,
   tutorName: z
@@ -30,11 +37,26 @@ export const registrationSchema = z.object({
 
 export const stationSchema = z.object({
   coloniaId,
+  // `name` es quien responde por la casa. Antes era "nombre de la estación":
+  // se conserva la columna para no tocar lo ya registrado.
   name: z
     .string()
     .trim()
-    .min(3, 'Escribe el nombre de la estación.')
+    .min(3, 'Escribe el nombre del responsable.')
     .max(120, 'El nombre es demasiado largo.'),
+  // Opcional: cuando viene, es el rótulo que se ve en el mapa. Vacío y ausente
+  // son lo mismo y se guardan como null, para no distinguir '' de NULL en la base.
+  businessName: z
+    .string()
+    .trim()
+    .max(120, 'El nombre del negocio es demasiado largo.')
+    .optional()
+    .transform((v) => (v ? v : null)),
+  // Contacto para quien organiza. Se pide siempre, pero no se publica.
+  phone: z
+    .string({ error: 'Escribe el teléfono de contacto.' })
+    .trim()
+    .regex(/^\d{10}$/, 'El teléfono debe tener 10 dígitos.'),
   lat: z.number({ error: 'Marca la ubicación en el mapa.' }).min(-90, 'Latitud fuera de rango.').max(90, 'Latitud fuera de rango.'),
   lng: z.number({ error: 'Marca la ubicación en el mapa.' }).min(-180, 'Longitud fuera de rango.').max(180, 'Longitud fuera de rango.'),
 });

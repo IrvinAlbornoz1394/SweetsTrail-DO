@@ -37,18 +37,44 @@ export type ChildWithTutor = Child & {
   tutor_phone: string;
 };
 
+/**
+ * Estación tal como sale a la vista pública (mapa y listas).
+ *
+ * `name` es quien responde por la casa y `business_name` el negocio o local,
+ * si lo hay; `stationLabel()` en lib/station.ts decide cuál se rotula.
+ *
+ * El teléfono NO está en este tipo a propósito: estas filas viajan enteras al
+ * navegador de cualquiera que abra el mapa, así que el dato de contacto no se
+ * consulta siquiera. Vive en `StationDetail`, que solo se pide por id.
+ */
 export type Station = {
   id: string;
   name: string;
+  business_name: string | null;
   lat: number;
   lng: number;
   status: string;
   created_at: string;
 };
 
+/** La estación con su teléfono: solo para la pantalla de quien la acaba de registrar. */
+export type StationDetail = Station & {
+  phone: string | null;
+};
+
+/** Un registro de niños completo, para devolvérselo a quien lo acaba de hacer. */
+export type Registration = {
+  tutor_name: string;
+  tutor_phone: string;
+  children: string[];
+};
+
 export const backendName = () => (hasSupabaseConfig() ? 'supabase' : 'pglite-local');
 
 const COLONIA_COLS = 'id, slug, name, tipo, postal_code, municipio, estado, lat, lng';
+
+/** Columnas públicas de una estación. `phone` queda fuera: ver el tipo `Station`. */
+const STATION_COLS = 'id, name, business_name, lat, lng, status, created_at';
 
 /**
  * La plataforma opera solo para Dolores Otero (CP 97270). El catálogo completo
@@ -155,6 +181,63 @@ export async function createRegistration(input: RegistrationInput): Promise<stri
     [args.p_colonia_id, args.p_tutor_name, args.p_tutor_phone, args.p_children]
   );
   return rows[0].create_registration;
+}
+
+/**
+ * Un registro concreto: el responsable con los niños que dio de alta, en el
+ * orden en que se capturaron.
+ *
+ * Alimenta la pantalla de "registro exitoso", que le devuelve a quien acaba de
+ * registrar exactamente lo que capturó. El id del tutor es un uuid que solo
+ * conoce esa persona, y el `colonia_id` en el filtro impide alcanzar registros
+ * de otra colonia con un id ajeno. Los niños quitados del padrón no salen.
+ */
+export async function getRegistrationById(
+  tutorId: string,
+  coloniaId: string
+): Promise<Registration | null> {
+  if (hasSupabaseConfig()) {
+    const supabase = getSupabase();
+
+    const { data: tutor, error: tutorError } = await supabase
+      .from('tutors')
+      .select('name, phone')
+      .eq('id', tutorId)
+      .eq('colonia_id', coloniaId)
+      .maybeSingle();
+    if (tutorError) throw new Error(tutorError.message);
+    if (!tutor) return null;
+
+    const { data: kids, error: kidsError } = await supabase
+      .from('children')
+      .select('name')
+      .eq('tutor_id', tutorId)
+      .eq('is_deleted', false)
+      .order('created_at', { ascending: true });
+    if (kidsError) throw new Error(kidsError.message);
+
+    return {
+      tutor_name: tutor.name as string,
+      tutor_phone: tutor.phone as string,
+      children: (kids ?? []).map((k) => k.name as string),
+    };
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query<{ name: string; phone: string; children: string[] | null }>(
+    `select t.name,
+            t.phone,
+            array_remove(array_agg(c.name order by c.created_at), null) as children
+       from tutors t
+       left join children c on c.tutor_id = t.id and not c.is_deleted
+      where t.id = $1 and t.colonia_id = $2
+      group by t.id, t.name, t.phone`,
+    [tutorId, coloniaId]
+  );
+
+  const row = rows[0];
+  if (!row) return null;
+  return { tutor_name: row.name, tutor_phone: row.phone, children: row.children ?? [] };
 }
 
 /**
@@ -286,6 +369,8 @@ export async function createStation(input: StationInput): Promise<string> {
       .insert({
         colonia_id: input.coloniaId,
         name: input.name,
+        business_name: input.businessName,
+        phone: input.phone,
         lat: input.lat,
         lng: input.lng,
       })
@@ -297,11 +382,45 @@ export async function createStation(input: StationInput): Promise<string> {
 
   const db = await getPglite();
   const { rows } = await db.query<{ id: string }>(
-    `insert into stations (colonia_id, name, lat, lng)
-     values ($1, $2, $3, $4) returning id`,
-    [input.coloniaId, input.name, input.lat, input.lng]
+    `insert into stations (colonia_id, name, business_name, phone, lat, lng)
+     values ($1, $2, $3, $4, $5, $6) returning id`,
+    [input.coloniaId, input.name, input.businessName, input.phone, input.lat, input.lng]
   );
   return rows[0].id;
+}
+
+/**
+ * Una estación concreta, con su teléfono, acotada a su colonia.
+ *
+ * Es lo que alimenta la pantalla de "registro exitoso": quien acaba de dar de
+ * alta la casa ve de vuelta lo que capturó, teléfono incluido. El id es un uuid
+ * que solo conoce quien hizo el registro, y el `colonia_id` en el filtro impide
+ * llegar a estaciones de otra colonia aun con un id ajeno.
+ */
+export async function getStationById(
+  id: string,
+  coloniaId: string
+): Promise<StationDetail | null> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('stations')
+      .select(`${STATION_COLS}, phone`)
+      .eq('id', id)
+      .eq('colonia_id', coloniaId)
+      .eq('is_deleted', false)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return (data as StationDetail) ?? null;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query<StationDetail>(
+    `select ${STATION_COLS}, phone
+       from stations
+      where id = $1 and colonia_id = $2 and not is_deleted`,
+    [id, coloniaId]
+  );
+  return rows[0] ?? null;
 }
 
 /**
@@ -340,7 +459,7 @@ export async function listStationsByColonia(coloniaId: string): Promise<Station[
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('stations')
-      .select('id, name, lat, lng, status, created_at')
+      .select(STATION_COLS)
       .eq('colonia_id', coloniaId)
       .eq('is_deleted', false)
       .order('created_at', { ascending: false });
@@ -350,7 +469,7 @@ export async function listStationsByColonia(coloniaId: string): Promise<Station[
 
   const db = await getPglite();
   const { rows } = await db.query<Station>(
-    `select id, name, lat, lng, status, created_at
+    `select ${STATION_COLS}
        from stations
       where colonia_id = $1 and not is_deleted
       order by created_at desc`,

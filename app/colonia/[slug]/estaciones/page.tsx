@@ -46,6 +46,7 @@ export default async function StationsPage({ params }: { params: Promise<{ slug:
       <StationForm
         coloniaId={colonia.id}
         coloniaName={colonia.name}
+        coloniaSlug={colonia.slug}
         initialCenter={center}
       />
     </>

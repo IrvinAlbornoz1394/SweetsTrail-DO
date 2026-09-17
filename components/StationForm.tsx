@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
+import { formatPhone } from '@/lib/phone';
 import Modal from './Modal';
 import { Toast, useToast } from './Toast';
 import type { LatLng } from './MapPicker';
@@ -13,17 +14,25 @@ const MapPicker = dynamic(() => import('./MapPicker'), {
   loading: () => <div className="map map--loading">Cargando mapa…</div>,
 });
 
-type Errors = Partial<Record<'name' | 'location', string>>;
+type Errors = Partial<Record<'name' | 'businessName' | 'phone' | 'location', string>>;
 type Props = {
   coloniaId: string;
   coloniaName: string;
+  coloniaSlug: string;
   /** Centro con el que abre el mapa: el de la colonia seleccionada. */
   initialCenter: LatLng;
 };
 
-export default function StationForm({ coloniaId, coloniaName, initialCenter }: Props) {
+export default function StationForm({
+  coloniaId,
+  coloniaName,
+  coloniaSlug,
+  initialCenter,
+}: Props) {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [phone, setPhone] = useState('');
   // El centro del mapa siempre tiene coordenadas; `picked` distingue si la
   // persona ya eligió a propósito o solo estamos en el centro inicial.
   const [center, setCenter] = useState<LatLng | null>(null);
@@ -41,6 +50,14 @@ export default function StationForm({ coloniaId, coloniaName, initialCenter }: P
     setPicked(true);
     setErrors((prev) => ({ ...prev, location: undefined }));
   }, []);
+
+  function clearForm() {
+    setName('');
+    setBusinessName('');
+    setPhone('');
+    setPicked(false);
+    setErrors({});
+  }
 
   function locateMe() {
     if (!navigator.geolocation) {
@@ -68,8 +85,11 @@ export default function StationForm({ coloniaId, coloniaName, initialCenter }: P
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const next: Errors = {};
+    const phoneDigits = phone.replace(/\D/g, '');
 
-    if (!name.trim()) next.name = 'Escribe el nombre de la estación.';
+    if (!name.trim()) next.name = 'Escribe el nombre del responsable.';
+    if (!phoneDigits) next.phone = 'Escribe un número de teléfono.';
+    else if (phoneDigits.length !== 10) next.phone = 'El teléfono debe tener 10 dígitos.';
     if (!picked || !center) {
       next.location = 'Coloca el pin sobre la casa: arrastra el mapa o usa tu ubicación.';
     }
@@ -83,8 +103,12 @@ export default function StationForm({ coloniaId, coloniaName, initialCenter }: P
   }
 
   async function handleConfirm() {
-    if (!center) return;
+    // El guardia contra el doble clic: además del botón deshabilitado mientras
+    // `saving` está arriba, si un segundo evento se colara igual no dispararía
+    // un segundo POST.
+    if (!center || saving) return;
     setSaving(true);
+
     try {
       const res = await fetch('/api/stations', {
         method: 'POST',
@@ -92,26 +116,31 @@ export default function StationForm({ coloniaId, coloniaName, initialCenter }: P
         body: JSON.stringify({
           coloniaId,
           name: name.trim(),
+          businessName: businessName.trim(),
+          phone: phone.replace(/\D/g, ''),
           lat: center.lat,
           lng: center.lng,
         }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         showToast(data.error ?? 'No se pudo guardar la estación.', true);
+        setSaving(false);
+        setConfirming(false);
         return;
       }
 
-      showToast('✅ Estación registrada.');
-      // Vuelve a pedir el server component para que el contador suba al instante.
-      router.refresh();
-      setName('');
-      setPicked(false);
-      setErrors({});
+      // Registro exitoso: `saving` se queda arriba a propósito. Apagarlo aquí
+      // reactivaría los botones durante la navegación y dejaría una ventana para
+      // volver a enviar la misma estación.
+      //
+      // `replace` y no `push`: el formulario ya se envió, así que el botón de
+      // atrás del navegador debe llevar al menú, no de vuelta a un formulario
+      // que invita a mandar lo mismo otra vez.
+      router.replace(`/colonia/${coloniaSlug}/estaciones/exito?id=${data.stationId}`);
     } catch {
       showToast('Error de conexión. Intenta de nuevo.', true);
-    } finally {
       setSaving(false);
       setConfirming(false);
     }
@@ -120,26 +149,62 @@ export default function StationForm({ coloniaId, coloniaName, initialCenter }: P
   return (
     <>
       <form className="card" onSubmit={handleSubmit} noValidate>
-        <fieldset className="fieldset">
+        <fieldset className="fieldset" disabled={saving}>
           <legend>Datos de la estación</legend>
 
           <div className="field">
             <label htmlFor="stationName">
-              Nombre de la estación <span className="req">*</span>
+              Nombre del responsable <span className="req">*</span>
             </label>
             <input
               id="stationName"
               type="text"
-              placeholder="Ej. Casa de los Sustos"
+              placeholder="Ej. María González Pérez"
+              autoComplete="name"
               className={errors.name ? 'is-invalid' : ''}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <p className="error">{errors.name ?? ''}</p>
           </div>
+
+          <div className="field">
+            <label htmlFor="stationBusiness">Nombre del negocio o local</label>
+            <input
+              id="stationBusiness"
+              type="text"
+              placeholder="Ej. Abarrotes Doña Mary"
+              className={errors.businessName ? 'is-invalid' : ''}
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+            />
+            <p className="hint">
+              Opcional. Si lo llenas, es el nombre que se verá en el mapa; si lo dejas vacío, se
+              muestra el del responsable.
+            </p>
+            <p className="error">{errors.businessName ?? ''}</p>
+          </div>
+
+          <div className="field">
+            <label htmlFor="stationPhone">
+              Número de teléfono <span className="req">*</span>
+            </label>
+            <input
+              id="stationPhone"
+              type="tel"
+              placeholder="10 dígitos"
+              inputMode="numeric"
+              autoComplete="tel"
+              className={errors.phone ? 'is-invalid' : ''}
+              value={phone}
+              onChange={(e) => setPhone(formatPhone(e.target.value))}
+            />
+            <p className="hint">Es solo para quien organiza la ruta: no aparece en el mapa.</p>
+            <p className="error">{errors.phone ?? ''}</p>
+          </div>
         </fieldset>
 
-        <fieldset className="fieldset">
+        <fieldset className="fieldset" disabled={saving}>
           <legend>
             Ubicación en el mapa <span className="req">*</span>
           </legend>
@@ -180,17 +245,17 @@ export default function StationForm({ coloniaId, coloniaName, initialCenter }: P
           <button
             type="button"
             className="btn btn--ghost"
+            disabled={saving}
             onClick={() => {
-              setName('');
-              setPicked(false);
-              setErrors({});
+              clearForm();
               showToast('Formulario limpiado.');
             }}
           >
             Limpiar
           </button>
-          <button type="submit" className="btn btn--primary">
-            Registrar estación
+          <button type="submit" className="btn btn--primary" disabled={saving}>
+            {saving && <span className="spinner" />}
+            {saving ? 'Guardando…' : 'Registrar estación'}
           </button>
         </div>
       </form>
@@ -210,8 +275,16 @@ export default function StationForm({ coloniaId, coloniaName, initialCenter }: P
             <strong>{coloniaName}</strong>
           </div>
           <div className="summary__item">
-            <span>Estación</span>
+            <span>Responsable</span>
             <strong>{name}</strong>
+          </div>
+          <div className="summary__item">
+            <span>Negocio o local</span>
+            <strong>{businessName.trim() || 'Sin negocio (se mostrará el responsable)'}</strong>
+          </div>
+          <div className="summary__item">
+            <span>Teléfono</span>
+            <strong>{phone}</strong>
           </div>
           <div className="summary__item">
             <span>Coordenadas</span>

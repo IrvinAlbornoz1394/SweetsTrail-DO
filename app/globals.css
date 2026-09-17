@@ -255,6 +255,9 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(255,122,26,.18);
 }
 input.is-invalid { border-color: var(--red); }
+/* Mientras se guarda, el formulario entero queda inerte: el contorno apagado
+   es la señal de que ya no se puede tocar. */
+input:disabled { opacity: .55; cursor: not-allowed; }
 
 select {
   width: 100%;
@@ -751,6 +754,32 @@ select:focus {
 .roster__station small { color: var(--text-dim); font-size: 12.5px; overflow-wrap: anywhere; }
 
 /* ===========================================================
+   Registro exitoso — el comprobante que se ve al terminar
+   =========================================================== */
+
+.success {
+  margin-bottom: 18px;
+  padding: 20px 18px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(52,211,153,.45);
+  background: linear-gradient(120deg, rgba(52,211,153,.14), rgba(139,92,246,.12));
+  text-align: center;
+}
+.success__icon { display: block; font-size: 42px; line-height: 1; }
+.success h2 { margin: 10px 0 6px; font-size: 21px; color: var(--green); }
+.success p { margin: 0; color: var(--text-dim); font-size: 14px; }
+.success p strong { color: var(--text); }
+
+/* El mismo resumen del modal, pero como bloque de página. */
+.summary--screen { margin-bottom: 18px; }
+
+.success__hint { margin: -4px 0 18px; text-align: center; }
+
+/* La acción principal arriba: es el paso que se espera al terminar. */
+.success__actions { display: flex; flex-direction: column; gap: 10px; }
+.success__actions .btn { width: 100%; }
+
+/* ===========================================================
    Modal — en móvil es una hoja que sube desde abajo
    =========================================================== */
 
@@ -942,6 +971,13 @@ select:focus {
   .modal__head h3 { font-size: 18px; }
   .modal__foot { flex-direction: row; justify-content: flex-end; padding: 16px 20px; }
   .modal__foot .btn { width: auto; }
+
+  .success { padding: 26px 24px; }
+  .success__icon { font-size: 50px; }
+  .success h2 { font-size: 24px; }
+  .success p { font-size: 15px; }
+  .success__actions { flex-direction: row; justify-content: center; }
+  .success__actions .btn { width: auto; }
 
   .toast { left: 50%; right: auto; transform: translateX(-50%); bottom: 28px; }
 }

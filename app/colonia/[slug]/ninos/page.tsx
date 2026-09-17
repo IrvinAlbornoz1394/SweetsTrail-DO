@@ -21,7 +21,7 @@ export default async function KidsPage({ params }: { params: Promise<{ slug: str
         </div>
       </div>
 
-      <KidsForm coloniaId={colonia.id} coloniaName={colonia.name} />
+      <KidsForm coloniaId={colonia.id} coloniaName={colonia.name} coloniaSlug={colonia.slug} />
     </>
   );
 }

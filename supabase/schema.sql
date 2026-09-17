@@ -46,14 +46,19 @@ create table if not exists public.children (
 
 -- ---------- Estaciones de dulce ----------
 
+-- `name` es el nombre de QUIEN RESPONDE por la casa. `business_name` es el del
+-- negocio o local, opcional: cuando viene, es lo que se rotula en el mapa.
+-- `phone` es contacto para quien organiza y nunca se publica.
 create table if not exists public.stations (
-  id          uuid primary key default gen_random_uuid(),
-  colonia_id  uuid        not null references public.colonias(id) on delete restrict,
-  name        text        not null,
-  lat         double precision not null,
-  lng         double precision not null,
-  status      text        not null default 'pendiente',
-  created_at  timestamptz not null default now(),
+  id            uuid primary key default gen_random_uuid(),
+  colonia_id    uuid        not null references public.colonias(id) on delete restrict,
+  name          text        not null,
+  business_name text,
+  phone         text,
+  lat           double precision not null,
+  lng           double precision not null,
+  status        text        not null default 'pendiente',
+  created_at    timestamptz not null default now(),
   constraint stations_lat_range   check (lat between -90 and 90),
   constraint stations_lng_range   check (lng between -180 and 180),
   constraint stations_status_valid check (status in ('pendiente', 'confirmada', 'cancelada'))
@@ -131,6 +136,16 @@ alter table public.stations add column if not exists is_deleted boolean not null
 create index if not exists stations_colonia_activas_idx
   on public.stations (colonia_id, created_at desc)
   where not is_deleted;
+
+-- El nombre de la estación pasó a ser el del responsable, y se suman dos datos
+-- nuevos. Ambos nacen NULL a propósito: las estaciones ya registradas no los
+-- tienen y no se les inventa nada, así que la migración corre sin tocar filas.
+--   • business_name → nombre del negocio o local. Opcional. Cuando existe, es
+--     lo que se muestra en el mapa en lugar del nombre del responsable.
+--   • phone         → teléfono de contacto. NO se publica en el mapa ni en las
+--     listas: no sale de las consultas que alimentan la vista pública.
+alter table public.stations add column if not exists business_name text;
+alter table public.stations add column if not exists phone text;
 
 -- Mismo criterio para el padrón: quitar un niño registrado por error no borra
 -- la fila, solo levanta la bandera. El tutor se queda con sus demás niños.

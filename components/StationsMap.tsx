@@ -6,38 +6,10 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import type { Station } from '@/lib/db';
 import { COLONIA_ZOOM, type LatLng } from '@/lib/map';
+import { stationLabel } from '@/lib/station';
+import { iconFor } from './spookyIcon';
 import Modal from './Modal';
 import { Toast, useToast } from './Toast';
-
-/**
- * Cada estación luce un elemento de Halloween distinto. No se sortea en cada
- * render: se deriva del id de la estación, así el fantasma de una casa sigue
- * siendo el mismo al recargar, al filtrar o al borrar otra estación.
- */
-const SPOOKY = ['👻', '🎃', '🦇', '🕷️', '🕸️', '💀', '☠️', '🧙', '🧟', '🧛', '🪦', '⚰️', '🏰', '🐈‍⬛', '🦉', '🍬'];
-
-function spookyFor(id: string): string {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  return SPOOKY[hash % SPOOKY.length];
-}
-
-/** Mismo criterio que el selector: divIcon para no depender de las imágenes de Leaflet. */
-const iconCache = new Map<string, L.DivIcon>();
-
-function iconFor(id: string): L.DivIcon {
-  let icon = iconCache.get(id);
-  if (!icon) {
-    icon = L.divIcon({
-      className: '',
-      html: `<div class="pin">${spookyFor(id)}</div>`,
-      iconSize: [34, 34],
-      iconAnchor: [17, 30],
-    });
-    iconCache.set(id, icon);
-  }
-  return icon;
-}
 
 /** Encuadra el mapa sobre todas las estaciones registradas. */
 function FitToStations({ stations }: { stations: Station[] }) {
@@ -118,7 +90,7 @@ export default function StationsMap({
       }
 
       setRemoved((ids) => [...ids, pending.id]);
-      showToast(`Se eliminó “${pending.name}”.`);
+      showToast(`Se eliminó “${stationLabel(pending)}”.`);
       setPending(null);
       setCode('');
       router.refresh();
@@ -147,7 +119,7 @@ export default function StationsMap({
         {visible.map((station) => (
           <Marker key={station.id} position={[station.lat, station.lng]} icon={iconFor(station.id)}>
             <Popup>
-              <strong>{station.name}</strong>
+              <strong>{stationLabel(station)}</strong>
               <br />
               {station.lat.toFixed(5)}, {station.lng.toFixed(5)}
               <button
@@ -173,7 +145,8 @@ export default function StationsMap({
         onConfirm={remove}
       >
         <p>
-          Se va a quitar <strong>{pending?.name}</strong> del mapa y de la lista de estaciones.
+          Se va a quitar <strong>{pending && stationLabel(pending)}</strong> del mapa y de la
+          lista de estaciones.
         </p>
         <p className="hint">
           Deja de aparecer para todos, pero el registro se conserva por si hay que recuperarla.

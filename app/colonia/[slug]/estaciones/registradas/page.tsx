@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getColoniaBySlug, listStationsByColonia } from '@/lib/db';
 import { getColoniaCenter } from '@/lib/geocode';
+import { stationLabel } from '@/lib/station';
 import ColoniaBanner from '@/components/ColoniaBanner';
 import StationsMapClient from '@/components/StationsMapClient';
 
@@ -56,7 +57,7 @@ export default async function RegisteredStationsPage({
               <li className="roster__item" key={station.id}>
                 <span className="roster__num">{i + 1}</span>
                 <span className="roster__station">
-                  <strong>{station.name}</strong>
+                  <strong>{stationLabel(station)}</strong>
                   <small>
                     {station.lat.toFixed(5)}, {station.lng.toFixed(5)}
                   </small>
