@@ -1,5 +1,4 @@
-// Oculto por ahora: se usa solo en el botón "Ver estaciones registradas" (más abajo).
-// import Link from 'next/link';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getColoniaBySlug, listStationsByColonia } from '@/lib/db';
 import { getColoniaCenter } from '@/lib/geocode';
@@ -36,17 +35,12 @@ export default async function StationsPage({ params }: { params: Promise<{ slug:
         <span className="tally__label">
           {total === 1 ? 'estación registrada' : 'estaciones registradas'} hasta ahora
         </span>
-        {/* Oculto por ahora a petición de Irvin; se va a volver a usar. La página
-            /estaciones/registradas sigue existiendo y funcionando, solo se quitó
-            este acceso. Para reactivarlo: descomentar esto y el import de Link. */}
-        {/*
         <Link
           className="btn btn--ghost tally__action"
           href={`/colonia/${colonia.slug}/estaciones/registradas`}
         >
           🗺️ Ver estaciones registradas
         </Link>
-        */}
       </div>
 
       <StationForm
