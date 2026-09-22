@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Child, ChildWithTutor } from '@/lib/db';
+import type { Child, ChildWithTutor, TutorPayment } from '@/lib/db';
+import { DEFAULT_PAYMENT_AMOUNT } from '@/lib/schemas';
 import Modal from './Modal';
 import { Toast, useToast } from './Toast';
 
@@ -13,6 +14,24 @@ const norm = (s: string) =>
 /** 9992345678 → 999 234 5678, más fácil de leer y de dictar. */
 const prettyPhone = (p: string) =>
   /^\d{10}$/.test(p) ? `${p.slice(0, 3)} ${p.slice(3, 6)} ${p.slice(6)}` : p;
+
+/** $35 y $35.50, sin decimales de más ni de menos. */
+const money = (n: number) =>
+  `$${n.toLocaleString('es-MX', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`;
+
+/** Fecha corta del pago: el año sobra, todo esto pasa en la misma temporada. */
+const shortDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+
+/**
+ * La cantidad se captura como texto para no pelear con el teclado del teléfono:
+ * aquí se vuelve número. Acepta coma decimal y redondea a centavos, que es lo
+ * que guarda la columna.
+ */
+const parseAmount = (value: string) => {
+  const n = Number(value.trim().replace(',', '.'));
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : NaN;
+};
 
 /** Lista de opciones de un select: valores únicos, ordenados como se leen. */
 const options = (values: string[]) =>
@@ -48,6 +67,10 @@ const DUPE_NOUN: Record<Exclude<DupeBy, ''>, string> = {
  * El filtro avanzado (tutor y teléfono de contacto) es para quien organiza. Los
  * datos NO vienen en `items`: el servidor los manda solo después de validar el
  * código, así que hasta entonces no están ni en el HTML de la página.
+ *
+ * Con el filtro abierto aparece además "Registrar pago", que no es una acción
+ * por renglón: la cooperación la debe una familia, no cada niño, así que se
+ * elige al tutor en un diálogo aparte.
  */
 export default function RosterSearch({
   items,
@@ -64,12 +87,25 @@ export default function RosterSearch({
 
   // Filtro avanzado
   const [detailed, setDetailed] = useState<ChildWithTutor[] | null>(null);
+  const [payers, setPayers] = useState<TutorPayment[]>([]);
   const [askCode, setAskCode] = useState(false);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [tutor, setTutor] = useState('');
   const [phone, setPhone] = useState('');
   const [dupeBy, setDupeBy] = useState<DupeBy>('');
+
+  // El código que ya se validó, para registrar pagos sin volver a pedirlo en
+  // cada uno: quien organiza captura varios seguidos en la puerta. Vive solo en
+  // memoria y se borra al cerrar el filtro; el servidor lo vuelve a comparar
+  // siempre, así que guardarlo aquí no autoriza nada por sí solo.
+  const [organizerCode, setOrganizerCode] = useState('');
+
+  // Registrar pago
+  const [payOpen, setPayOpen] = useState(false);
+  const [payQuery, setPayQuery] = useState('');
+  const [payTutorId, setPayTutorId] = useState<string | null>(null);
+  const [payAmount, setPayAmount] = useState(String(DEFAULT_PAYMENT_AMOUNT));
 
   // Quitar un registro: pide el código de nuevo, no basta con tener abierto el
   // filtro (eso vive en el navegador y ahí no se decide nada).
@@ -100,6 +136,8 @@ export default function RosterSearch({
       }
 
       setDetailed(data.children as ChildWithTutor[]);
+      setPayers((data.tutors ?? []) as TutorPayment[]);
+      setOrganizerCode(code.trim());
       setAskCode(false);
       setCode('');
       showToast('Filtro avanzado habilitado.');
@@ -148,9 +186,56 @@ export default function RosterSearch({
 
   function disable() {
     setDetailed(null);
+    setPayers([]);
+    setOrganizerCode('');
     setTutor('');
     setPhone('');
     setDupeBy('');
+  }
+
+  function openPayment() {
+    setPayQuery('');
+    setPayTutorId(null);
+    setPayAmount(String(DEFAULT_PAYMENT_AMOUNT));
+    setPayOpen(true);
+  }
+
+  async function savePayment() {
+    if (payTutorId === null) {
+      showToast('Elige de la lista quién pagó.', true);
+      return;
+    }
+
+    const amount = parseAmount(payAmount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      showToast('Escribe la cantidad pagada.', true);
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const res = await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ coloniaId, code: organizerCode, tutorId: payTutorId, amount }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showToast(data.error ?? 'No se pudo registrar el pago.', true);
+        return;
+      }
+
+      // El servidor devuelve la lista recién leída, no la nuestra con el pago
+      // sumado: si alguien más cobró al mismo tiempo, aquí ya se ve.
+      setPayers((data.tutors ?? []) as TutorPayment[]);
+      showToast(`Pago de ${money(amount)} registrado a nombre de ${payee?.name ?? 'el tutor'}.`);
+      setPayOpen(false);
+    } catch {
+      showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
+    } finally {
+      setBusy(false);
+    }
   }
 
   // Con el filtro abierto manda la lista del servidor (trae el contacto); si
@@ -161,6 +246,24 @@ export default function RosterSearch({
     () => rows.map((child, i) => ({ child, position: i + 1, haystack: norm(child.name) })),
     [rows]
   );
+
+  const payee = payers.find((t) => t.id === payTutorId) ?? null;
+
+  // Buscador del selector: por nombre o por teléfono, que es como se distingue
+  // a dos tutores que se llaman igual.
+  const payerResults = useMemo(() => {
+    const term = payQuery.trim();
+    if (term === '') return payers;
+
+    const byName = norm(term);
+    const byPhone = phoneKey(term);
+    return payers.filter(
+      (t) => norm(t.name).includes(byName) || t.phone.includes(byPhone)
+    );
+  }, [payers, payQuery]);
+
+  const paidCount = payers.filter((t) => t.paid_total > 0).length;
+  const collected = payers.reduce((total, t) => total + t.paid_total, 0);
 
   const tutors = useMemo(() => options((detailed ?? []).map((c) => c.tutor_name)), [detailed]);
   const phones = useMemo(() => options((detailed ?? []).map((c) => c.tutor_phone)), [detailed]);
@@ -326,6 +429,22 @@ export default function RosterSearch({
               </div>
             </div>
 
+            {payers.length > 0 && (
+              <p className="hint hint--tally">
+                {paidCount} de {payers.length}{' '}
+                {payers.length === 1 ? 'tutor ha cooperado' : 'tutores han cooperado'} ·{' '}
+                {money(collected)} en total
+              </p>
+            )}
+
+            <button
+              type="button"
+              className="btn btn--ghost btn--block advanced__pay"
+              onClick={openPayment}
+            >
+              💵 Registrar pago
+            </button>
+
             <button type="button" className="link-quiet" onClick={disable}>
               Ocultar filtro avanzado
             </button>
@@ -399,6 +518,84 @@ export default function RosterSearch({
             disabled={busy}
           />
           <p className="hint">Son datos de contacto de las familias: solo quien organiza la ruta.</p>
+        </div>
+      </Modal>
+
+      <Modal
+        open={payOpen}
+        title="Registrar pago"
+        confirmText="Confirmar pago"
+        busyText="Guardando…"
+        busy={busy}
+        onClose={() => {
+          if (busy) return;
+          setPayOpen(false);
+        }}
+        onConfirm={savePayment}
+      >
+        <div className="field">
+          <label htmlFor="paySearch">¿Quién pagó?</label>
+          <input
+            id="paySearch"
+            type="search"
+            placeholder="Busca por nombre o teléfono"
+            value={payQuery}
+            onChange={(e) => setPayQuery(e.target.value)}
+            autoComplete="off"
+            disabled={busy}
+          />
+          <p className="hint">
+            {payers.length === 0
+              ? 'Todavía no hay tutores registrados en esta colonia.'
+              : payerResults.length === 0
+                ? `Ningún tutor coincide con “${payQuery.trim()}”.`
+                : `${payerResults.length} de ${payers.length} tutores`}
+          </p>
+        </div>
+
+        {payerResults.length > 0 && (
+          <ul className="tutor-list">
+            {payerResults.map((t) => (
+              <li key={t.id}>
+                <button
+                  type="button"
+                  className={`tutor-opt${t.id === payTutorId ? ' is-on' : ''}`}
+                  onClick={() => setPayTutorId(t.id)}
+                  aria-pressed={t.id === payTutorId}
+                  disabled={busy}
+                >
+                  <span className="tutor-opt__main">
+                    <strong>{t.name}</strong>
+                    <small>
+                      {prettyPhone(t.phone)} · {t.children_count}{' '}
+                      {t.children_count === 1 ? 'niño' : 'niños'}
+                    </small>
+                  </span>
+                  {t.paid_total > 0 && (
+                    <span className="tutor-opt__paid">Pagó {money(t.paid_total)}</span>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="field field--amount">
+          <label htmlFor="payAmount">Cantidad pagada</label>
+          <input
+            id="payAmount"
+            type="text"
+            inputMode="decimal"
+            value={payAmount}
+            onChange={(e) => setPayAmount(e.target.value)}
+            autoComplete="off"
+            disabled={busy}
+          />
+          <p className="hint">
+            {payee !== null && payee.paid_total > 0 && payee.paid_at !== null
+              ? `${payee.name} ya tiene ${money(payee.paid_total)} registrados desde el ${shortDate(payee.paid_at)}. Confirmar suma este pago al anterior.`
+              : `La cooperación es de ${money(DEFAULT_PAYMENT_AMOUNT)} por familia. Cámbiala solo si pagó otra cantidad.`}
+          </p>
         </div>
       </Modal>
 

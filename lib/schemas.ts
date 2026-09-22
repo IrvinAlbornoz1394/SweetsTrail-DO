@@ -92,5 +92,26 @@ export const childDeleteSchema = rosterUnlockSchema.extend({
   id: z.string().uuid('Registro inválido.'),
 });
 
+/**
+ * Cooperación acordada por familia. Vive aquí, compartida, para que el valor
+ * que trae puesto el formulario sea el mismo que el default de la columna
+ * `payments.amount` en schema.sql.
+ */
+export const DEFAULT_PAYMENT_AMOUNT = 35;
+
+/**
+ * Registro de un pago: mismo código de organizador que el resto del padrón.
+ * El monto llega como número (pesos), y se admiten centavos porque no toda
+ * familia coopera la cantidad exacta.
+ */
+export const paymentSchema = rosterUnlockSchema.extend({
+  tutorId: z.string().uuid('Elige de la lista quién pagó.'),
+  amount: z
+    .number({ error: 'Escribe la cantidad pagada.' })
+    .positive('La cantidad debe ser mayor que cero.')
+    .max(100000, 'La cantidad es demasiado grande.')
+    .multipleOf(0.01, 'Usa como máximo dos decimales.'),
+});
+
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 export type StationInput = z.infer<typeof stationSchema>;

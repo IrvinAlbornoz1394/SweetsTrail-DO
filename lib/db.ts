@@ -38,6 +38,23 @@ export type ChildWithTutor = Child & {
 };
 
 /**
+ * Tutor del padrón con lo que lleva cooperado. Alimenta el selector de
+ * "Registrar pago", así que, como `ChildWithTutor`, solo sale detrás del
+ * código de organizador: trae el teléfono con que se registró.
+ */
+export type TutorPayment = {
+  id: string;
+  name: string;
+  phone: string;
+  /** Niños vivos que registró. Sirve para distinguir a dos tutores homónimos. */
+  children_count: number;
+  /** Suma de sus pagos; 0 mientras no haya pagado. */
+  paid_total: number;
+  /** Fecha del último pago; null mientras no haya pagado. */
+  paid_at: string | null;
+};
+
+/**
  * Estación tal como sale a la vista pública (mapa y listas).
  *
  * `name` es quien responde por la casa y `business_name` el negocio o local,
@@ -356,6 +373,108 @@ export async function softDeleteChild(id: string, coloniaId: string): Promise<bo
         and not c.is_deleted
       returning c.id`,
     [id, coloniaId]
+  );
+  return rows.length > 0;
+}
+
+/* ---------------- Pagos ---------------- */
+
+/**
+ * Tutores de la colonia con lo que llevan cooperado, en orden alfabético.
+ *
+ * Es la lista que se elige al registrar un pago, así que incluye a los que ya
+ * pagaron (marcados) en lugar de esconderlos: quien organiza necesita verlo
+ * para no cobrar dos veces, y un tutor puede cooperar en partes.
+ *
+ * Trae teléfonos, igual que el padrón detallado: solo se llama desde la API
+ * que ya validó el código de organizador.
+ */
+export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promise<TutorPayment[]> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('tutors')
+      .select('id, name, phone, children(is_deleted), payments(amount, created_at)')
+      .eq('colonia_id', coloniaId)
+      .order('name');
+    if (error) throw new Error(error.message);
+
+    // PostgREST no agrega: los embebidos llegan como arreglos y la cuenta y la
+    // suma se hacen aquí. Son los tutores de una colonia, no un padrón nacional.
+    return (data ?? []).map((tutor) => {
+      const kids = (tutor.children ?? []) as { is_deleted: boolean }[];
+      const paid = (tutor.payments ?? []) as { amount: number | string; created_at: string }[];
+
+      return {
+        id: tutor.id as string,
+        name: tutor.name as string,
+        phone: tutor.phone as string,
+        children_count: kids.filter((kid) => !kid.is_deleted).length,
+        paid_total: paid.reduce((total, p) => total + Number(p.amount), 0),
+        paid_at: paid.reduce<string | null>(
+          (last, p) => (last === null || p.created_at > last ? p.created_at : last),
+          null
+        ),
+      };
+    });
+  }
+
+  const db = await getPglite();
+  // `sum` sobre numeric vuelve como texto; el cast a float8 lo entrega como
+  // número, que es lo que espera el tipo. Son pesos con dos decimales.
+  const { rows } = await db.query<TutorPayment>(
+    `select t.id,
+            t.name,
+            t.phone,
+            (select count(*)::int from children c
+              where c.tutor_id = t.id and not c.is_deleted) as children_count,
+            coalesce((select sum(p.amount) from payments p where p.tutor_id = t.id), 0)::float8
+              as paid_total,
+            (select max(p.created_at) from payments p where p.tutor_id = t.id) as paid_at
+       from tutors t
+      where t.colonia_id = $1
+      order by t.name`,
+    [coloniaId]
+  );
+  return rows;
+}
+
+/**
+ * Registra un pago del tutor. No sustituye lo anterior: cada llamada agrega una
+ * fila, así que cooperar en dos partes deja las dos.
+ *
+ * Devuelve false si el tutor no existe o es de otra colonia. La pertenencia va
+ * en la misma escritura (o en un select previo, en Supabase) para que un id
+ * ajeno no alcance nada, igual que en el borrado de niños.
+ */
+export async function createPayment(
+  tutorId: string,
+  coloniaId: string,
+  amount: number
+): Promise<boolean> {
+  if (hasSupabaseConfig()) {
+    const supabase = getSupabase();
+
+    const { data: tutor, error: findError } = await supabase
+      .from('tutors')
+      .select('id')
+      .eq('id', tutorId)
+      .eq('colonia_id', coloniaId)
+      .maybeSingle();
+    if (findError) throw new Error(findError.message);
+    if (!tutor) return false;
+
+    const { error } = await supabase.from('payments').insert({ tutor_id: tutorId, amount });
+    if (error) throw new Error(error.message);
+    return true;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query(
+    `insert into payments (tutor_id, amount)
+     select $1::uuid, $3::numeric
+      where exists (select 1 from tutors where id = $1 and colonia_id = $2)
+     returning id`,
+    [tutorId, coloniaId, amount]
   );
   return rows.length > 0;
 }

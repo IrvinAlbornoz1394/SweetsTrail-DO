@@ -97,6 +97,7 @@ app/
   api/registrations/route.ts        POST — tutor + niños (atómico)
   api/stations/route.ts             GET/POST/DELETE — estaciones por colonia
   api/roster/route.ts               POST/DELETE — padrón con contacto (con código)
+  api/payments/route.ts             POST — registra la cooperación de un tutor (con código)
 components/                         Formularios, mapa, modal, toast
 lib/
   db.ts                             Capa de datos (Supabase | PGlite)
@@ -109,7 +110,8 @@ prototype/                          Prototipo estático original (HTML/CSS/JS)
 ## Modelo de datos
 
 ```
-colonias ──┬── tutors ── children
+colonias ──┬── tutors ──┬── children
+           │            └── payments
            └── stations
 ```
 
@@ -129,6 +131,35 @@ Para ver lo que se ha quitado:
 
 ```sql
 select id, name, created_at from public.stations where is_deleted;
+```
+
+### Cooperación
+
+`payments` guarda **una fila por pago recibido**, no una bandera en `tutors`:
+así queda cuánto y cuándo se pagó, y una familia que coopera en dos partes
+tiene sus dos filas. El monto trae de default los $35 acordados
+(`DEFAULT_PAYMENT_AMOUNT` en `lib/schemas.ts` repite el mismo número para el
+formulario), pero se puede capturar otra cantidad.
+
+Se registra desde **Niños registrados → Habilitar filtro avanzado → Registrar
+pago**: ahí se elige al tutor en un buscador y se confirma. Es acción de
+colonia, no de renglón, porque la cooperación la debe la familia y no cada niño.
+
+Un pago capturado por error sí se borra de verdad — no hay borrado suave
+porque nada cuelga de esta tabla:
+
+```sql
+delete from public.payments where id = '<uuid>';
+```
+
+Lo cooperado por tutor:
+
+```sql
+select t.name, sum(p.amount) as total, max(p.created_at) as ultimo
+  from public.payments p
+  join public.tutors t on t.id = p.tutor_id
+ group by t.id, t.name
+ order by t.name;
 ```
 
 Los niños del padrón siguen la misma regla: `children.is_deleted` los saca de

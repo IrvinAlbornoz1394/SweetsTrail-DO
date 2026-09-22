@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
-import { coloniaExists, listChildrenWithTutorByColonia, softDeleteChild } from '@/lib/db';
+import {
+  coloniaExists,
+  listChildrenWithTutorByColonia,
+  listTutorsWithPaymentsByColonia,
+  softDeleteChild,
+} from '@/lib/db';
 import { checkOrganizerCode } from '@/lib/organizer';
 import { childDeleteSchema, rosterUnlockSchema } from '@/lib/schemas';
 
 /**
- * Padrón con datos de contacto, detrás del código de organizador.
+ * Padrón con datos de contacto y tutores con su cooperación, detrás del código
+ * de organizador.
  *
  * Es un POST y no un GET a propósito: el código va en el cuerpo, así no queda
  * escrito en los logs de acceso ni en el historial del navegador. Y los
@@ -37,7 +43,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'La colonia indicada no existe.' }, { status: 404 });
     }
 
-    return NextResponse.json({ children: await listChildrenWithTutorByColonia(parsed.data.coloniaId) });
+    // El padrón y los tutores con lo que llevan cooperado viajan juntos: los
+    // dos salen del mismo código y el segundo alimenta el registro de pagos,
+    // que se hace sin volver a pedirlo.
+    const [children, tutors] = await Promise.all([
+      listChildrenWithTutorByColonia(parsed.data.coloniaId),
+      listTutorsWithPaymentsByColonia(parsed.data.coloniaId),
+    ]);
+
+    return NextResponse.json({ children, tutors });
   } catch (err) {
     console.error('[roster:POST]', err);
     return NextResponse.json({ error: 'No se pudo cargar el padrón.' }, { status: 500 });

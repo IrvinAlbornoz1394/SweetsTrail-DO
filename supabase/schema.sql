@@ -44,6 +44,20 @@ create table if not exists public.children (
   created_at  timestamptz not null default now()
 );
 
+-- ---------- Cooperación de los tutores ----------
+
+-- Una fila por pago recibido, no una bandera en `tutors`: así queda registrado
+-- cuánto y cuándo se pagó, y un tutor que coopera en dos partes suma dos filas.
+-- El monto trae el default de la cooperación acordada, pero se puede cambiar.
+-- Solo quien organiza registra pagos, detrás del código de organizador.
+create table if not exists public.payments (
+  id         uuid          primary key default gen_random_uuid(),
+  tutor_id   uuid          not null references public.tutors(id) on delete cascade,
+  amount     numeric(10,2) not null default 35,
+  created_at timestamptz   not null default now(),
+  constraint payments_amount_positive check (amount > 0)
+);
+
 -- ---------- Estaciones de dulce ----------
 
 -- `name` es el nombre de QUIEN RESPONDE por la casa. `business_name` es el del
@@ -67,6 +81,7 @@ create table if not exists public.stations (
 create index if not exists children_tutor_id_idx  on public.children (tutor_id);
 create index if not exists tutors_colonia_id_idx  on public.tutors (colonia_id);
 create index if not exists stations_colonia_id_idx on public.stations (colonia_id);
+create index if not exists payments_tutor_id_idx  on public.payments (tutor_id);
 
 -- ---------- Registro atómico de tutor + niños ----------
 -- El cliente de Supabase no maneja transacciones, así que la inserción de un

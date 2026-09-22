@@ -13,7 +13,7 @@ if (!url) {
   process.exit(1);
 }
 
-const TABLES = ['colonias', 'tutors', 'children', 'stations'];
+const TABLES = ['colonias', 'tutors', 'children', 'stations', 'payments'];
 const client = new pg.Client({
   connectionString: url,
   ssl: { rejectUnauthorized: false },
@@ -57,7 +57,7 @@ try {
 
   // --- Datos capturados ---
   console.log('\nDatos capturados:');
-  for (const t of ['tutors', 'children', 'stations']) {
+  for (const t of ['tutors', 'children', 'stations', 'payments']) {
     if (!found.has(t)) continue;
     const { rows: [r] } = await client.query(`select count(*)::int as n from ${t}`);
     // Las estaciones se borran en suave: se distingue lo visible de lo archivado.
