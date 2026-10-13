@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import { FAMILY_COOKIE, isToken } from '@/lib/family';
 import BackButton from '@/components/BackButton';
 // El CSS de Leaflet debe ir antes que globals.css: sin él los tiles pierden su
 // posicionamiento absoluto (se apilan desalineados) y los marcadores no se ubican.
@@ -25,13 +27,21 @@ export const viewport: Viewport = {
   themeColor: '#14101f',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/**
+ * El título lleva a la familia que ya entró con su liga directo a su panel: la
+ * portada sirve para elegir colonia y registrarse, y eso ya lo hizo. Basta con
+ * ver que la cookie exista; si la liga ya no vale, el panel lo dice.
+ */
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const token = (await cookies()).get(FAMILY_COOKIE)?.value;
+  const home = token && isToken(token) ? '/mi-ruta' : '/';
+
   return (
     <html lang="es-MX">
       <body>
         <header className="topbar">
           <BackButton />
-          <Link className="brand" href="/" title="Inicio">
+          <Link className="brand" href={home} title={home === '/' ? 'Inicio' : 'Mi ruta'}>
             <span className="brand__icon">🍬</span>
             <span className="brand__text">
               <strong>SweetsTrail</strong>

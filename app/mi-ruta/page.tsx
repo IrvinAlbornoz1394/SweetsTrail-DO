@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ALLOWED_COLONIA_SLUG } from '@/lib/db';
 import { currentFamily, familyProgress } from '@/lib/family';
 import { stationLabel } from '@/lib/station';
 import ScanVisit from '@/components/ScanVisit';
@@ -16,7 +15,7 @@ export const dynamic = 'force-dynamic';
 export default async function MyRoutePage({
   searchParams,
 }: {
-  searchParams: Promise<{ liga?: string; visita?: string }>;
+  searchParams: Promise<{ liga?: string; visita?: string; escanear?: string }>;
 }) {
   const [query, family] = await Promise.all([searchParams, currentFamily()]);
 
@@ -65,7 +64,8 @@ export default async function MyRoutePage({
         </p>
       )}
 
-      <ScanVisit />
+      {/* "Registrar visita" en el mapa llega aquí con la cámara ya abierta. */}
+      <ScanVisit autoOpen={query.escanear === '1'} />
 
       <div className="progress">
         <div className="progress__stats">
@@ -89,8 +89,8 @@ export default async function MyRoutePage({
       </div>
 
       <p className="hint family__map">
-        <Link href={`/colonia/${ALLOWED_COLONIA_SLUG}/estaciones/registradas`}>
-          Ver las estaciones en el mapa
+        <Link className="btn btn--ghost btn--block" href="/mi-ruta/mapa">
+          🗺️ Ver las estaciones en el mapa
         </Link>
       </p>
     </>

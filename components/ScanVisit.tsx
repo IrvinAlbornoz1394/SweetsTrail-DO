@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Toast, useToast } from './Toast';
@@ -15,12 +15,18 @@ type Visit = { station: string; firstTime: boolean };
  * desde la cámara, y no todos saben cómo. Al leerlo se marca la visita aquí
  * mismo y el panel se refresca con el avance nuevo, listo para la siguiente.
  */
-export default function ScanVisit() {
+export default function ScanVisit({ autoOpen = false }: { autoOpen?: boolean }) {
   const router = useRouter();
   const { toast, showToast } = useToast();
-  const [scanning, setScanning] = useState(false);
+  const [scanning, setScanning] = useState(autoOpen);
   const [saving, setSaving] = useState(false);
   const [last, setLast] = useState<Visit | null>(null);
+
+  // Se quita el ?escanear=1 de la dirección: recargar o volver atrás no debe
+  // abrir la cámara otra vez.
+  useEffect(() => {
+    if (autoOpen) router.replace('/mi-ruta', { scroll: false });
+  }, [autoOpen, router]);
 
   async function register(token: string) {
     setScanning(false);

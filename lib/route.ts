@@ -13,7 +13,11 @@ import type { LatLng } from './map';
  * Si el servicio no responde, la ruta se une en línea recta: es mejor un trazo
  * aproximado que quedarse sin ruta en plena noche de dulces.
  */
-const OSRM = 'https://routing.openstreetmap.de/routed-car';
+const OSRM = {
+  car: 'https://routing.openstreetmap.de/routed-car/route/v1/driving',
+  // A pie no importa el sentido de las calles: para guiar a una familia hasta una casa.
+  foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot',
+};
 
 /**
  * Paso de un grupo grande con niños: unos 3 km/h, más lento que un adulto
@@ -70,12 +74,19 @@ export function distance(a: LatLng, b: LatLng): number {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-/** Camino por las calles que pasa por `points` en ese orden. */
-export async function tracePath(points: LatLng[]): Promise<TracedPath> {
+/**
+ * Camino por las calles que pasa por `points` en ese orden. En auto por
+ * defecto, que respeta los sentidos (así se arma la ruta del grupo); a pie
+ * para llevar a alguien de donde está a una estación.
+ */
+export async function tracePath(
+  points: LatLng[],
+  profile: keyof typeof OSRM = 'car'
+): Promise<TracedPath> {
   try {
     const coords = points.map((p) => `${p.lng.toFixed(6)},${p.lat.toFixed(6)}`).join(';');
     const res = await fetch(
-      `${OSRM}/route/v1/driving/${coords}?overview=full&geometries=geojson`,
+      `${OSRM[profile]}/${coords}?overview=full&geometries=geojson`,
       { signal: AbortSignal.timeout(10000) }
     );
     const data = await res.json();

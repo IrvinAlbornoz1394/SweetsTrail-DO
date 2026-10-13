@@ -1304,3 +1304,29 @@ select:focus {
   color: #fff;
 }
 .scanner__error span { font-size: 48px; }
+
+/* Mapa de la familia: las ya visitadas en gris, su ubicación en azul y los
+   dos botones del globo de cada estación. */
+.pin--visited { width: 28px; height: 28px; font-size: 18px; filter: grayscale(1); opacity: .4; }
+.me-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px rgba(59,130,246,.3), 0 2px 6px rgba(0,0,0,.5);
+}
+.popup__actions { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.popup__btn {
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+.popup__btn:disabled { opacity: .6; cursor: wait; }
+.popup__btn--primary { border-color: transparent; background: linear-gradient(135deg, var(--orange), var(--purple)); color: #fff; }

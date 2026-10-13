@@ -86,3 +86,31 @@ export const startIcon = L.divIcon({
   iconSize: [20, 20],
   iconAnchor: [10, 10],
 });
+
+/**
+ * Estación que la familia ya visitó: el mismo emoji, pero en gris y apagado,
+ * para que se note que ya pasaron y no llame la atención.
+ */
+const visitedCache = new Map<string, L.DivIcon>();
+
+export function visitedIconFor(id: string): L.DivIcon {
+  let icon = visitedCache.get(id);
+  if (!icon) {
+    icon = L.divIcon({
+      className: '',
+      html: `<div class="pin pin--visited">${spookyFor(id)}</div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 25],
+    });
+    visitedCache.set(id, icon);
+  }
+  return icon;
+}
+
+/** Dónde está la familia ahora: el punto azul de siempre en los mapas. */
+export const meIcon = L.divIcon({
+  className: '',
+  html: '<div class="me-dot"></div>',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
