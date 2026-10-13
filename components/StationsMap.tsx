@@ -70,9 +70,11 @@ export default function StationsMap({
   const [busy, setBusy] = useState(false);
   const [route, setRoute] = useState<PlannedRoute | null>(null);
 
-  // Las dos herramientas de quien organiza piden el código primero: armar la
-  // ruta (en un modal a pantalla completa) y mover estaciones (aquí mismo).
-  const [unlocking, setUnlocking] = useState<'route' | 'edit' | null>(null);
+  // Las herramientas de quien organiza piden el código primero: armar la ruta
+  // (en un modal a pantalla completa), mover estaciones (aquí mismo) y
+  // descargar el ZIP con el QR de cada estación.
+  const [unlocking, setUnlocking] = useState<'route' | 'edit' | 'qr' | null>(null);
+  const [downloading, setDownloading] = useState(false);
   const [building, setBuilding] = useState(false);
 
   // Código ya validado mientras dura el modo de edición: cada movimiento lo
@@ -125,6 +127,46 @@ export default function StationsMap({
     } catch {
       marker.setLatLng([station.lat, station.lng]);
       showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
+    }
+  }
+
+  /**
+   * Pide el ZIP con las tarjetas de QR y lo descarga. El código ya se validó al
+   * desbloquear, pero la API lo vuelve a comparar: es la que entrega los tokens.
+   */
+  async function downloadQr(code: string) {
+    setDownloading(true);
+    showToast('Generando los QR… puede tardar un poco.');
+
+    try {
+      const res = await fetch('/api/stations/qr', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ coloniaId, code }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.error ?? 'No se pudieron generar los QR.', true);
+        return;
+      }
+
+      const url = URL.createObjectURL(await res.blob());
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'qr-estaciones-dolores-otero.zip';
+      link.click();
+      URL.revokeObjectURL(url);
+
+      if (res.headers.get('x-qr-warning') === 'localhost') {
+        showToast('Ojo: estos QR apuntan a localhost. No los imprimas; genéralos desde el sitio publicado.', true);
+      } else {
+        showToast('Listo: se descargó el ZIP con los QR.');
+      }
+    } catch {
+      showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
+    } finally {
+      setDownloading(false);
     }
   }
 
@@ -303,19 +345,35 @@ export default function StationsMap({
           <button type="button" className="link-quiet" onClick={() => setUnlocking('edit')}>
             Editar ubicaciones
           </button>
+          <button
+            type="button"
+            className="link-quiet"
+            onClick={() => setUnlocking('qr')}
+            disabled={downloading}
+          >
+            {downloading ? 'Generando QR…' : 'Descargar QR'}
+          </button>
         </p>
       )}
 
       <OrganizerUnlock
         open={unlocking !== null}
-        title={unlocking === 'edit' ? 'Editar ubicaciones' : 'Generar ruta'}
+        title={
+          unlocking === 'edit' ? 'Editar ubicaciones' : unlocking === 'qr' ? 'Descargar QR' : 'Generar ruta'
+        }
         hint={
           unlocking === 'edit'
             ? 'Solo quien organiza la ruta puede mover estaciones.'
-            : 'Solo quien organiza la ruta puede generarla.'
+            : unlocking === 'qr'
+              ? 'Solo quien organiza la ruta puede descargar los QR de las estaciones.'
+              : 'Solo quien organiza la ruta puede generarla.'
         }
         onClose={() => setUnlocking(null)}
-        onUnlock={(code) => (unlocking === 'edit' ? setEditCode(code) : setBuilding(true))}
+        onUnlock={(code) => {
+          if (unlocking === 'edit') setEditCode(code);
+          else if (unlocking === 'qr') downloadQr(code);
+          else setBuilding(true);
+        }}
         onError={(message) => showToast(message, true)}
       />
 

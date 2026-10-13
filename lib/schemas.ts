@@ -94,6 +94,9 @@ export const rosterUnlockSchema = z.object({
  */
 export const organizerCheckSchema = rosterUnlockSchema.pick({ code: true });
 
+/** Descargar el ZIP con el QR de cada estación: colonia y código de organizador. */
+export const stationQrSchema = rosterUnlockSchema;
+
 /**
  * Mover una estación desde el mapa: mismo código de organizador, y las mismas
  * reglas de coordenadas que al registrarla.

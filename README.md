@@ -81,7 +81,10 @@ No hay que tocar código: `lib/db.ts` elige el backend en tiempo de ejecución.
    («El borrado no está configurado en este servidor») y nadie puede quitar
    estaciones en producción. Al agregarla hay que **volver a desplegar**: las
    variables se leen en el arranque del servidor.
-4. Deploy.
+4. Agrega `PUBLIC_SITE_URL` con el dominio de producción, sin diagonal final.
+   Es la dirección que va dentro del QR de cada estación («Descargar QR» en el
+   mapa); un QR impreso ya no se puede corregir, así que conviene fijarla.
+5. Deploy.
 
 En producción las dos primeras son obligatorias: PGlite escribe en disco y el
 filesystem de Vercel es de solo lectura.

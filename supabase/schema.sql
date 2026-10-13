@@ -169,3 +169,12 @@ alter table public.children add column if not exists is_deleted boolean not null
 create index if not exists children_tutor_activos_idx
   on public.children (tutor_id, created_at desc)
   where not is_deleted;
+
+-- Identificador del QR de cada estación. No se usa el id porque el id viaja en
+-- las listas públicas del mapa: con él cualquiera podría marcar una visita sin
+-- pasar por la casa. Este token solo sale en el QR impreso y nunca se manda al
+-- navegador. El default es volátil, así que cada fila existente recibe el suyo
+-- al agregar la columna, y cada estación nueva nace con uno sin tocar el insert.
+alter table public.stations add column if not exists qr_token text
+  not null default replace(gen_random_uuid()::text, '-', '');
+create unique index if not exists stations_qr_token_idx on public.stations (qr_token);

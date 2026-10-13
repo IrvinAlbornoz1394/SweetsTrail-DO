@@ -628,3 +628,66 @@ export async function listStationsByColonia(coloniaId: string): Promise<Station[
   );
   return rows;
 }
+
+/** Lo que lleva la tarjeta impresa de una estación: su rótulo y el token del QR. */
+export type StationQr = {
+  id: string;
+  name: string;
+  business_name: string | null;
+  qr_token: string;
+};
+
+/**
+ * Estaciones vivas con su token de QR, de la más antigua a la más nueva, para
+ * que el número de cada tarjeta no cambie al registrar estaciones nuevas.
+ *
+ * El token es lo que demuestra que alguien pasó por la casa: solo lo pide la
+ * API del ZIP, detrás del código de organizador, y nunca entra en `STATION_COLS`.
+ */
+export async function listStationsForQr(coloniaId: string): Promise<StationQr[]> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('stations')
+      .select('id, name, business_name, qr_token')
+      .eq('colonia_id', coloniaId)
+      .eq('is_deleted', false)
+      .order('created_at', { ascending: true });
+    if (error) throw new Error(error.message);
+    return (data ?? []) as StationQr[];
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query<StationQr>(
+    `select id, name, business_name, qr_token
+       from stations
+      where colonia_id = $1 and not is_deleted
+      order by created_at asc`,
+    [coloniaId]
+  );
+  return rows;
+}
+
+/** La estación de un QR escaneado, con sus datos públicos. Null si no existe o se borró. */
+export async function getStationByQrToken(
+  token: string
+): Promise<(Station & { colonia_id: string }) | null> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('stations')
+      .select(`${STATION_COLS}, colonia_id`)
+      .eq('qr_token', token)
+      .eq('is_deleted', false)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return (data as Station & { colonia_id: string }) ?? null;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query<Station & { colonia_id: string }>(
+    `select ${STATION_COLS}, colonia_id
+       from stations
+      where qr_token = $1 and not is_deleted`,
+    [token]
+  );
+  return rows[0] ?? null;
+}
