@@ -13,7 +13,7 @@ if (!url) {
   process.exit(1);
 }
 
-const TABLES = ['colonias', 'tutors', 'children', 'stations', 'payments'];
+const TABLES = ['colonias', 'tutors', 'children', 'stations', 'payments', 'family_access', 'visits'];
 const client = new pg.Client({
   connectionString: url,
   ssl: { rejectUnauthorized: false },

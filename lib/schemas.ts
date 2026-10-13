@@ -97,6 +97,14 @@ export const organizerCheckSchema = rosterUnlockSchema.pick({ code: true });
 /** Descargar el ZIP con el QR de cada estación: colonia y código de organizador. */
 export const stationQrSchema = rosterUnlockSchema;
 
+/** Ligas de las familias para mandarlas por WhatsApp: mismo código de organizador. */
+export const familyLinksSchema = rosterUnlockSchema;
+
+/** Visita al escanear el QR de una estación: solo viaja el token del QR. */
+export const visitSchema = z.object({
+  token: z.string().regex(/^[0-9a-f]{32}$/, 'Código QR inválido.'),
+});
+
 /**
  * Mover una estación desde el mapa: mismo código de organizador, y las mismas
  * reglas de coordenadas que al registrarla.

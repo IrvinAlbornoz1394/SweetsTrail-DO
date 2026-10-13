@@ -19,6 +19,9 @@ const prettyPhone = (p: string) =>
 const money = (n: number) =>
   `$${n.toLocaleString('es-MX', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`;
 
+/** Una familia con su liga de entrada, tal como la manda /api/family-links. */
+type FamilyLinkRow = { phone: string; tutors: string[]; children: string[]; link: string };
+
 /** Fecha corta del pago: el año sobra, todo esto pasa en la misma temporada. */
 const shortDate = (iso: string) =>
   new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
@@ -107,6 +110,12 @@ export default function RosterSearch({
   const [payTutorId, setPayTutorId] = useState<string | null>(null);
   const [payAmount, setPayAmount] = useState(String(DEFAULT_PAYMENT_AMOUNT));
 
+  // Ligas por WhatsApp: una por familia, para entrar a su panel de visitas.
+  const [links, setLinks] = useState<FamilyLinkRow[] | null>(null);
+  const [linksQuery, setLinksQuery] = useState('');
+  // Las que ya se abrieron en WhatsApp en esta sesión, para no perder la cuenta.
+  const [sent, setSent] = useState<string[]>([]);
+
   // Quitar un registro: pide el código de nuevo, no basta con tener abierto el
   // filtro (eso vive en el navegador y ahí no se decide nada).
   const [pending, setPending] = useState<ChildWithTutor | null>(null);
@@ -193,6 +202,50 @@ export default function RosterSearch({
     setDupeBy('');
   }
 
+  /** Pide las ligas (crea las que falten) con el código que ya se validó. */
+  async function openLinks() {
+    setBusy(true);
+    try {
+      const res = await fetch('/api/family-links', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ coloniaId, code: organizerCode }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showToast(data.error ?? 'No se pudieron generar las ligas.', true);
+        return;
+      }
+
+      setLinksQuery('');
+      setLinks((data.families ?? []) as FamilyLinkRow[]);
+    } catch {
+      showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** El mensaje de WhatsApp de cada familia, ya con su liga. */
+  function linkMessage(family: FamilyLinkRow) {
+    return (
+      `Hola ${family.tutors[0]}, esta es tu liga para la Ruta de los Dulces 2026 en ${coloniaName} 🎃\n\n` +
+      `${family.link}\n\n` +
+      'Ábrela una vez en tu celular y después escanea el QR de cada estación para marcar tus visitas. ' +
+      'No la compartas: es la llave de tu familia.'
+    );
+  }
+
+  async function copyLink(family: FamilyLinkRow) {
+    try {
+      await navigator.clipboard.writeText(linkMessage(family));
+      showToast(`Mensaje para ${family.tutors[0]} copiado.`);
+    } catch {
+      showToast('No se pudo copiar. Mantén presionada la liga para copiarla a mano.', true);
+    }
+  }
+
   function openPayment() {
     setPayQuery('');
     setPayTutorId(null);
@@ -248,6 +301,18 @@ export default function RosterSearch({
   );
 
   const payee = payers.find((t) => t.id === payTutorId) ?? null;
+
+  const linkResults = useMemo(() => {
+    const term = linksQuery.trim();
+    if (!links || term === '') return links ?? [];
+    const byName = norm(term);
+    const byPhone = phoneKey(term);
+    return links.filter(
+      (f) =>
+        [...f.tutors, ...f.children].some((name) => norm(name).includes(byName)) ||
+        (byPhone !== '' && f.phone.includes(byPhone))
+    );
+  }, [links, linksQuery]);
 
   // Buscador del selector: por nombre o por teléfono, que es como se distingue
   // a dos tutores que se llaman igual.
@@ -445,6 +510,15 @@ export default function RosterSearch({
               💵 Registrar pago
             </button>
 
+            <button
+              type="button"
+              className="btn btn--ghost btn--block advanced__pay"
+              onClick={openLinks}
+              disabled={busy}
+            >
+              📲 Ligas por WhatsApp
+            </button>
+
             <button type="button" className="link-quiet" onClick={disable}>
               Ocultar filtro avanzado
             </button>
@@ -597,6 +671,72 @@ export default function RosterSearch({
               : `La cooperación es de ${money(DEFAULT_PAYMENT_AMOUNT)} por familia. Cámbiala solo si pagó otra cantidad.`}
           </p>
         </div>
+      </Modal>
+
+      <Modal
+        open={links !== null}
+        title="Ligas por WhatsApp"
+        confirmText="Listo"
+        onClose={() => setLinks(null)}
+        onConfirm={() => setLinks(null)}
+      >
+        <p className="hint">
+          Cada familia entra a su panel de visitas con su propia liga. Mándasela una vez; si la
+          pides otra vez sale la misma.
+        </p>
+
+        <div className="field">
+          <label htmlFor="linksSearch">Buscar familia</label>
+          <input
+            id="linksSearch"
+            type="search"
+            placeholder="Nombre del tutor, de un niño o teléfono"
+            value={linksQuery}
+            onChange={(e) => setLinksQuery(e.target.value)}
+            autoComplete="off"
+          />
+          <p className="hint">
+            {links?.length === 0
+              ? 'Todavía no hay familias registradas.'
+              : `${linkResults.length} de ${links?.length ?? 0} familias · ${sent.length} enviadas en esta sesión`}
+          </p>
+        </div>
+
+        {linkResults.length > 0 && (
+          <ul className="tutor-list">
+            {linkResults.map((f) => (
+              <li key={f.phone} className="tutor-opt family-link">
+                <span className="tutor-opt__main">
+                  <strong>
+                    {sent.includes(f.phone) && '✅ '}
+                    {f.tutors.join(' / ')}
+                  </strong>
+                  <small>
+                    {prettyPhone(f.phone)} · {f.children.join(', ')}
+                  </small>
+                </span>
+                <span className="family-link__actions">
+                  <a
+                    className="btn btn--primary family-link__btn"
+                    href={`https://wa.me/52${f.phone}?text=${encodeURIComponent(linkMessage(f))}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setSent((all) => (all.includes(f.phone) ? all : [...all, f.phone]))}
+                  >
+                    Enviar
+                  </a>
+                  <button
+                    type="button"
+                    className="btn btn--ghost family-link__btn"
+                    onClick={() => copyLink(f)}
+                  >
+                    Copiar
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </Modal>
 
       <Modal

@@ -1168,3 +1168,68 @@ select:focus {
   color: var(--text-dim);
 }
 .map-focus strong { color: var(--text); }
+
+/* ===========================================================
+   Visitas de las familias — panel "Mi ruta" y pantalla del QR
+   =========================================================== */
+
+.progress {
+  margin: 16px 0;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.progress__stats { display: flex; gap: 12px; }
+.progress__stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  background: var(--bg-soft);
+}
+.progress__stat strong { font-size: 30px; line-height: 1.1; color: var(--orange-2); }
+.progress__stat small { color: var(--text-dim); font-size: 13px; }
+.progress__bar {
+  margin-top: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.progress__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--orange), var(--purple));
+  transition: width .4s ease;
+}
+.progress__done { margin: 12px 0 0; text-align: center; font-weight: 600; }
+
+.family__kids { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+.family__kid {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  font-size: 13px;
+}
+.family__notice {
+  margin: 8px 0 0;
+  padding: 10px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--orange);
+  background: rgba(255,122,26,.12);
+}
+.family__heading { margin: 20px 0 8px; font-size: 16px; }
+.family__map { margin-top: 18px; text-align: center; }
+
+/* Ligas por WhatsApp: cada familia con sus dos botones a la derecha. */
+.family-link { cursor: default; align-items: center; }
+.family-link__actions { display: flex; gap: 6px; flex: 0 0 auto; }
+.family-link__btn { padding: 7px 12px; font-size: 13px; min-height: 0; }

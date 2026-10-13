@@ -178,3 +178,28 @@ create index if not exists children_tutor_activos_idx
 alter table public.stations add column if not exists qr_token text
   not null default replace(gen_random_uuid()::text, '-', '');
 create unique index if not exists stations_qr_token_idx on public.stations (qr_token);
+
+-- ---------- Visitas de las familias ----------
+
+-- Una liga secreta por familia: es su forma de entrar, sin contraseña ni OTP.
+-- La clave es el teléfono y no el tutor porque el padrón tiene registros
+-- repetidos con el mismo número, y esos deben compartir un solo avance. El
+-- token se arma con dos uuid para que no se pueda adivinar; si una liga se
+-- filtra, basta con borrar la fila y generar otra.
+create table if not exists public.family_access (
+  phone      text        primary key,
+  colonia_id uuid        not null references public.colonias(id) on delete restrict,
+  token      text        not null unique
+             default replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', ''),
+  created_at timestamptz not null default now()
+);
+
+-- Cada estación cuenta una vez por familia: escanear el mismo QR dos veces no
+-- suma. Se guarda la hora de la primera visita.
+create table if not exists public.visits (
+  id         uuid        primary key default gen_random_uuid(),
+  phone      text        not null references public.family_access(phone) on delete cascade,
+  station_id uuid        not null references public.stations(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  constraint visits_once unique (phone, station_id)
+);

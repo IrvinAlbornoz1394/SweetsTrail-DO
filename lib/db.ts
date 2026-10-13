@@ -691,3 +691,158 @@ export async function getStationByQrToken(
   );
   return rows[0] ?? null;
 }
+
+/* ---------------- Familias y visitas ---------------- */
+
+/**
+ * Una familia con su liga de entrada. Se agrupa por teléfono: los tutores
+ * repetidos del padrón con el mismo número son la misma familia.
+ */
+export type FamilyLink = {
+  phone: string;
+  token: string;
+  /** Nombres con que se registró ese teléfono (uno, o varios si hay repetidos). */
+  tutors: string[];
+  children: string[];
+};
+
+/** La familia que entró con su liga, sin el token. */
+export type Family = Omit<FamilyLink, 'token'> & { colonia_id: string };
+
+/** Agrupa el padrón por teléfono, sin repetir nombres. */
+function groupByPhone(rows: ChildWithTutor[]): Map<string, { tutors: string[]; children: string[] }> {
+  const families = new Map<string, { tutors: string[]; children: string[] }>();
+  // El padrón llega del más nuevo al más viejo; se invierte para listar en orden de registro.
+  for (const row of [...rows].reverse()) {
+    const family = families.get(row.tutor_phone) ?? { tutors: [], children: [] };
+    if (!family.tutors.includes(row.tutor_name)) family.tutors.push(row.tutor_name);
+    family.children.push(row.name);
+    families.set(row.tutor_phone, family);
+  }
+  return families;
+}
+
+/**
+ * Las ligas de todas las familias de la colonia, creando las que falten. Solo
+ * cuentan los teléfonos con al menos un niño vivo en el padrón. Es contacto de
+ * familias: solo se llama detrás del código de organizador.
+ *
+ * Crear es idempotente (`on conflict do nothing`): pedir las ligas otra vez
+ * nunca cambia las que ya se mandaron.
+ */
+export async function ensureFamilyLinks(coloniaId: string): Promise<FamilyLink[]> {
+  const families = groupByPhone(await listChildrenWithTutorByColonia(coloniaId));
+  const phones = [...families.keys()];
+  if (phones.length === 0) return [];
+
+  let tokens: { phone: string; token: string }[];
+
+  if (hasSupabaseConfig()) {
+    const supabase = getSupabase();
+    const { error: insertError } = await supabase
+      .from('family_access')
+      .upsert(
+        phones.map((phone) => ({ phone, colonia_id: coloniaId })),
+        { onConflict: 'phone', ignoreDuplicates: true }
+      );
+    if (insertError) throw new Error(insertError.message);
+
+    const { data, error } = await supabase
+      .from('family_access')
+      .select('phone, token')
+      .in('phone', phones);
+    if (error) throw new Error(error.message);
+    tokens = data ?? [];
+  } else {
+    const db = await getPglite();
+    await db.query(
+      `insert into family_access (phone, colonia_id)
+       select unnest($1::text[]), $2
+       on conflict (phone) do nothing`,
+      [phones, coloniaId]
+    );
+    const { rows } = await db.query<{ phone: string; token: string }>(
+      'select phone, token from family_access where phone = any($1::text[])',
+      [phones]
+    );
+    tokens = rows;
+  }
+
+  const byPhone = new Map(tokens.map((t) => [t.phone, t.token]));
+  return phones
+    .filter((phone) => byPhone.has(phone))
+    .map((phone) => ({ phone, token: byPhone.get(phone)!, ...families.get(phone)! }));
+}
+
+/** La familia dueña de una liga, con sus tutores y niños vivos. Null si la liga no existe. */
+export async function getFamilyByToken(token: string): Promise<Family | null> {
+  let access: { phone: string; colonia_id: string } | null;
+
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('family_access')
+      .select('phone, colonia_id')
+      .eq('token', token)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    access = data;
+  } else {
+    const db = await getPglite();
+    const { rows } = await db.query<{ phone: string; colonia_id: string }>(
+      'select phone, colonia_id from family_access where token = $1',
+      [token]
+    );
+    access = rows[0] ?? null;
+  }
+  if (!access) return null;
+
+  const rows = (await listChildrenWithTutorByColonia(access.colonia_id)).filter(
+    (row) => row.tutor_phone === access.phone
+  );
+  const family = groupByPhone(rows).get(access.phone) ?? { tutors: [], children: [] };
+  return { phone: access.phone, colonia_id: access.colonia_id, ...family };
+}
+
+/**
+ * Marca la visita de una familia a una estación. Escanear dos veces el mismo
+ * QR no suma: devuelve false si ya estaba marcada.
+ */
+export async function recordVisit(phone: string, stationId: string): Promise<boolean> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('visits')
+      .upsert({ phone, station_id: stationId }, { onConflict: 'phone,station_id', ignoreDuplicates: true })
+      .select('id');
+    if (error) throw new Error(error.message);
+    return (data ?? []).length > 0;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query(
+    `insert into visits (phone, station_id) values ($1, $2)
+     on conflict (phone, station_id) do nothing
+     returning id`,
+    [phone, stationId]
+  );
+  return rows.length > 0;
+}
+
+/** Estaciones que ya visitó una familia, con la hora de la visita. */
+export async function listVisits(phone: string): Promise<{ station_id: string; created_at: string }[]> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('visits')
+      .select('station_id, created_at')
+      .eq('phone', phone)
+      .order('created_at', { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query<{ station_id: string; created_at: string }>(
+    'select station_id, created_at from visits where phone = $1 order by created_at asc',
+    [phone]
+  );
+  return rows;
+}
