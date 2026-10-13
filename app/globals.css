@@ -1330,3 +1330,5 @@ select:focus {
 }
 .popup__btn:disabled { opacity: .6; cursor: wait; }
 .popup__btn--primary { border-color: transparent; background: linear-gradient(135deg, var(--orange), var(--purple)); color: #fff; }
+/* Las ligas del globo se ven igual que sus botones. */
+a.popup__btn, a.popup__btn:hover { text-decoration: none; color: var(--text); }
