@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getColoniaBySlug, listStationsByColonia } from '@/lib/db';
+import { getColoniaBySlug, listChildrenByColonia, listStationsByColonia } from '@/lib/db';
 import { getColoniaCenter } from '@/lib/geocode';
-import { stationLabel } from '@/lib/station';
 import ColoniaBanner from '@/components/ColoniaBanner';
 import StationsMapClient from '@/components/StationsMapClient';
 
@@ -18,9 +17,10 @@ export default async function RegisteredStationsPage({
   const colonia = await getColoniaBySlug(slug);
   if (!colonia) notFound();
 
-  const [stations, center] = await Promise.all([
+  const [stations, center, children] = await Promise.all([
     listStationsByColonia(colonia.id),
     getColoniaCenter(colonia),
+    listChildrenByColonia(colonia.id),
   ]);
   const total = stations.length;
 
@@ -49,23 +49,12 @@ export default async function RegisteredStationsPage({
           <Link href={`/colonia/${colonia.slug}/estaciones`}>Registra la primera.</Link>
         </p>
       ) : (
-        <>
-          <StationsMapClient stations={stations} center={center} coloniaId={colonia.id} />
-
-          <ol className="roster roster--stations">
-            {stations.map((station, i) => (
-              <li className="roster__item" key={station.id}>
-                <span className="roster__num">{i + 1}</span>
-                <span className="roster__station">
-                  <strong>{stationLabel(station)}</strong>
-                  <small>
-                    {station.lat.toFixed(5)}, {station.lng.toFixed(5)}
-                  </small>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </>
+        <StationsMapClient
+          stations={stations}
+          center={center}
+          coloniaId={colonia.id}
+          kids={children.length}
+        />
       )}
     </>
   );

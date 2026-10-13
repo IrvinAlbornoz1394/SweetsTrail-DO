@@ -573,6 +573,38 @@ export async function softDeleteStation(id: string, coloniaId: string): Promise<
   return rows.length > 0;
 }
 
+/**
+ * Mueve una estación a una nueva ubicación. Mismo cerco que el borrado: el
+ * `colonia_id` va en el filtro, y una estación ya borrada no se puede mover.
+ */
+export async function moveStation(
+  id: string,
+  coloniaId: string,
+  lat: number,
+  lng: number
+): Promise<boolean> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('stations')
+      .update({ lat, lng })
+      .eq('id', id)
+      .eq('colonia_id', coloniaId)
+      .eq('is_deleted', false)
+      .select('id');
+    if (error) throw new Error(error.message);
+    return (data ?? []).length > 0;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query(
+    `update stations set lat = $3, lng = $4
+      where id = $1 and colonia_id = $2 and not is_deleted
+      returning id`,
+    [id, coloniaId, lat, lng]
+  );
+  return rows.length > 0;
+}
+
 /** Estaciones vivas de una colonia: las marcadas como borradas no salen. */
 export async function listStationsByColonia(coloniaId: string): Promise<Station[]> {
   if (hasSupabaseConfig()) {

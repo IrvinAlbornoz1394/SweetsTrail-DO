@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { coloniaExists, createStation, listStationsByColonia, softDeleteStation } from '@/lib/db';
+import { coloniaExists, createStation, listStationsByColonia, moveStation, softDeleteStation } from '@/lib/db';
 import { checkOrganizerCode } from '@/lib/organizer';
-import { stationDeleteSchema, stationSchema } from '@/lib/schemas';
+import { stationDeleteSchema, stationMoveSchema, stationSchema } from '@/lib/schemas';
 
 export async function GET(request: Request) {
   const coloniaId = new URL(request.url).searchParams.get('coloniaId');
@@ -100,5 +100,53 @@ export async function DELETE(request: Request) {
   } catch (err) {
     console.error('[stations:DELETE]', err);
     return NextResponse.json({ error: 'No se pudo eliminar la estación.' }, { status: 500 });
+  }
+}
+
+/**
+ * Corrige la ubicación de una estación, detrás del código de organizador. Se
+ * llama al soltar el marcador en el modo de edición; el código viaja en cada
+ * petición porque el modo vive en el navegador, y de ese lado no se decide nada.
+ */
+export async function PATCH(request: Request) {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Cuerpo de la petición inválido.' }, { status: 400 });
+  }
+
+  const parsed = stationMoveSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? 'Datos inválidos.' },
+      { status: 422 }
+    );
+  }
+
+  const auth = checkOrganizerCode(parsed.data.code);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
+  const { id, coloniaId, lat, lng } = parsed.data;
+
+  try {
+    if (!(await coloniaExists(coloniaId))) {
+      return NextResponse.json({ error: 'La colonia indicada no existe.' }, { status: 404 });
+    }
+
+    const moved = await moveStation(id, coloniaId, lat, lng);
+    if (!moved) {
+      return NextResponse.json(
+        { error: 'La estación ya se había eliminado o pertenece a otra colonia.' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[stations:PATCH]', err);
+    return NextResponse.json({ error: 'No se pudo mover la estación.' }, { status: 500 });
   }
 }

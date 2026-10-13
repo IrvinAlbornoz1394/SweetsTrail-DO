@@ -11,6 +11,10 @@ type Props = {
   /** Pinta de rojo el botón de confirmar, para acciones que no se deshacen. */
   danger?: boolean;
   busy?: boolean;
+  /** Casi toda la pantalla, para cuando el contenido es un mapa. */
+  full?: boolean;
+  /** Botón extra en el pie, a la izquierda de Cancelar. */
+  extraAction?: ReactNode;
   onClose: () => void;
   onConfirm: () => void;
   children: ReactNode;
@@ -23,6 +27,8 @@ export default function Modal({
   busyText = 'Guardando…',
   danger = false,
   busy = false,
+  full = false,
+  extraAction,
   onClose,
   onConfirm,
   children,
@@ -67,7 +73,7 @@ export default function Modal({
   if (!open) return null;
 
   return (
-    <div className="modal">
+    <div className={`modal${full ? ' modal--full' : ''}`}>
       <div className="modal__backdrop" onClick={() => !busy && onClose()} />
       <div className="modal__box" ref={boxRef} role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <header className="modal__head">
@@ -80,6 +86,7 @@ export default function Modal({
         <div className="modal__body">{children}</div>
 
         <footer className="modal__foot">
+          {extraAction}
           <button type="button" className="btn btn--ghost" onClick={onClose} disabled={busy}>
             Cancelar
           </button>

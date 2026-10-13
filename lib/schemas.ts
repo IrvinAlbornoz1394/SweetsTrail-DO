@@ -87,6 +87,23 @@ export const rosterUnlockSchema = z.object({
     .min(1, 'Escribe el código de organizador.'),
 });
 
+/**
+ * Solo comprobar el código de organizador, sin abrir nada más: lo usa el
+ * generador de rutas para pasar al segundo paso. Las estaciones ya son
+ * públicas; lo que se protege es que el código no viva en el navegador.
+ */
+export const organizerCheckSchema = rosterUnlockSchema.pick({ code: true });
+
+/**
+ * Mover una estación desde el mapa: mismo código de organizador, y las mismas
+ * reglas de coordenadas que al registrarla.
+ */
+export const stationMoveSchema = rosterUnlockSchema.extend({
+  id: z.string().uuid('Estación inválida.'),
+  lat: stationSchema.shape.lat,
+  lng: stationSchema.shape.lng,
+});
+
 /** Quitar un niño del padrón: mismo código de organizador, validado en el servidor. */
 export const childDeleteSchema = rosterUnlockSchema.extend({
   id: z.string().uuid('Registro inválido.'),

@@ -32,3 +32,57 @@ export function iconFor(id: string): L.DivIcon {
   }
   return icon;
 }
+
+/**
+ * Con una ruta trazada los emojis se apartan: cada parada es un punto rojo con
+ * su número de visita, para que el orden se lea de un vistazo.
+ */
+export function stopIcon(order: number): L.DivIcon {
+  return L.divIcon({
+    className: '',
+    html: `<div class="stop">${order}</div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+  });
+}
+
+/** Estación que no entra en la ruta trazada: un punto gris, sin emoji. */
+export const offRouteIcon = L.divIcon({
+  className: '',
+  html: '<div class="stop stop--off"></div>',
+  iconSize: [12, 12],
+  iconAnchor: [6, 6],
+});
+
+/**
+ * Flecha de sentido sobre la línea de la ruta. `deg` es el rumbo (0 = norte,
+ * en sentido de las manecillas). Se cachea por grado para no crear un icono
+ * por cada flecha.
+ */
+const arrowCache = new Map<number, L.DivIcon>();
+
+export function arrowIcon(deg: number): L.DivIcon {
+  const key = Math.round(deg);
+  let icon = arrowCache.get(key);
+  if (!icon) {
+    icon = L.divIcon({
+      className: '',
+      html: `<div class="route-arrow" style="transform: rotate(${key}deg)"></div>`,
+      iconSize: [12, 12],
+      iconAnchor: [6, 6],
+    });
+    arrowCache.set(key, icon);
+  }
+  return icon;
+}
+
+/**
+ * Inicio (I) de una ruta. El final no lleva marca propia: es la última
+ * estación, con su número.
+ */
+export const startIcon = L.divIcon({
+  className: '',
+  html: '<div class="stop stop--start">I</div>',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
