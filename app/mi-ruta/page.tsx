@@ -2,19 +2,16 @@ import Link from 'next/link';
 import { ALLOWED_COLONIA_SLUG } from '@/lib/db';
 import { currentFamily, familyProgress } from '@/lib/family';
 import { stationLabel } from '@/lib/station';
+import ScanVisit from '@/components/ScanVisit';
 
 // Es el avance de cada familia: siempre al día.
 export const dynamic = 'force-dynamic';
 
-const time = new Intl.DateTimeFormat('es-MX', {
-  hour: 'numeric',
-  minute: '2-digit',
-  timeZone: 'America/Merida',
-});
-
 /**
  * Panel de la familia: cuántas estaciones lleva, en número y en porcentaje, y
- * cuáles le faltan. Se entra con la liga de WhatsApp (ver /f/[token]).
+ * el botón para escanear el QR de cada casa con la cámara. La lista de
+ * estaciones se queda en el mapa: aquí estorbaría al botón, que es lo que se
+ * usa en la calle. Se entra con la liga de WhatsApp (ver /f/[token]).
  */
 export default async function MyRoutePage({
   searchParams,
@@ -68,6 +65,8 @@ export default async function MyRoutePage({
         </p>
       )}
 
+      <ScanVisit />
+
       <div className="progress">
         <div className="progress__stats">
           <span className="progress__stat">
@@ -88,39 +87,6 @@ export default async function MyRoutePage({
           <p className="progress__done">🏆 ¡Completaron toda la ruta!</p>
         )}
       </div>
-
-      <h3 className="family__heading">Visitadas</h3>
-      {progress.visited.length === 0 ? (
-        <p className="empty">Todavía ninguna. Escanea el QR de cada estación al pasar.</p>
-      ) : (
-        <ol className="roster">
-          {progress.visited.map(({ station, at }) => (
-            <li className="roster__item" key={station.id}>
-              <span className="roster__num">✅</span>
-              <span className="roster__station">
-                <strong>{stationLabel(station)}</strong>
-                <small>{time.format(new Date(at))}</small>
-              </span>
-            </li>
-          ))}
-        </ol>
-      )}
-
-      {progress.pending.length > 0 && (
-        <>
-          <h3 className="family__heading">Te faltan</h3>
-          <ol className="roster">
-            {progress.pending.map((station) => (
-              <li className="roster__item" key={station.id}>
-                <span className="roster__num">🍬</span>
-                <span className="roster__station">
-                  <strong>{stationLabel(station)}</strong>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </>
-      )}
 
       <p className="hint family__map">
         <Link href={`/colonia/${ALLOWED_COLONIA_SLUG}/estaciones/registradas`}>
