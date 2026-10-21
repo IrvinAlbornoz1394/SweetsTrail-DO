@@ -1229,6 +1229,21 @@ select:focus {
 .family__heading { margin: 20px 0 8px; font-size: 16px; }
 .family__map { margin-top: 18px; text-align: center; }
 
+/* Funciones especiales: la lista de tutores vive en la página, no en un
+   diálogo, así que no necesita quedarse corta. */
+.tutor-list--page { max-height: none; overflow: visible; margin-top: 16px; }
+.tutor-row { cursor: default; align-items: center; }
+.tutor-row__badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.tutor-opt__candies {
+  border-color: rgba(255,122,26,.4);
+  background: rgba(255,122,26,.14);
+  color: var(--orange);
+}
+.special__search { margin-top: 14px; }
+
+/* Los dos accesos con código, uno junto al otro. */
+.unlock-links { display: flex; flex-wrap: wrap; gap: 0 16px; }
+
 /* Ligas por WhatsApp: cada familia con sus dos botones a la derecha. */
 .family-link { cursor: default; align-items: center; }
 .family-link__actions { display: flex; gap: 6px; flex: 0 0 auto; }

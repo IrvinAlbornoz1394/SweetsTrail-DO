@@ -203,3 +203,18 @@ create table if not exists public.visits (
   created_at timestamptz not null default now(),
   constraint visits_once unique (phone, station_id)
 );
+
+-- ---------- Dulces que aportan los tutores ----------
+
+-- Mismo criterio que `payments`: una fila por entrega, no un contador en
+-- `tutors`, para saber cuántos dio y cuándo, y que dos entregas sumen. La
+-- cantidad es en piezas. Solo quien organiza las registra, detrás del código.
+create table if not exists public.candy_donations (
+  id         uuid        primary key default gen_random_uuid(),
+  tutor_id   uuid        not null references public.tutors(id) on delete cascade,
+  quantity   integer     not null,
+  created_at timestamptz not null default now(),
+  constraint candy_donations_quantity_positive check (quantity > 0)
+);
+
+create index if not exists candy_donations_tutor_id_idx on public.candy_donations (tutor_id);

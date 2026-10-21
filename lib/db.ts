@@ -38,9 +38,9 @@ export type ChildWithTutor = Child & {
 };
 
 /**
- * Tutor del padrón con lo que lleva cooperado. Alimenta el selector de
- * "Registrar pago", así que, como `ChildWithTutor`, solo sale detrás del
- * código de organizador: trae el teléfono con que se registró.
+ * Tutor del padrón con lo que lleva cooperado, en dinero y en dulces. Alimenta
+ * la lista de "Funciones especiales", así que, como `ChildWithTutor`, solo sale
+ * detrás del código de organizador: trae el teléfono con que se registró.
  */
 export type TutorPayment = {
   id: string;
@@ -52,6 +52,8 @@ export type TutorPayment = {
   paid_total: number;
   /** Fecha del último pago; null mientras no haya pagado. */
   paid_at: string | null;
+  /** Piezas de dulce que ha entregado; 0 mientras no haya dado. */
+  candies_total: number;
 };
 
 /**
@@ -393,7 +395,7 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('tutors')
-      .select('id, name, phone, children(is_deleted), payments(amount, created_at)')
+      .select('id, name, phone, children(is_deleted), payments(amount, created_at), candy_donations(quantity)')
       .eq('colonia_id', coloniaId)
       .order('name');
     if (error) throw new Error(error.message);
@@ -403,6 +405,7 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
     return (data ?? []).map((tutor) => {
       const kids = (tutor.children ?? []) as { is_deleted: boolean }[];
       const paid = (tutor.payments ?? []) as { amount: number | string; created_at: string }[];
+      const candies = (tutor.candy_donations ?? []) as { quantity: number }[];
 
       return {
         id: tutor.id as string,
@@ -414,6 +417,7 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
           (last, p) => (last === null || p.created_at > last ? p.created_at : last),
           null
         ),
+        candies_total: candies.reduce((total, d) => total + d.quantity, 0),
       };
     });
   }
@@ -429,7 +433,9 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
               where c.tutor_id = t.id and not c.is_deleted) as children_count,
             coalesce((select sum(p.amount) from payments p where p.tutor_id = t.id), 0)::float8
               as paid_total,
-            (select max(p.created_at) from payments p where p.tutor_id = t.id) as paid_at
+            (select max(p.created_at) from payments p where p.tutor_id = t.id) as paid_at,
+            coalesce((select sum(d.quantity) from candy_donations d where d.tutor_id = t.id), 0)::int
+              as candies_total
        from tutors t
       where t.colonia_id = $1
       order by t.name`,
@@ -475,6 +481,43 @@ export async function createPayment(
       where exists (select 1 from tutors where id = $1 and colonia_id = $2)
      returning id`,
     [tutorId, coloniaId, amount]
+  );
+  return rows.length > 0;
+}
+
+/**
+ * Registra los dulces que entregó un tutor. Igual que los pagos: cada llamada
+ * agrega una fila, y un tutor de otra colonia no alcanza nada (devuelve false).
+ */
+export async function createCandyDonation(
+  tutorId: string,
+  coloniaId: string,
+  quantity: number
+): Promise<boolean> {
+  if (hasSupabaseConfig()) {
+    const supabase = getSupabase();
+
+    const { data: tutor, error: findError } = await supabase
+      .from('tutors')
+      .select('id')
+      .eq('id', tutorId)
+      .eq('colonia_id', coloniaId)
+      .maybeSingle();
+    if (findError) throw new Error(findError.message);
+    if (!tutor) return false;
+
+    const { error } = await supabase.from('candy_donations').insert({ tutor_id: tutorId, quantity });
+    if (error) throw new Error(error.message);
+    return true;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query(
+    `insert into candy_donations (tutor_id, quantity)
+     select $1::uuid, $3::int
+      where exists (select 1 from tutors where id = $1 and colonia_id = $2)
+     returning id`,
+    [tutorId, coloniaId, quantity]
   );
   return rows.length > 0;
 }

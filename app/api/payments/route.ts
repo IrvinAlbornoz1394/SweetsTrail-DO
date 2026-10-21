@@ -7,7 +7,7 @@ import { paymentSchema } from '@/lib/schemas';
  * Registra la cooperación de un tutor, detrás del código de organizador.
  *
  * Como el resto del padrón, el código viaja en el cuerpo y se compara en el
- * servidor: que el filtro avanzado esté abierto en el navegador no autoriza
+ * servidor: que las funciones especiales estén abiertas en el navegador no autoriza
  * nada de este lado.
  *
  * La respuesta trae la lista de tutores recién leída, no solo un `ok`: si dos

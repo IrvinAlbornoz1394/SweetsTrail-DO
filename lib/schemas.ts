@@ -133,12 +133,25 @@ export const DEFAULT_PAYMENT_AMOUNT = 35;
  * familia coopera la cantidad exacta.
  */
 export const paymentSchema = rosterUnlockSchema.extend({
-  tutorId: z.string().uuid('Elige de la lista quién pagó.'),
+  tutorId: z.string().uuid('Elige al tutor que pagó.'),
   amount: z
     .number({ error: 'Escribe la cantidad pagada.' })
     .positive('La cantidad debe ser mayor que cero.')
     .max(100000, 'La cantidad es demasiado grande.')
     .multipleOf(0.01, 'Usa como máximo dos decimales.'),
+});
+
+/**
+ * Registro de dulces entregados por un tutor: mismo código de organizador. La
+ * cantidad es en piezas, entera.
+ */
+export const candyDonationSchema = rosterUnlockSchema.extend({
+  tutorId: z.string().uuid('Elige de la lista quién entregó los dulces.'),
+  quantity: z
+    .number({ error: 'Escribe cuántos dulces entregó.' })
+    .int('Escribe una cantidad entera de dulces.')
+    .positive('La cantidad debe ser mayor que cero.')
+    .max(100000, 'La cantidad es demasiado grande.'),
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

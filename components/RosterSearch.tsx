@@ -36,6 +36,15 @@ const parseAmount = (value: string) => {
   return Number.isFinite(n) ? Math.round(n * 100) / 100 : NaN;
 };
 
+/** Piezas de dulce: solo enteros. Lo que no lo sea se rechaza, no se redondea. */
+const parseQuantity = (value: string) => {
+  const n = Number(value.trim());
+  return Number.isInteger(n) ? n : NaN;
+};
+
+/** 1 dulce, 30 dulces. */
+const candies = (n: number) => `${n.toLocaleString('es-MX')} ${n === 1 ? 'dulce' : 'dulces'}`;
+
 /** Lista de opciones de un select: valores únicos, ordenados como se leen. */
 const options = (values: string[]) =>
   [...new Set(values.filter((v) => v !== ''))].sort((a, b) => a.localeCompare(b, 'es'));
@@ -45,6 +54,12 @@ const nameKey = (s: string) => norm(s).replace(/\s+/g, ' ').trim();
 
 /** El teléfono se compara sin espacios: “999 234 5678” es el mismo que “9992345678”. */
 const phoneKey = (s: string) => s.replace(/\s+/g, '');
+
+/** Qué abre el código que se está pidiendo. */
+type Unlock = 'advanced' | 'special';
+
+/** Cómo se agrupa la vista de funciones especiales. Por ahora solo por tutor. */
+type GroupBy = 'tutor';
 
 /** Qué se está buscando repetido; '' es la vista normal, sin agrupar. */
 type DupeBy = '' | 'child' | 'tutor' | 'phone';
@@ -71,9 +86,9 @@ const DUPE_NOUN: Record<Exclude<DupeBy, ''>, string> = {
  * datos NO vienen en `items`: el servidor los manda solo después de validar el
  * código, así que hasta entonces no están ni en el HTML de la página.
  *
- * Con el filtro abierto aparece además "Registrar pago", que no es una acción
- * por renglón: la cooperación la debe una familia, no cada niño, así que se
- * elige al tutor en un diálogo aparte.
+ * "Funciones especiales" pide el mismo código y cambia la vista: en lugar de
+ * niños lista a los tutores, cada uno con "Pago" y "Dulces". Van por tutor y
+ * no por niño porque la cooperación la da una familia, no cada niño.
  */
 export default function RosterSearch({
   items,
@@ -91,24 +106,29 @@ export default function RosterSearch({
   // Filtro avanzado
   const [detailed, setDetailed] = useState<ChildWithTutor[] | null>(null);
   const [payers, setPayers] = useState<TutorPayment[]>([]);
-  const [askCode, setAskCode] = useState(false);
+  const [askFor, setAskFor] = useState<Unlock | null>(null);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [tutor, setTutor] = useState('');
   const [phone, setPhone] = useState('');
   const [dupeBy, setDupeBy] = useState<DupeBy>('');
 
+  // Funciones especiales
+  const [special, setSpecial] = useState(false);
+  const [groupBy, setGroupBy] = useState<GroupBy>('tutor');
+  const [tutorQuery, setTutorQuery] = useState('');
+
   // El código que ya se validó, para registrar pagos sin volver a pedirlo en
   // cada uno: quien organiza captura varios seguidos en la puerta. Vive solo en
-  // memoria y se borra al cerrar el filtro; el servidor lo vuelve a comparar
+  // memoria y se borra al cerrar el filtro y las funciones especiales; el servidor lo vuelve a comparar
   // siempre, así que guardarlo aquí no autoriza nada por sí solo.
   const [organizerCode, setOrganizerCode] = useState('');
 
-  // Registrar pago
-  const [payOpen, setPayOpen] = useState(false);
-  const [payQuery, setPayQuery] = useState('');
+  // Registrar pago y registrar dulces: el tutor ya viene elegido desde su renglón.
   const [payTutorId, setPayTutorId] = useState<string | null>(null);
   const [payAmount, setPayAmount] = useState(String(DEFAULT_PAYMENT_AMOUNT));
+  const [candyTutorId, setCandyTutorId] = useState<string | null>(null);
+  const [candyQty, setCandyQty] = useState('');
 
   // Ligas por WhatsApp: una por familia, para entrar a su panel de visitas.
   const [links, setLinks] = useState<FamilyLinkRow[] | null>(null);
@@ -139,17 +159,31 @@ export default function RosterSearch({
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        showToast(data.error ?? 'No se pudo abrir el filtro avanzado.', true);
+        showToast(
+          data.error ??
+            (askFor === 'special'
+              ? 'No se pudieron abrir las funciones especiales.'
+              : 'No se pudo abrir el filtro avanzado.'),
+          true
+        );
         setCode('');
         return;
       }
 
-      setDetailed(data.children as ChildWithTutor[]);
+      // La respuesta trae niños y tutores: cada vista se queda con lo suyo, y
+      // la otra se puede abrir después sin que el padrón quede a medias.
       setPayers((data.tutors ?? []) as TutorPayment[]);
       setOrganizerCode(code.trim());
-      setAskCode(false);
+      if (askFor === 'special') {
+        setTutorQuery('');
+        setSpecial(true);
+        showToast('Funciones especiales habilitadas.');
+      } else {
+        setDetailed(data.children as ChildWithTutor[]);
+        showToast('Filtro avanzado habilitado.');
+      }
+      setAskFor(null);
       setCode('');
-      showToast('Filtro avanzado habilitado.');
     } catch {
       showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
     } finally {
@@ -195,11 +229,22 @@ export default function RosterSearch({
 
   function disable() {
     setDetailed(null);
-    setPayers([]);
-    setOrganizerCode('');
     setTutor('');
     setPhone('');
     setDupeBy('');
+    // El código se olvida solo cuando ya no queda nada abierto que lo use.
+    if (!special) forgetCode();
+  }
+
+  function disableSpecial() {
+    setSpecial(false);
+    setTutorQuery('');
+    if (detailed === null) forgetCode();
+  }
+
+  function forgetCode() {
+    setPayers([]);
+    setOrganizerCode('');
   }
 
   /** Pide las ligas (crea las que falten) con el código que ya se validó. */
@@ -246,18 +291,18 @@ export default function RosterSearch({
     }
   }
 
-  function openPayment() {
-    setPayQuery('');
-    setPayTutorId(null);
+  function openPayment(tutorId: string) {
     setPayAmount(String(DEFAULT_PAYMENT_AMOUNT));
-    setPayOpen(true);
+    setPayTutorId(tutorId);
+  }
+
+  function openCandies(tutorId: string) {
+    setCandyQty('');
+    setCandyTutorId(tutorId);
   }
 
   async function savePayment() {
-    if (payTutorId === null) {
-      showToast('Elige de la lista quién pagó.', true);
-      return;
-    }
+    if (payTutorId === null) return;
 
     const amount = parseAmount(payAmount);
     if (!Number.isFinite(amount) || amount <= 0) {
@@ -283,7 +328,41 @@ export default function RosterSearch({
       // sumado: si alguien más cobró al mismo tiempo, aquí ya se ve.
       setPayers((data.tutors ?? []) as TutorPayment[]);
       showToast(`Pago de ${money(amount)} registrado a nombre de ${payee?.name ?? 'el tutor'}.`);
-      setPayOpen(false);
+      setPayTutorId(null);
+    } catch {
+      showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function saveCandies() {
+    if (candyTutorId === null) return;
+
+    const quantity = parseQuantity(candyQty);
+    if (!Number.isFinite(quantity) || quantity <= 0) {
+      showToast('Escribe cuántos dulces entregó, en piezas.', true);
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const res = await fetch('/api/candies', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ coloniaId, code: organizerCode, tutorId: candyTutorId, quantity }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showToast(data.error ?? 'No se pudieron registrar los dulces.', true);
+        return;
+      }
+
+      // Igual que en los pagos: la lista recién leída del servidor.
+      setPayers((data.tutors ?? []) as TutorPayment[]);
+      showToast(`${candies(quantity)} registrados a nombre de ${donor?.name ?? 'el tutor'}.`);
+      setCandyTutorId(null);
     } catch {
       showToast('Sin conexión. Revisa tu internet e inténtalo de nuevo.', true);
     } finally {
@@ -301,6 +380,7 @@ export default function RosterSearch({
   );
 
   const payee = payers.find((t) => t.id === payTutorId) ?? null;
+  const donor = payers.find((t) => t.id === candyTutorId) ?? null;
 
   const linkResults = useMemo(() => {
     const term = linksQuery.trim();
@@ -314,10 +394,10 @@ export default function RosterSearch({
     );
   }, [links, linksQuery]);
 
-  // Buscador del selector: por nombre o por teléfono, que es como se distingue
-  // a dos tutores que se llaman igual.
-  const payerResults = useMemo(() => {
-    const term = payQuery.trim();
+  // Un solo campo para nombre o teléfono, que es como se distingue a dos
+  // tutores que se llaman igual.
+  const tutorResults = useMemo(() => {
+    const term = tutorQuery.trim();
     if (term === '') return payers;
 
     const byName = norm(term);
@@ -325,10 +405,12 @@ export default function RosterSearch({
     return payers.filter(
       (t) => norm(t.name).includes(byName) || t.phone.includes(byPhone)
     );
-  }, [payers, payQuery]);
+  }, [payers, tutorQuery]);
 
   const paidCount = payers.filter((t) => t.paid_total > 0).length;
   const collected = payers.reduce((total, t) => total + t.paid_total, 0);
+  const candiesCount = payers.filter((t) => t.candies_total > 0).length;
+  const candiesTotal = payers.reduce((total, t) => total + t.candies_total, 0);
 
   const tutors = useMemo(() => options((detailed ?? []).map((c) => c.tutor_name)), [detailed]);
   const phones = useMemo(() => options((detailed ?? []).map((c) => c.tutor_phone)), [detailed]);
@@ -419,7 +501,97 @@ export default function RosterSearch({
     );
   }
 
-  return (
+  const specialView = (
+    <>
+      <div className="card">
+        <div className="field">
+          <label htmlFor="groupBy">Agrupar por</label>
+          <select id="groupBy" value={groupBy} onChange={(e) => setGroupBy(e.target.value as GroupBy)}>
+            <option value="tutor">Tutores</option>
+          </select>
+        </div>
+
+        <div className="field special__search">
+          <label htmlFor="tutorSearch">Buscar tutor</label>
+          <input
+            id="tutorSearch"
+            type="search"
+            placeholder="Nombre o teléfono"
+            value={tutorQuery}
+            onChange={(e) => setTutorQuery(e.target.value)}
+            autoComplete="off"
+          />
+          <p className="hint">
+            {payers.length === 0
+              ? 'Todavía no hay tutores registrados en esta colonia.'
+              : tutorResults.length === 0
+                ? `Ningún tutor coincide con “${tutorQuery.trim()}”.`
+                : `${tutorResults.length} de ${payers.length} tutores`}
+          </p>
+        </div>
+
+        {payers.length > 0 && (
+          <p className="hint hint--tally">
+            {paidCount} de {payers.length} han cooperado · {money(collected)} en total
+            <br />
+            {candiesCount} de {payers.length} han dado dulces · {candies(candiesTotal)} en total
+          </p>
+        )}
+
+        <button type="button" className="link-quiet" onClick={disableSpecial}>
+          Ocultar funciones especiales
+        </button>
+      </div>
+
+      {tutorResults.length > 0 && (
+        <ul className="tutor-list tutor-list--page">
+          {tutorResults.map((t) => (
+            <li key={t.id} className="tutor-opt tutor-row">
+              <span className="tutor-opt__main">
+                <strong>{t.name}</strong>
+                <small>
+                  <a href={`tel:${t.phone}`}>{prettyPhone(t.phone)}</a> · {t.children_count}{' '}
+                  {t.children_count === 1 ? 'niño' : 'niños'}
+                </small>
+                {(t.paid_total > 0 || t.candies_total > 0) && (
+                  <span className="tutor-row__badges">
+                    {t.paid_total > 0 && (
+                      <span className="tutor-opt__paid">Pagó {money(t.paid_total)}</span>
+                    )}
+                    {t.candies_total > 0 && (
+                      <span className="tutor-opt__paid tutor-opt__candies">
+                        Dio {candies(t.candies_total)}
+                      </span>
+                    )}
+                  </span>
+                )}
+              </span>
+              <span className="family-link__actions">
+                <button
+                  type="button"
+                  className="btn btn--ghost family-link__btn"
+                  onClick={() => openPayment(t.id)}
+                  disabled={busy}
+                >
+                  💵 Pago
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--ghost family-link__btn"
+                  onClick={() => openCandies(t.id)}
+                  disabled={busy}
+                >
+                  🍬 Dulces
+                </button>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+
+  const rosterView = (
     <>
       <div className="card">
         <div className="field">
@@ -446,9 +618,14 @@ export default function RosterSearch({
         </div>
 
         {detailed === null ? (
-          <button type="button" className="link-quiet" onClick={() => setAskCode(true)}>
-            Habilitar filtro avanzado
-          </button>
+          <div className="unlock-links">
+            <button type="button" className="link-quiet" onClick={() => setAskFor('advanced')}>
+              Habilitar filtro avanzado
+            </button>
+            <button type="button" className="link-quiet" onClick={() => setAskFor('special')}>
+              Funciones especiales
+            </button>
+          </div>
         ) : (
           <div className="advanced">
             <div className="field">
@@ -494,22 +671,6 @@ export default function RosterSearch({
               </div>
             </div>
 
-            {payers.length > 0 && (
-              <p className="hint hint--tally">
-                {paidCount} de {payers.length}{' '}
-                {payers.length === 1 ? 'tutor ha cooperado' : 'tutores han cooperado'} ·{' '}
-                {money(collected)} en total
-              </p>
-            )}
-
-            <button
-              type="button"
-              className="btn btn--ghost btn--block advanced__pay"
-              onClick={openPayment}
-            >
-              💵 Registrar pago
-            </button>
-
             <button
               type="button"
               className="btn btn--ghost btn--block advanced__pay"
@@ -519,9 +680,14 @@ export default function RosterSearch({
               📲 Ligas por WhatsApp
             </button>
 
-            <button type="button" className="link-quiet" onClick={disable}>
-              Ocultar filtro avanzado
-            </button>
+            <div className="unlock-links">
+              <button type="button" className="link-quiet" onClick={disable}>
+                Ocultar filtro avanzado
+              </button>
+              <button type="button" className="link-quiet" onClick={() => setAskFor('special')}>
+                Funciones especiales
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -560,21 +726,31 @@ export default function RosterSearch({
           {results.map(item)}
         </ol>
       )}
+    </>
+  );
+
+  return (
+    <>
+      {special ? specialView : rosterView}
 
       <Modal
-        open={askCode}
-        title="Filtro avanzado"
+        open={askFor !== null}
+        title={askFor === 'special' ? 'Funciones especiales' : 'Filtro avanzado'}
         confirmText="Habilitar"
         busyText="Comprobando…"
         busy={busy}
         onClose={() => {
           if (busy) return;
-          setAskCode(false);
+          setAskFor(null);
           setCode('');
         }}
         onConfirm={unlock}
       >
-        <p>Muestra el tutor y el teléfono con que se registró cada niño.</p>
+        <p>
+          {askFor === 'special'
+            ? 'Lista a los tutores para registrar su pago y los dulces que entregan.'
+            : 'Muestra el tutor y el teléfono con que se registró cada niño.'}
+        </p>
 
         <div className="field">
           <label htmlFor="rosterCode">Código de organizador</label>
@@ -596,63 +772,21 @@ export default function RosterSearch({
       </Modal>
 
       <Modal
-        open={payOpen}
+        open={payee !== null}
         title="Registrar pago"
         confirmText="Confirmar pago"
         busyText="Guardando…"
         busy={busy}
         onClose={() => {
           if (busy) return;
-          setPayOpen(false);
+          setPayTutorId(null);
         }}
         onConfirm={savePayment}
       >
-        <div className="field">
-          <label htmlFor="paySearch">¿Quién pagó?</label>
-          <input
-            id="paySearch"
-            type="search"
-            placeholder="Busca por nombre o teléfono"
-            value={payQuery}
-            onChange={(e) => setPayQuery(e.target.value)}
-            autoComplete="off"
-            disabled={busy}
-          />
-          <p className="hint">
-            {payers.length === 0
-              ? 'Todavía no hay tutores registrados en esta colonia.'
-              : payerResults.length === 0
-                ? `Ningún tutor coincide con “${payQuery.trim()}”.`
-                : `${payerResults.length} de ${payers.length} tutores`}
-          </p>
-        </div>
-
-        {payerResults.length > 0 && (
-          <ul className="tutor-list">
-            {payerResults.map((t) => (
-              <li key={t.id}>
-                <button
-                  type="button"
-                  className={`tutor-opt${t.id === payTutorId ? ' is-on' : ''}`}
-                  onClick={() => setPayTutorId(t.id)}
-                  aria-pressed={t.id === payTutorId}
-                  disabled={busy}
-                >
-                  <span className="tutor-opt__main">
-                    <strong>{t.name}</strong>
-                    <small>
-                      {prettyPhone(t.phone)} · {t.children_count}{' '}
-                      {t.children_count === 1 ? 'niño' : 'niños'}
-                    </small>
-                  </span>
-                  {t.paid_total > 0 && (
-                    <span className="tutor-opt__paid">Pagó {money(t.paid_total)}</span>
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <p>
+          A nombre de <strong>{payee?.name}</strong>
+          {payee && ` · ${prettyPhone(payee.phone)}`}
+        </p>
 
         <div className="field field--amount">
           <label htmlFor="payAmount">Cantidad pagada</label>
@@ -662,6 +796,9 @@ export default function RosterSearch({
             inputMode="decimal"
             value={payAmount}
             onChange={(e) => setPayAmount(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !busy) savePayment();
+            }}
             autoComplete="off"
             disabled={busy}
           />
@@ -669,6 +806,46 @@ export default function RosterSearch({
             {payee !== null && payee.paid_total > 0 && payee.paid_at !== null
               ? `${payee.name} ya tiene ${money(payee.paid_total)} registrados desde el ${shortDate(payee.paid_at)}. Confirmar suma este pago al anterior.`
               : `La cooperación es de ${money(DEFAULT_PAYMENT_AMOUNT)} por familia. Cámbiala solo si pagó otra cantidad.`}
+          </p>
+        </div>
+      </Modal>
+
+      <Modal
+        open={donor !== null}
+        title="Registrar dulces"
+        confirmText="Confirmar dulces"
+        busyText="Guardando…"
+        busy={busy}
+        onClose={() => {
+          if (busy) return;
+          setCandyTutorId(null);
+        }}
+        onConfirm={saveCandies}
+      >
+        <p>
+          A nombre de <strong>{donor?.name}</strong>
+          {donor && ` · ${prettyPhone(donor.phone)}`}
+        </p>
+
+        <div className="field field--amount">
+          <label htmlFor="candyQty">¿Cuántos dulces dio?</label>
+          <input
+            id="candyQty"
+            type="text"
+            inputMode="numeric"
+            placeholder="Ej. 50"
+            value={candyQty}
+            onChange={(e) => setCandyQty(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !busy) saveCandies();
+            }}
+            autoComplete="off"
+            disabled={busy}
+          />
+          <p className="hint">
+            {donor !== null && donor.candies_total > 0
+              ? `${donor.name} ya tiene ${candies(donor.candies_total)} registrados. Confirmar suma esta entrega a la anterior.`
+              : 'En piezas. Si entrega más después, se registra otra vez y se suma.'}
           </p>
         </div>
       </Modal>

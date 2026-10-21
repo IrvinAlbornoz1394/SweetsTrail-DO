@@ -15,5 +15,6 @@ alter table public.stations enable row level security;
 alter table public.payments enable row level security;
 alter table public.family_access enable row level security;
 alter table public.visits   enable row level security;
+alter table public.candy_donations enable row level security;
 
 revoke all on function public.create_registration(uuid, text, text, text[]) from anon, authenticated;
