@@ -46,8 +46,12 @@ export type TutorPayment = {
   id: string;
   name: string;
   phone: string;
-  /** Niños vivos que registró. Sirve para distinguir a dos tutores homónimos. */
-  children_count: number;
+  /**
+   * Nombres de los niños vivos que registró, del más antiguo al más reciente.
+   * Se muestran bajo el tutor y el buscador también los revisa; además sirven
+   * para distinguir a dos tutores homónimos.
+   */
+  children: string[];
   /** Suma de sus pagos; 0 mientras no haya pagado. */
   paid_total: number;
   /** Fecha del último pago; null mientras no haya pagado. */
@@ -395,7 +399,7 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('tutors')
-      .select('id, name, phone, children(is_deleted), payments(amount, created_at), candy_donations(quantity)')
+      .select('id, name, phone, children(name, is_deleted, created_at), payments(amount, created_at), candy_donations(quantity)')
       .eq('colonia_id', coloniaId)
       .order('name');
     if (error) throw new Error(error.message);
@@ -403,7 +407,7 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
     // PostgREST no agrega: los embebidos llegan como arreglos y la cuenta y la
     // suma se hacen aquí. Son los tutores de una colonia, no un padrón nacional.
     return (data ?? []).map((tutor) => {
-      const kids = (tutor.children ?? []) as { is_deleted: boolean }[];
+      const kids = (tutor.children ?? []) as { name: string; is_deleted: boolean; created_at: string }[];
       const paid = (tutor.payments ?? []) as { amount: number | string; created_at: string }[];
       const candies = (tutor.candy_donations ?? []) as { quantity: number }[];
 
@@ -411,7 +415,10 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
         id: tutor.id as string,
         name: tutor.name as string,
         phone: tutor.phone as string,
-        children_count: kids.filter((kid) => !kid.is_deleted).length,
+        children: kids
+          .filter((kid) => !kid.is_deleted)
+          .sort((a, b) => a.created_at.localeCompare(b.created_at))
+          .map((kid) => kid.name),
         paid_total: paid.reduce((total, p) => total + Number(p.amount), 0),
         paid_at: paid.reduce<string | null>(
           (last, p) => (last === null || p.created_at > last ? p.created_at : last),
@@ -429,8 +436,9 @@ export async function listTutorsWithPaymentsByColonia(coloniaId: string): Promis
     `select t.id,
             t.name,
             t.phone,
-            (select count(*)::int from children c
-              where c.tutor_id = t.id and not c.is_deleted) as children_count,
+            array(select c.name from children c
+                   where c.tutor_id = t.id and not c.is_deleted
+                   order by c.created_at) as children,
             coalesce((select sum(p.amount) from payments p where p.tutor_id = t.id), 0)::float8
               as paid_total,
             (select max(p.created_at) from payments p where p.tutor_id = t.id) as paid_at,

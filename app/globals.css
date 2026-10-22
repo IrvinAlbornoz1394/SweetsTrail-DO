@@ -1233,6 +1233,7 @@ select:focus {
    diálogo, así que no necesita quedarse corta. */
 .tutor-list--page { max-height: none; overflow: visible; margin-top: 16px; }
 .tutor-row { cursor: default; align-items: center; }
+.tutor-row__children { margin-top: 2px; overflow-wrap: anywhere; }
 .tutor-row__badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
 .tutor-opt__candies {
   border-color: rgba(255,122,26,.4);

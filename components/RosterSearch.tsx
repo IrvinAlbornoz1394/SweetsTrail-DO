@@ -395,7 +395,8 @@ export default function RosterSearch({
   }, [links, linksQuery]);
 
   // Un solo campo para nombre o teléfono, que es como se distingue a dos
-  // tutores que se llaman igual.
+  // tutores que se llaman igual. El nombre también se busca entre sus niños:
+  // en la puerta muchas veces se sabe cómo se llama el niño y no el tutor.
   const tutorResults = useMemo(() => {
     const term = tutorQuery.trim();
     if (term === '') return payers;
@@ -403,7 +404,9 @@ export default function RosterSearch({
     const byName = norm(term);
     const byPhone = phoneKey(term);
     return payers.filter(
-      (t) => norm(t.name).includes(byName) || t.phone.includes(byPhone)
+      (t) =>
+        [t.name, ...t.children].some((name) => norm(name).includes(byName)) ||
+        (byPhone !== '' && t.phone.includes(byPhone))
     );
   }, [payers, tutorQuery]);
 
@@ -512,11 +515,11 @@ export default function RosterSearch({
         </div>
 
         <div className="field special__search">
-          <label htmlFor="tutorSearch">Buscar tutor</label>
+          <label htmlFor="tutorSearch">Buscar tutor o niño</label>
           <input
             id="tutorSearch"
             type="search"
-            placeholder="Nombre o teléfono"
+            placeholder="Tutor, niño o teléfono"
             value={tutorQuery}
             onChange={(e) => setTutorQuery(e.target.value)}
             autoComplete="off"
@@ -550,9 +553,12 @@ export default function RosterSearch({
               <span className="tutor-opt__main">
                 <strong>{t.name}</strong>
                 <small>
-                  <a href={`tel:${t.phone}`}>{prettyPhone(t.phone)}</a> · {t.children_count}{' '}
-                  {t.children_count === 1 ? 'niño' : 'niños'}
+                  <a href={`tel:${t.phone}`}>{prettyPhone(t.phone)}</a> · {t.children.length}{' '}
+                  {t.children.length === 1 ? 'niño' : 'niños'}
                 </small>
+                {t.children.length > 0 && (
+                  <small className="tutor-row__children">{t.children.join(' · ')}</small>
+                )}
                 {(t.paid_total > 0 || t.candies_total > 0) && (
                   <span className="tutor-row__badges">
                     {t.paid_total > 0 && (
