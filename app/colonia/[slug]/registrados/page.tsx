@@ -44,7 +44,12 @@ export default async function RegisteredChildrenPage({
           <Link href={`/colonia/${colonia.slug}/ninos`}>Registra al primero.</Link>
         </p>
       ) : (
-        <RosterSearch items={children} coloniaId={colonia.id} coloniaName={colonia.name} />
+        <RosterSearch
+          items={children}
+          coloniaId={colonia.id}
+          coloniaName={colonia.name}
+          registerHref={`/colonia/${colonia.slug}/ninos`}
+        />
       )}
     </>
   );

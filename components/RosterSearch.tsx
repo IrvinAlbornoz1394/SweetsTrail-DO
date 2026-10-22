@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Child, ChildWithTutor, TutorPayment } from '@/lib/db';
 import { DEFAULT_PAYMENT_AMOUNT } from '@/lib/schemas';
@@ -94,10 +95,13 @@ export default function RosterSearch({
   items,
   coloniaId,
   coloniaName,
+  registerHref,
 }: {
   items: Child[];
   coloniaId: string;
   coloniaName: string;
+  /** Pantalla de registro de niños, para quien no se encontró en la lista. */
+  registerHref: string;
 }) {
   const router = useRouter();
   const { toast, showToast } = useToast();
@@ -621,6 +625,11 @@ export default function RosterSearch({
                   ? 'Ningún registro coincide con la búsqueda.'
                   : `${results.length} ${results.length === 1 ? 'coincidencia' : 'coincidencias'} de ${rows.length} registrados`}
           </p>
+          <div className="roster-actions">
+            <Link className="btn btn--ghost family-link__btn" href={registerHref}>
+              ➕ Agregar nuevo
+            </Link>
+          </div>
         </div>
 
         {detailed === null ? (

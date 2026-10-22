@@ -1243,6 +1243,7 @@ select:focus {
 .special__search { margin-top: 14px; }
 
 /* Los dos accesos con código, uno junto al otro. */
+.roster-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
 .unlock-links { display: flex; flex-wrap: wrap; gap: 0 16px; }
 
 /* Ligas por WhatsApp: cada familia con sus dos botones a la derecha. */
