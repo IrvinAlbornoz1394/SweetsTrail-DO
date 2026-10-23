@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Child, ChildWithTutor, TutorPayment } from '@/lib/db';
+import { paymentsDocx } from '@/lib/paymentsDocx';
 import { DEFAULT_PAYMENT_AMOUNT } from '@/lib/schemas';
 import Modal from './Modal';
 import { Toast, useToast } from './Toast';
@@ -96,12 +97,15 @@ export default function RosterSearch({
   coloniaId,
   coloniaName,
   registerHref,
+  tutorsHref,
 }: {
   items: Child[];
   coloniaId: string;
   coloniaName: string;
   /** Pantalla de registro de niños, para quien no se encontró en la lista. */
   registerHref: string;
+  /** Lista pública de tutores, para entrar al perfil de la familia. */
+  tutorsHref: string;
 }) {
   const router = useRouter();
   const { toast, showToast } = useToast();
@@ -293,6 +297,19 @@ export default function RosterSearch({
     } catch {
       showToast('No se pudo copiar. Mantén presionada la liga para copiarla a mano.', true);
     }
+  }
+
+  /** Baja en Word la lista de quienes pagaron, con lo que ya está en pantalla. */
+  function downloadPayments() {
+    const blob = new Blob([paymentsDocx(payers, coloniaName) as BlobPart], {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `pagos-${new Date().toISOString().slice(0, 10)}.docx`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   function openPayment(tutorId: string) {
@@ -545,9 +562,20 @@ export default function RosterSearch({
           </p>
         )}
 
-        <button type="button" className="link-quiet" onClick={disableSpecial}>
-          Ocultar funciones especiales
-        </button>
+        <div className="special__footer">
+          <button type="button" className="link-quiet" onClick={disableSpecial}>
+            Ocultar funciones especiales
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost family-link__btn"
+            onClick={downloadPayments}
+            disabled={paidCount === 0}
+            title={paidCount === 0 ? 'Todavía nadie ha pagado' : 'Lista de pagos en Word'}
+          >
+            📄 Descargar pagos
+          </button>
+        </div>
       </div>
 
       {tutorResults.length > 0 && (
@@ -626,6 +654,9 @@ export default function RosterSearch({
                   : `${results.length} ${results.length === 1 ? 'coincidencia' : 'coincidencias'} de ${rows.length} registrados`}
           </p>
           <div className="roster-actions">
+            <Link className="link-quiet" href={tutorsHref}>
+              Ver lista de tutores
+            </Link>
             <Link className="btn btn--ghost family-link__btn" href={registerHref}>
               ➕ Agregar nuevo
             </Link>

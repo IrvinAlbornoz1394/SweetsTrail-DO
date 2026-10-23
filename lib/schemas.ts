@@ -100,6 +100,22 @@ export const stationQrSchema = rosterUnlockSchema;
 /** Ligas de las familias para mandarlas por WhatsApp: mismo código de organizador. */
 export const familyLinksSchema = rosterUnlockSchema;
 
+const familyPhone = z
+  .string({ error: 'Escribe el teléfono con que te registraste.' })
+  .trim()
+  .transform((v) => v.replace(/\s+/g, ''))
+  .pipe(z.string().regex(/^\d{10}$/, 'El teléfono debe tener 10 dígitos.'));
+
+/** Buscar en la lista pública de tutores por teléfono completo: no viaja ningún teléfono al navegador. */
+export const tutorPhoneSearchSchema = z.object({ coloniaId, phone: familyPhone });
+
+/** "Ver perfil" desde la lista de tutores: el tutor elegido y el teléfono que lo comprueba. */
+export const familyLoginSchema = z.object({
+  coloniaId,
+  tutorId: z.string().uuid('Tutor inválido.'),
+  phone: familyPhone,
+});
+
 /** Visita al escanear el QR de una estación: solo viaja el token del QR. */
 export const visitSchema = z.object({
   token: z.string().regex(/^[0-9a-f]{32}$/, 'Código QR inválido.'),

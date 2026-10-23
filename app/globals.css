@@ -1241,9 +1241,13 @@ select:focus {
   color: var(--orange);
 }
 .special__search { margin-top: 14px; }
+/* Ocultar a la izquierda; la descarga de pagos aparte, a la derecha. */
+.special__footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.special__footer .link-quiet { margin-top: 0; }
 
 /* Los dos accesos con código, uno junto al otro. */
-.roster-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+.roster-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.roster-actions .link-quiet { margin-top: 0; }
 .unlock-links { display: flex; flex-wrap: wrap; gap: 0 16px; }
 
 /* Ligas por WhatsApp: cada familia con sus dos botones a la derecha. */

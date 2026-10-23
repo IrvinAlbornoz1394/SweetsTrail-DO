@@ -49,6 +49,7 @@ export default async function RegisteredChildrenPage({
           coloniaId={colonia.id}
           coloniaName={colonia.name}
           registerHref={`/colonia/${colonia.slug}/ninos`}
+          tutorsHref={`/colonia/${colonia.slug}/tutores`}
         />
       )}
     </>

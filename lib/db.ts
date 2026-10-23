@@ -786,6 +786,23 @@ export async function ensureFamilyLinks(coloniaId: string): Promise<FamilyLink[]
   const phones = [...families.keys()];
   if (phones.length === 0) return [];
 
+  const byPhone = await ensureFamilyTokens(phones, coloniaId);
+  return phones
+    .filter((phone) => byPhone.has(phone))
+    .map((phone) => ({ phone, token: byPhone.get(phone)!, ...families.get(phone)! }));
+}
+
+/**
+ * La liga de una sola familia, creándola si falta. Es la que usa "Ver perfil"
+ * en la lista de tutores, después de comprobar el teléfono: sale la misma que
+ * se manda por WhatsApp.
+ */
+export async function ensureFamilyToken(phone: string, coloniaId: string): Promise<string | null> {
+  return (await ensureFamilyTokens([phone], coloniaId)).get(phone) ?? null;
+}
+
+/** Crea los accesos que falten (sin tocar los que ya existen) y devuelve el token de cada teléfono. */
+async function ensureFamilyTokens(phones: string[], coloniaId: string): Promise<Map<string, string>> {
   let tokens: { phone: string; token: string }[];
 
   if (hasSupabaseConfig()) {
@@ -819,10 +836,7 @@ export async function ensureFamilyLinks(coloniaId: string): Promise<FamilyLink[]
     tokens = rows;
   }
 
-  const byPhone = new Map(tokens.map((t) => [t.phone, t.token]));
-  return phones
-    .filter((phone) => byPhone.has(phone))
-    .map((phone) => ({ phone, token: byPhone.get(phone)!, ...families.get(phone)! }));
+  return new Map(tokens.map((t) => [t.phone, t.token]));
 }
 
 /** La familia dueña de una liga, con sus tutores y niños vivos. Null si la liga no existe. */
