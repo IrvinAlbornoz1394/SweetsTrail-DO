@@ -174,13 +174,26 @@ export type RegistrationInput = z.infer<typeof registrationSchema>;
 export type StationInput = z.infer<typeof stationSchema>;
 
 /**
- * Ubicación de la caravana desde el teléfono que la comparte: mismo código de
- * organizador, para que nadie más la mueva ni la apague.
+ * Ubicación de la caravana desde el teléfono que la comparte. La primera va
+ * con el código de organizador (eso la activa); las siguientes, con la llave
+ * que regresó esa primera. Debe venir uno de los dos.
  */
-export const caravanUpdateSchema = rosterUnlockSchema.extend({
-  lat: z.number().min(-90, 'Latitud fuera de rango.').max(90, 'Latitud fuera de rango.'),
-  lng: z.number().min(-180, 'Longitud fuera de rango.').max(180, 'Longitud fuera de rango.'),
-});
+const caravanAuth = {
+  coloniaId,
+  code: z.string().trim().min(1).optional(),
+  token: z.string().regex(/^[0-9a-f]{64}$/, 'Llave inválida.').optional(),
+};
 
-/** Dejar de compartir la caravana. */
-export const caravanStopSchema = rosterUnlockSchema;
+const needsAuth = (v: { code?: string; token?: string }) => Boolean(v.code || v.token);
+const needsAuthError = { message: 'Escribe el código de organizador.' };
+
+export const caravanUpdateSchema = z
+  .object({
+    ...caravanAuth,
+    lat: z.number().min(-90, 'Latitud fuera de rango.').max(90, 'Latitud fuera de rango.'),
+    lng: z.number().min(-180, 'Longitud fuera de rango.').max(180, 'Longitud fuera de rango.'),
+  })
+  .refine(needsAuth, needsAuthError);
+
+/** Dejar de compartir la caravana: con el código, o con la llave del teléfono que comparte. */
+export const caravanStopSchema = z.object(caravanAuth).refine(needsAuth, needsAuthError);

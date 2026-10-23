@@ -244,5 +244,11 @@ create table if not exists public.caravan_points (
   created_at timestamptz      not null default now()
 );
 
+-- La llave del teléfono que comparte: se genera al activar con el código de
+-- organizador y el teléfono la guarda, así que si recarga la página sigue
+-- mandando su ubicación sin volver a pedir el código. Activar desde otro
+-- teléfono la cambia, y el anterior deja de poder mover la caravana.
+alter table public.caravans add column if not exists share_token text;
+
 create index if not exists caravan_points_colonia_created_idx
   on public.caravan_points (colonia_id, created_at desc);

@@ -1,4 +1,5 @@
 import 'server-only';
+import { randomBytes } from 'node:crypto';
 import { getSupabase, hasSupabaseConfig } from './supabase';
 import { getPglite } from './pglite';
 import type { RegistrationInput, StationInput } from './schemas';
@@ -944,13 +945,20 @@ export type Caravan = {
   trail: LatLng[];
 };
 
-type CaravanRow = { is_active: boolean; lat: number; lng: number; heading: number | null; updated_at: string };
+type CaravanRow = {
+  is_active: boolean;
+  lat: number;
+  lng: number;
+  heading: number | null;
+  updated_at: string;
+  share_token: string | null;
+};
 
 async function readCaravanRow(coloniaId: string): Promise<CaravanRow | null> {
   if (hasSupabaseConfig()) {
     const { data, error } = await getSupabase()
       .from('caravans')
-      .select('is_active, lat, lng, heading, updated_at')
+      .select('is_active, lat, lng, heading, updated_at, share_token')
       .eq('colonia_id', coloniaId)
       .maybeSingle();
     if (error) throw new Error(error.message);
@@ -959,30 +967,74 @@ async function readCaravanRow(coloniaId: string): Promise<CaravanRow | null> {
 
   const db = await getPglite();
   const { rows } = await db.query<CaravanRow>(
-    'select is_active, lat, lng, heading, updated_at from caravans where colonia_id = $1',
+    'select is_active, lat, lng, heading, updated_at, share_token from caravans where colonia_id = $1',
     [coloniaId]
   );
   return rows[0] ?? null;
 }
 
 /**
- * Nueva ubicación de la caravana. El rumbo sale del punto anterior y solo
- * cambia si de verdad avanzó; ese avance es también lo que deja rastro.
+ * Quién puede mandar la siguiente ubicación: `start` abre una salida nueva (la
+ * API ya comprobó el código de organizador); `token` es la llave que recibió
+ * el teléfono al activarla, con la que sigue compartiendo aunque recargue.
  */
-export async function updateCaravan(coloniaId: string, lat: number, lng: number): Promise<void> {
-  const prev = await readCaravanRow(coloniaId);
+export type CaravanAuth = { start: true } | { token: string };
+
+/** ¿Esta llave es la del teléfono que comparte ahora? */
+export async function isCaravanSharer(coloniaId: string, token: string): Promise<boolean> {
+  const row = await readCaravanRow(coloniaId);
+  return row !== null && row.is_active && row.share_token === token;
+}
+
+/**
+ * Nueva ubicación de la caravana. Regresa la llave del teléfono que comparte,
+ * o null si la llave ya no vale (la detuvieron o la activó otro teléfono).
+ *
+ * Activar empieza de cero: rastro vacío, sin rumbo, y una llave nueva que deja
+ * fuera a cualquier otro teléfono que estuviera compartiendo. Después, el
+ * rumbo sale del punto anterior y solo cambia si de verdad avanzó; ese avance
+ * es también lo que deja rastro.
+ */
+export async function updateCaravan(
+  coloniaId: string,
+  lat: number,
+  lng: number,
+  auth: CaravanAuth
+): Promise<string | null> {
   const here = { lat, lng };
-  const moved = prev !== null && distance(prev, here) >= CARAVAN_MIN_STEP_M;
-  const heading = moved ? bearing(prev, here) : (prev?.heading ?? null);
   const now = new Date().toISOString();
-  // El primer punto de cada salida también va al rastro: es de donde partió.
-  const addPoint = prev === null || !prev.is_active || moved;
+  let token: string;
+  let heading: number | null = null;
+  let addPoint = true;
+
+  if ('start' in auth) {
+    token = randomBytes(32).toString('hex');
+  } else {
+    const prev = await readCaravanRow(coloniaId);
+    if (!prev || !prev.is_active || prev.share_token !== auth.token) return null;
+    token = auth.token;
+    const moved = distance(prev, here) >= CARAVAN_MIN_STEP_M;
+    heading = moved ? bearing(prev, here) : prev.heading;
+    addPoint = moved;
+  }
+
+  const fresh = 'start' in auth;
 
   if (hasSupabaseConfig()) {
     const supabase = getSupabase();
-    const { error } = await supabase
-      .from('caravans')
-      .upsert({ colonia_id: coloniaId, is_active: true, lat, lng, heading, updated_at: now });
+    if (fresh) {
+      const { error } = await supabase.from('caravan_points').delete().eq('colonia_id', coloniaId);
+      if (error) throw new Error(error.message);
+    }
+    const { error } = await supabase.from('caravans').upsert({
+      colonia_id: coloniaId,
+      is_active: true,
+      lat,
+      lng,
+      heading,
+      updated_at: now,
+      share_token: token,
+    });
     if (error) throw new Error(error.message);
     if (addPoint) {
       const { error: pointError } = await supabase
@@ -990,40 +1042,50 @@ export async function updateCaravan(coloniaId: string, lat: number, lng: number)
         .insert({ colonia_id: coloniaId, lat, lng });
       if (pointError) throw new Error(pointError.message);
     }
-    return;
+    return token;
   }
 
   const db = await getPglite();
-  await db.query(
-    `insert into caravans (colonia_id, is_active, lat, lng, heading, updated_at)
-     values ($1, true, $2, $3, $4, $5)
-     on conflict (colonia_id) do update
-       set is_active = true, lat = excluded.lat, lng = excluded.lng,
-           heading = excluded.heading, updated_at = excluded.updated_at`,
-    [coloniaId, lat, lng, heading, now]
-  );
-  if (addPoint) {
-    await db.query('insert into caravan_points (colonia_id, lat, lng) values ($1, $2, $3)', [
-      coloniaId,
-      lat,
-      lng,
-    ]);
-  }
+  await db.transaction(async (tx) => {
+    if (fresh) await tx.query('delete from caravan_points where colonia_id = $1', [coloniaId]);
+    await tx.query(
+      `insert into caravans (colonia_id, is_active, lat, lng, heading, updated_at, share_token)
+       values ($1, true, $2, $3, $4, $5, $6)
+       on conflict (colonia_id) do update
+         set is_active = true, lat = excluded.lat, lng = excluded.lng, heading = excluded.heading,
+             updated_at = excluded.updated_at, share_token = excluded.share_token`,
+      [coloniaId, lat, lng, heading, now, token]
+    );
+    if (addPoint) {
+      await tx.query('insert into caravan_points (colonia_id, lat, lng) values ($1, $2, $3)', [
+        coloniaId,
+        lat,
+        lng,
+      ]);
+    }
+  });
+  return token;
 }
 
-/** Deja de compartir. La última ubicación se queda guardada, pero ya no se muestra. */
+/**
+ * Deja de compartir y borra la ubicación y todo el rastro: una vez detenida, no
+ * hay por qué guardar por dónde anduvo el teléfono de quien organiza.
+ */
 export async function stopCaravan(coloniaId: string): Promise<void> {
   if (hasSupabaseConfig()) {
-    const { error } = await getSupabase()
-      .from('caravans')
-      .update({ is_active: false })
-      .eq('colonia_id', coloniaId);
+    const supabase = getSupabase();
+    const { error: pointsError } = await supabase.from('caravan_points').delete().eq('colonia_id', coloniaId);
+    if (pointsError) throw new Error(pointsError.message);
+    const { error } = await supabase.from('caravans').delete().eq('colonia_id', coloniaId);
     if (error) throw new Error(error.message);
     return;
   }
 
   const db = await getPglite();
-  await db.query('update caravans set is_active = false where colonia_id = $1', [coloniaId]);
+  await db.transaction(async (tx) => {
+    await tx.query('delete from caravan_points where colonia_id = $1', [coloniaId]);
+    await tx.query('delete from caravans where colonia_id = $1', [coloniaId]);
+  });
 }
 
 /** Dónde va la caravana ahora, con su rastro. Es pública: solo coordenadas. */
