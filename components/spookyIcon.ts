@@ -114,3 +114,51 @@ export const meIcon = L.divIcon({
   iconSize: [20, 20],
   iconAnchor: [10, 10],
 });
+
+/**
+ * La caravana: la camioneta con su murciélago dentro de un círculo, y una
+ * flecha alrededor que apunta hacia donde avanza. Sin rumbo todavía (no se ha
+ * movido) la flecha no se pinta. Se cachea por grado, como las flechas.
+ */
+const caravanCache = new Map<number | null, L.DivIcon>();
+
+export function caravanIcon(deg: number | null): L.DivIcon {
+  const key = deg === null ? null : Math.round(deg);
+  let icon = caravanCache.get(key);
+  if (!icon) {
+    const arrow =
+      key === null
+        ? ''
+        : `<div class="caravan-pin__arrow" style="transform: rotate(${key}deg)"><span></span></div>`;
+    icon = L.divIcon({
+      className: '',
+      html: `<div class="caravan-pin">${arrow}<div class="caravan-pin__body">🚐<span class="caravan-pin__bat">🦇</span></div></div>`,
+      iconSize: [64, 64],
+      iconAnchor: [32, 32],
+    });
+    caravanCache.set(key, icon);
+  }
+  return icon;
+}
+
+/**
+ * Calabaza del rastro. `i` es qué tan atrás quedó (0 = la más reciente): cada
+ * una más chica y más tenue, para que se lea de dónde viene la caravana.
+ */
+const trailCache = new Map<number, L.DivIcon>();
+
+export function trailIcon(i: number): L.DivIcon {
+  let icon = trailCache.get(i);
+  if (!icon) {
+    const size = Math.max(10, 22 - i * 2);
+    const opacity = Math.max(0.2, 0.9 - i * 0.1);
+    icon = L.divIcon({
+      className: '',
+      html: `<div class="trail-pumpkin" style="font-size:${size}px;opacity:${opacity}">🎃</div>`,
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+    });
+    trailCache.set(i, icon);
+  }
+  return icon;
+}

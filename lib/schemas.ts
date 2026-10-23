@@ -172,3 +172,15 @@ export const candyDonationSchema = rosterUnlockSchema.extend({
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 export type StationInput = z.infer<typeof stationSchema>;
+
+/**
+ * Ubicación de la caravana desde el teléfono que la comparte: mismo código de
+ * organizador, para que nadie más la mueva ni la apague.
+ */
+export const caravanUpdateSchema = rosterUnlockSchema.extend({
+  lat: z.number().min(-90, 'Latitud fuera de rango.').max(90, 'Latitud fuera de rango.'),
+  lng: z.number().min(-180, 'Longitud fuera de rango.').max(180, 'Longitud fuera de rango.'),
+});
+
+/** Dejar de compartir la caravana. */
+export const caravanStopSchema = rosterUnlockSchema;

@@ -2,6 +2,8 @@ import 'server-only';
 import { getSupabase, hasSupabaseConfig } from './supabase';
 import { getPglite } from './pglite';
 import type { RegistrationInput, StationInput } from './schemas';
+import type { LatLng } from './map';
+import { bearing, distance } from './route';
 
 /**
  * Capa de datos con dos backends detrás de la misma interfaz:
@@ -910,4 +912,167 @@ export async function listVisits(phone: string): Promise<{ station_id: string; c
     [phone]
   );
   return rows;
+}
+
+/* ---------------- Caravana ---------------- */
+
+/**
+ * Sin noticias del teléfono en este tiempo, la caravana se da por detenida:
+ * se apagó la pantalla, se cerró la página o se fue la señal.
+ */
+export const CARAVAN_STALE_MS = 2 * 60 * 1000;
+
+/** Cuánto camino se dibuja detrás: los últimos puntos de estos minutos. */
+const TRAIL_MS = 10 * 60 * 1000;
+const TRAIL_POINTS = 8;
+
+/**
+ * Menos que esto es el GPS bailando con el teléfono quieto: ni gira la flecha
+ * ni deja calabaza en el rastro.
+ */
+const CARAVAN_MIN_STEP_M = 8;
+
+export type Caravan = {
+  /** Compartiendo y con una ubicación reciente. */
+  active: boolean;
+  lat: number | null;
+  lng: number | null;
+  /** Rumbo en grados (0 = norte); null mientras no se ha movido. */
+  heading: number | null;
+  updated_at: string | null;
+  /** Por donde pasó, del punto más reciente al más viejo, sin incluir el actual. */
+  trail: LatLng[];
+};
+
+type CaravanRow = { is_active: boolean; lat: number; lng: number; heading: number | null; updated_at: string };
+
+async function readCaravanRow(coloniaId: string): Promise<CaravanRow | null> {
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('caravans')
+      .select('is_active, lat, lng, heading, updated_at')
+      .eq('colonia_id', coloniaId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  const db = await getPglite();
+  const { rows } = await db.query<CaravanRow>(
+    'select is_active, lat, lng, heading, updated_at from caravans where colonia_id = $1',
+    [coloniaId]
+  );
+  return rows[0] ?? null;
+}
+
+/**
+ * Nueva ubicación de la caravana. El rumbo sale del punto anterior y solo
+ * cambia si de verdad avanzó; ese avance es también lo que deja rastro.
+ */
+export async function updateCaravan(coloniaId: string, lat: number, lng: number): Promise<void> {
+  const prev = await readCaravanRow(coloniaId);
+  const here = { lat, lng };
+  const moved = prev !== null && distance(prev, here) >= CARAVAN_MIN_STEP_M;
+  const heading = moved ? bearing(prev, here) : (prev?.heading ?? null);
+  const now = new Date().toISOString();
+  // El primer punto de cada salida también va al rastro: es de donde partió.
+  const addPoint = prev === null || !prev.is_active || moved;
+
+  if (hasSupabaseConfig()) {
+    const supabase = getSupabase();
+    const { error } = await supabase
+      .from('caravans')
+      .upsert({ colonia_id: coloniaId, is_active: true, lat, lng, heading, updated_at: now });
+    if (error) throw new Error(error.message);
+    if (addPoint) {
+      const { error: pointError } = await supabase
+        .from('caravan_points')
+        .insert({ colonia_id: coloniaId, lat, lng });
+      if (pointError) throw new Error(pointError.message);
+    }
+    return;
+  }
+
+  const db = await getPglite();
+  await db.query(
+    `insert into caravans (colonia_id, is_active, lat, lng, heading, updated_at)
+     values ($1, true, $2, $3, $4, $5)
+     on conflict (colonia_id) do update
+       set is_active = true, lat = excluded.lat, lng = excluded.lng,
+           heading = excluded.heading, updated_at = excluded.updated_at`,
+    [coloniaId, lat, lng, heading, now]
+  );
+  if (addPoint) {
+    await db.query('insert into caravan_points (colonia_id, lat, lng) values ($1, $2, $3)', [
+      coloniaId,
+      lat,
+      lng,
+    ]);
+  }
+}
+
+/** Deja de compartir. La última ubicación se queda guardada, pero ya no se muestra. */
+export async function stopCaravan(coloniaId: string): Promise<void> {
+  if (hasSupabaseConfig()) {
+    const { error } = await getSupabase()
+      .from('caravans')
+      .update({ is_active: false })
+      .eq('colonia_id', coloniaId);
+    if (error) throw new Error(error.message);
+    return;
+  }
+
+  const db = await getPglite();
+  await db.query('update caravans set is_active = false where colonia_id = $1', [coloniaId]);
+}
+
+/** Dónde va la caravana ahora, con su rastro. Es pública: solo coordenadas. */
+export async function getCaravan(coloniaId: string): Promise<Caravan> {
+  const off: Caravan = { active: false, lat: null, lng: null, heading: null, updated_at: null, trail: [] };
+
+  const row = await readCaravanRow(coloniaId);
+  if (!row || !row.is_active) return off;
+  const updated = new Date(row.updated_at);
+  if (Date.now() - updated.getTime() > CARAVAN_STALE_MS) return off;
+
+  const since = new Date(Date.now() - TRAIL_MS).toISOString();
+  let points: LatLng[];
+
+  if (hasSupabaseConfig()) {
+    const { data, error } = await getSupabase()
+      .from('caravan_points')
+      .select('lat, lng')
+      .eq('colonia_id', coloniaId)
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(TRAIL_POINTS + 1);
+    if (error) throw new Error(error.message);
+    points = data ?? [];
+  } else {
+    const db = await getPglite();
+    const { rows } = await db.query<LatLng>(
+      `select lat, lng from caravan_points
+        where colonia_id = $1 and created_at >= $2
+        order by created_at desc
+        limit $3`,
+      [coloniaId, since, TRAIL_POINTS + 1]
+    );
+    points = rows;
+  }
+
+  // El rastro va detrás: lo que coincide con donde está ahora no se dibuja.
+  const here = { lat: row.lat, lng: row.lng };
+  const trail = points
+    .filter((p) => distance(p, here) >= CARAVAN_MIN_STEP_M / 2)
+    .slice(0, TRAIL_POINTS)
+    .map((p) => ({ lat: p.lat, lng: p.lng }));
+
+  return {
+    active: true,
+    lat: row.lat,
+    lng: row.lng,
+    heading: row.heading,
+    updated_at: updated.toISOString(),
+    trail,
+  };
 }

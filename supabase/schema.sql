@@ -218,3 +218,31 @@ create table if not exists public.candy_donations (
 );
 
 create index if not exists candy_donations_tutor_id_idx on public.candy_donations (tutor_id);
+
+-- ---------- Caravana ----------
+
+-- Una caravana por colonia: quien organiza comparte desde su teléfono dónde va
+-- y las familias la siguen en el mapa. `updated_at` dice si sigue viva: si el
+-- teléfono deja de mandar, la app la da por detenida aunque `is_active` siga en
+-- true. `heading` es el rumbo en grados (0 = norte), para la flecha.
+create table if not exists public.caravans (
+  colonia_id uuid             primary key references public.colonias(id) on delete cascade,
+  is_active  boolean          not null default false,
+  lat        double precision not null,
+  lng        double precision not null,
+  heading    double precision,
+  updated_at timestamptz      not null default now()
+);
+
+-- Cada ubicación que llega, para dibujar detrás de la caravana el camino que
+-- trae. Solo se leen los últimos minutos.
+create table if not exists public.caravan_points (
+  id         uuid             primary key default gen_random_uuid(),
+  colonia_id uuid             not null references public.colonias(id) on delete cascade,
+  lat        double precision not null,
+  lng        double precision not null,
+  created_at timestamptz      not null default now()
+);
+
+create index if not exists caravan_points_colonia_created_idx
+  on public.caravan_points (colonia_id, created_at desc);

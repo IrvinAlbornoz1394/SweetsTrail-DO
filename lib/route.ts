@@ -70,6 +70,16 @@ export function distance(a: LatLng, b: LatLng): number {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
+/**
+ * Rumbo de `a` hacia `b` en grados (0 = norte, en sentido de las manecillas),
+ * en un plano local: a esta escala la curvatura no se nota.
+ */
+export function bearing(a: LatLng, b: LatLng): number {
+  const dx = (b.lng - a.lng) * Math.cos((a.lat * Math.PI) / 180);
+  const dy = b.lat - a.lat;
+  return ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360;
+}
+
 /** Camino por las calles que pasa por `points` en ese orden. */
 export async function tracePath(points: LatLng[]): Promise<TracedPath> {
   try {
