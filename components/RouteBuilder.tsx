@@ -9,12 +9,13 @@ import {
   formatDistance,
   formatMinutes,
   minutesPerStation,
+  routeArrows,
   routeTime,
   tracePath,
   type TracedPath,
 } from '@/lib/route';
 import { stationLabel } from '@/lib/station';
-import { iconFor, startIcon, stopIcon, viaIcon } from './spookyIcon';
+import { arrowIcon, iconFor, startIcon, stopIcon, viaIcon } from './spookyIcon';
 import FitToStations from './FitToStations';
 import Modal from './Modal';
 
@@ -140,6 +141,18 @@ export default function RouteBuilder({
     0
   );
   const calculating = legs.some((leg) => !traced[leg.key]);
+
+  // Flechas de sentido sobre lo que va trazado, para leer hacia dónde avanza.
+  const arrows = useMemo(
+    () =>
+      routeArrows(
+        legs.flatMap((leg, i) => {
+          const path = traced[leg.key]?.path ?? [leg.from, leg.to];
+          return i === 0 ? path : path.slice(1);
+        })
+      ),
+    [legs, traced]
+  );
   const time = routeTime(meters, stops.length, perStation);
 
   function restart() {
@@ -307,6 +320,16 @@ export default function RouteBuilder({
             />
           );
         })}
+
+        {arrows.map((arrow, i) => (
+          <Marker
+            key={i}
+            position={[arrow.at.lat, arrow.at.lng]}
+            icon={arrowIcon(arrow.deg)}
+            interactive={false}
+            keyboard={false}
+          />
+        ))}
 
         {stations.map((station) => (
           <Marker

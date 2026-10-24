@@ -109,3 +109,35 @@ export async function tracePath(points: LatLng[]): Promise<TracedPath> {
     return { meters, path: points, byStreet: false };
   }
 }
+
+/**
+ * Flechas repartidas a lo largo de la ruta, cada una girada con el rumbo de su
+ * tramo, para que se lea hacia dónde avanzar. Van cada ~100 m, con un tope
+ * para que una ruta larga no se llene de flechas.
+ */
+export function routeArrows(path: LatLng[]): { at: LatLng; deg: number }[] {
+  const lengths = path.slice(1).map((p, i) => distance(path[i], p));
+  const total = lengths.reduce((a, b) => a + b, 0);
+  const every = Math.max(100, total / 60);
+  const arrows: { at: LatLng; deg: number }[] = [];
+
+  let next = every / 2;
+  let walked = 0;
+  lengths.forEach((len, i) => {
+    const a = path[i];
+    const b = path[i + 1];
+    // Rumbo en un plano local: el este se encoge con la latitud.
+    const dx = (b.lng - a.lng) * Math.cos((a.lat * Math.PI) / 180);
+    const dy = b.lat - a.lat;
+    const deg = (Math.atan2(dx, dy) * 180) / Math.PI;
+
+    while (len > 0 && next <= walked + len) {
+      const t = (next - walked) / len;
+      arrows.push({ at: { lat: a.lat + t * (b.lat - a.lat), lng: a.lng + t * (b.lng - a.lng) }, deg });
+      next += every;
+    }
+    walked += len;
+  });
+
+  return arrows;
+}
