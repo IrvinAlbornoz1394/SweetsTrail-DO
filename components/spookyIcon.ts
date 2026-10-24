@@ -54,6 +54,14 @@ export const offRouteIcon = L.divIcon({
   iconAnchor: [6, 6],
 });
 
+/** Punto de paso de la ruta: un conector gris que la guía, no una parada. */
+export const viaIcon = L.divIcon({
+  className: '',
+  html: '<div class="stop stop--via"></div>',
+  iconSize: [12, 12],
+  iconAnchor: [6, 6],
+});
+
 /**
  * Flecha de sentido sobre la línea de la ruta. `deg` es el rumbo (0 = norte,
  * en sentido de las manecillas). Se cachea por grado para no crear un icono

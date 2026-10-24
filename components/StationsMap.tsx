@@ -8,7 +8,7 @@ import type { Station } from '@/lib/db';
 import { COLONIA_ZOOM, type LatLng } from '@/lib/map';
 import { distance, formatDistance, formatMinutes, routeTime } from '@/lib/route';
 import { stationLabel } from '@/lib/station';
-import { arrowIcon, iconFor, offRouteIcon, startIcon, stopIcon } from './spookyIcon';
+import { arrowIcon, iconFor, offRouteIcon, startIcon, stopIcon, viaIcon } from './spookyIcon';
 import FitToStations from './FitToStations';
 import Modal from './Modal';
 import RouteBuilder, { type PlannedRoute } from './RouteBuilder';
@@ -254,6 +254,9 @@ export default function StationsMap({
                 interactive={false}
                 keyboard={false}
               />
+            ))}
+            {route.vias.map((via, i) => (
+              <Marker key={`via${i}`} position={[via.lat, via.lng]} icon={viaIcon} interactive={false} keyboard={false} />
             ))}
             <Marker position={[route.start.lat, route.start.lng]} icon={startIcon} />
           </>

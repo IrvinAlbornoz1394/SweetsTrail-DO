@@ -647,6 +647,8 @@ select:focus {
   filter: drop-shadow(0 0 1px rgba(0,0,0,.8));
 }
 .stop--off { width: 12px; height: 12px; border-width: 1px; background: #8b8aa0; box-shadow: none; opacity: .7; }
+/* Punto de paso: gris sólido con borde, a diferencia de la estación fuera de ruta. */
+.stop--via { width: 12px; height: 12px; border-width: 2px; background: #6b7280; }
 
 .route-summary {
   margin-bottom: 16px;

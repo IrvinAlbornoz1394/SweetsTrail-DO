@@ -14,7 +14,7 @@ import {
   type TracedPath,
 } from '@/lib/route';
 import { stationLabel } from '@/lib/station';
-import { iconFor, startIcon, stopIcon } from './spookyIcon';
+import { iconFor, startIcon, stopIcon, viaIcon } from './spookyIcon';
 import FitToStations from './FitToStations';
 import Modal from './Modal';
 
@@ -22,16 +22,29 @@ export type PlannedRoute = TracedPath & {
   start: LatLng;
   /** En el orden en que se tocaron; la última es donde termina la ruta. */
   stops: Station[];
+  /** Puntos de paso que guían el trazo; no son paradas ni suman tiempo. */
+  vias: LatLng[];
   /** Minutos de reparto en cada estación, para el tiempo total. */
   perStation: number;
 };
 
-/** Un tramo de la ruta: del punto anterior (inicio o estación) a una estación. */
-type Leg = { key: string; from: LatLng; to: Station };
+/**
+ * Punto de paso: un toque en el mapa fuera de las estaciones. La ruta pasa por
+ * ahí (sirve para llevarla por una calle en particular), pero no es parada.
+ */
+type Via = LatLng & { id: string; via: true };
 
-/** El primer toque en el mapa marca el inicio; después el mapa ya no lo mueve. */
-function PlaceStart({ onPlace }: { onPlace: (point: LatLng) => void }) {
-  useMapEvents({ click: (e) => onPlace({ lat: e.latlng.lat, lng: e.latlng.lng }) });
+/** Lo que se va tocando después del inicio: estaciones o puntos de paso. */
+type Point = Station | Via;
+
+const isVia = (p: Point): p is Via => 'via' in p;
+
+/** Un tramo de la ruta: del punto anterior (inicio, estación o paso) al siguiente. */
+type Leg = { key: string; from: LatLng; to: Point };
+
+/** Toques en el mapa (no en un marcador): el primero marca el inicio, los demás son puntos de paso. */
+function MapTaps({ onTap }: { onTap: (point: LatLng) => void }) {
+  useMapEvents({ click: (e) => onTap({ lat: e.latlng.lat, lng: e.latlng.lng }) });
   return null;
 }
 
@@ -52,7 +65,8 @@ function SettleSize() {
  * Armado de la ruta en un modal casi a pantalla completa, para ver bien el
  * mapa. Se marca dónde inicia y se tocan las estaciones en el orden en que se
  * visitarán (tocar otra vez la última la quita); "Finalizar ruta" la cierra
- * en la última estación tocada.
+ * en la última estación tocada. Tocar el mapa entre estaciones agrega un punto
+ * de paso gris por donde pasa la ruta, sin contarlo como parada.
  *
  * Cada tramo se traza por las calles en cuanto se toca la estación, así el
  * dibujo y el tiempo estimado van al día mientras se arma.
@@ -76,7 +90,7 @@ export default function RouteBuilder({
   onError: (message: string) => void;
 }) {
   const [start, setStart] = useState<LatLng | null>(null);
-  const [stops, setStops] = useState<Station[]>([]);
+  const [points, setPoints] = useState<Point[]>([]);
   const [perStation, setPerStation] = useState(() => minutesPerStation(kids));
   const [tracing, setTracing] = useState(false);
 
@@ -86,19 +100,20 @@ export default function RouteBuilder({
   const [traced, setTraced] = useState<Record<string, TracedPath>>({});
   const inflight = useRef(new Map<string, Promise<TracedPath>>());
 
+  const stops = points.filter((p): p is Station => !isVia(p));
   const order = new Map(stops.map((s, i) => [s.id, i + 1]));
 
   const legs = useMemo<Leg[]>(() => {
     if (!start) return [];
     let from: LatLng = start;
     let fromKey = `${start.lat.toFixed(6)},${start.lng.toFixed(6)}`;
-    return stops.map((to) => {
+    return points.map((to) => {
       const leg = { key: `${fromKey}>${to.id}`, from, to };
       from = to;
       fromKey = to.id;
       return leg;
     });
-  }, [start, stops]);
+  }, [start, points]);
 
   function traceLeg(leg: Leg): Promise<TracedPath> {
     let pending = inflight.current.get(leg.key);
@@ -129,7 +144,7 @@ export default function RouteBuilder({
 
   function restart() {
     setStart(null);
-    setStops([]);
+    setPoints([]);
   }
 
   function close() {
@@ -144,13 +159,27 @@ export default function RouteBuilder({
       return;
     }
     // Tocar otra vez la última quita esa parada: la ruta regresa un paso.
-    if (stops[stops.length - 1]?.id === station.id) {
-      setStops((list) => list.slice(0, -1));
+    if (points[points.length - 1]?.id === station.id) {
+      setPoints((list) => list.slice(0, -1));
       return;
     }
     // Las demás ya elegidas se visitan una sola vez: tocarlas no hace nada.
     if (order.has(station.id)) return;
-    setStops((list) => [...list, station]);
+    setPoints((list) => [...list, station]);
+  }
+
+  function tapMap(point: LatLng) {
+    if (!start) {
+      setStart(point);
+      return;
+    }
+    const id = `via:${point.lat.toFixed(6)},${point.lng.toFixed(6)}`;
+    setPoints((list) => (list.some((p) => p.id === id) ? list : [...list, { ...point, id, via: true }]));
+  }
+
+  /** Como con las estaciones: tocar el último punto de paso lo quita. */
+  function pickVia(via: Via) {
+    if (points[points.length - 1]?.id === via.id) setPoints((list) => list.slice(0, -1));
   }
 
   async function finish() {
@@ -163,13 +192,17 @@ export default function RouteBuilder({
       return;
     }
 
+    // La ruta acaba en la última estación: los pasos que sobren después se descartan.
+    const end = points.findLastIndex((p) => !isVia(p)) + 1;
+
     setTracing(true);
-    const results = await Promise.all(legs.map(traceLeg));
+    const results = await Promise.all(legs.slice(0, end).map(traceLeg));
     setTracing(false);
 
     onRoute({
       start,
       stops,
+      vias: points.slice(0, end).filter(isVia),
       perStation,
       meters: results.reduce((sum, r) => sum + r.meters, 0),
       // Cada tramo empieza donde acabó el anterior: se omite el punto repetido.
@@ -209,9 +242,11 @@ export default function RouteBuilder({
             : `Toca la siguiente estación. Va en: ${stationLabel(stops[stops.length - 1])}.`}
       </p>
       <p className="hint">
-        {stops.length === 0
+        {!start
           ? 'Puedes arrastrar el inicio para ajustarlo.'
-          : `${stops.length} ${stops.length === 1 ? 'estación' : 'estaciones'} en la ruta. La ruta acaba en la última que toques; tócala otra vez para quitarla.`}
+          : stops.length === 0
+            ? 'Puedes arrastrar el inicio. Si tocas el mapa fuera de una estación, la ruta pasa por ahí (punto gris, no cuenta como parada).'
+            : `${stops.length} ${stops.length === 1 ? 'estación' : 'estaciones'} en la ruta; acaba en la última que toques. Toca el mapa para guiar la ruta por un punto gris; toca el último punto otra vez para quitarlo.`}
       </p>
 
       <div className="route-time">
@@ -251,7 +286,7 @@ export default function RouteBuilder({
         />
         <SettleSize />
         <FitToStations stations={stations} />
-        {!start && <PlaceStart onPlace={setStart} />}
+        <MapTaps onTap={tapMap} />
 
         {legs.map((leg) => {
           const done = traced[leg.key];
@@ -279,6 +314,15 @@ export default function RouteBuilder({
             position={[station.lat, station.lng]}
             icon={order.has(station.id) ? stopIcon(order.get(station.id)!) : iconFor(station.id)}
             eventHandlers={{ click: () => pick(station) }}
+          />
+        ))}
+
+        {points.filter(isVia).map((via) => (
+          <Marker
+            key={via.id}
+            position={[via.lat, via.lng]}
+            icon={viaIcon}
+            eventHandlers={{ click: () => pickVia(via) }}
           />
         ))}
 
