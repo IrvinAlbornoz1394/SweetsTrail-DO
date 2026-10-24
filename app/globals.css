@@ -1014,8 +1014,15 @@ select:focus {
 /* Modal casi a pantalla completa (armado de la ruta): el mapa se queda con
    todo el espacio que dejan el encabezado y el pie. */
 .modal--full .modal__box { height: 100dvh; max-height: none; border-radius: 0; }
-.modal--full .modal__body { display: flex; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; }
-.modal--full .map { flex: 1; height: auto; min-height: 0; max-height: none; }
+.modal--full .modal__body { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 12px 14px; }
+/* El mapa nunca baja de ~2/3 de la pantalla; si el texto no cabe, el cuerpo
+   hace scroll (la nota de abajo queda a un deslizón). */
+.modal--full .map { flex: 1 0 auto; height: auto; min-height: 64dvh; max-height: none; }
+/* En el teléfono: "Finalizar" a lo ancho y las otras dos acciones lado a lado,
+   en vez de tres botones apilados. */
+@media (max-width: 639px) {
+  .modal--full .modal__foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 14px calc(10px + var(--safe-b)); }
+  .modal--full .modal__foot .btn--primary { grid-column: 1 / -1; order: -1; }}
 
 /* Selector de tutor al registrar un pago: buscador arriba, lista debajo. La
    lista se queda corta a propósito para que el campo de la cantidad y el botón
