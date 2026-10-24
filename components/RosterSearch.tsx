@@ -395,8 +395,15 @@ export default function RosterSearch({
   // no, la que ya venía pintada. Ambas llegan en el mismo orden.
   const rows: (Child | ChildWithTutor)[] = detailed ?? items;
 
+  // Con el filtro avanzado abierto cada fila trae a su tutor: el buscador
+  // también lo encuentra por ese nombre.
   const index = useMemo(
-    () => rows.map((child, i) => ({ child, position: i + 1, haystack: norm(child.name) })),
+    () =>
+      rows.map((child, i) => ({
+        child,
+        position: i + 1,
+        haystack: norm('tutor_name' in child ? `${child.name} ${child.tutor_name ?? ''}` : child.name),
+      })),
     [rows]
   );
 
@@ -633,11 +640,13 @@ export default function RosterSearch({
     <>
       <div className="card">
         <div className="field">
-          <label htmlFor="rosterSearch">¿Ya registraste a tu niño? Búscalo por su nombre</label>
+          <label htmlFor="rosterSearch">
+            {detailed ? 'Busca por el nombre del niño o del tutor' : '¿Ya registraste a tu niño? Búscalo por su nombre'}
+          </label>
           <input
             id="rosterSearch"
             type="search"
-            placeholder="Ej. Sofía, Diego Martín…"
+            placeholder={detailed ? 'Niño o tutor…' : 'Ej. Sofía, Diego Martín…'}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoComplete="off"
