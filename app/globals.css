@@ -627,14 +627,17 @@ select:focus {
   place-items: center;
   width: 20px;
   height: 20px;
-  border: 1.5px solid #fff;
+  /* Relleno translúcido para que la línea de la ruta se vea debajo; el número
+     lleva sombra para seguir leyéndose. */
+  border: 1.5px solid rgba(255,255,255,.7);
   border-radius: 50%;
-  background: #e11d48;
+  background: rgba(225,29,72,.5);
   color: #fff;
   font-size: 10px;
   font-weight: 800;
   line-height: 1;
-  box-shadow: 0 2px 6px rgba(0,0,0,.5);
+  text-shadow: 0 0 2px rgba(0,0,0,.9);
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
 .stop--start { background: #16a34a; }
 /* Flecha de sentido sobre la línea: un triángulo que apunta hacia arriba y se
